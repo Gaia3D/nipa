@@ -7,6 +7,7 @@ buildscript {
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath("org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.8.2")
 	}
 }
 
@@ -14,10 +15,23 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
+//
+// coveralls plugin
+apply plugin: 'com.github.kt3k.coveralls'
+apply plugin: 'jacoco'
 
 group = 'kr.nipa.mgps'
 version = '0.1.0'
 sourceCompatibility = 1.8
+
+//
+// jacoco
+jacocoTestReport {
+    reports {
+        xml.enabled = true // coveralls plugin depends on xml format report
+        html.enabled = true
+    }
+}
 
 repositories {
 	mavenCentral()
