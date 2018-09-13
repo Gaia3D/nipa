@@ -11,10 +11,11 @@ buildscript {
 	}
 }
 
+//
+// coveralls plugin
+apply plugin: 'com.github.kt3k.coveralls'
+
 allprojects {
-	//
-	// coveralls plugin
-	apply plugin: 'com.github.kt3k.coveralls'
 	apply plugin: 'jacoco'
 
 	repositories {
@@ -50,8 +51,9 @@ subprojects {
 }
 
 task jacocoRootReport(type: JacocoReport) {
-    dependsOn = subprojects.test
+    dependsOn = subprojects.jacocoTestReport
     sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs)
+	additionalSourceDirs = files(subprojects.sourceSets.main.allSource.srcDirs)
     classDirectories =  files(subprojects.sourceSets.main.output)
     executionData = files(subprojects.jacocoTestReport.executionData)
 	reports {
@@ -63,4 +65,8 @@ task jacocoRootReport(type: JacocoReport) {
 coveralls {
     sourceDirs = subprojects.sourceSets.main.allSource.srcDirs.flatten()
     jacocoReportPath = "${buildDir}/reports/jacoco/jacocoRootReport/jacocoRootReport.xml"
+}
+
+tasks.coveralls {
+    dependsOn jacocoRootReport
 }
