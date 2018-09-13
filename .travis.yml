@@ -20,4 +20,4 @@ script: "./gradlew clean build"
 
 # 빌드 성공 후 커버리지 측정 및 리포트
 after_success:
-- ./gradlew jacocoTestReport coveralls
+- ./gradlew coveralls
