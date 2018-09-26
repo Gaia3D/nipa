@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.nipa.mgps.persistence.FileInfoMapper">
+
+	<!-- 맵논트 파일 정보 -->
+	<select id="getListFileInfo" parameterType="long" resultType="fileInfo">
+		/* getListFileInfo */
+		SELECT * FROM file_info WHERE map_note_id = #{map_note_id}
+	</select>
+	
+	<!-- 파일 한 건 정보 획득 -->
+	<select id="getFileInfoByFileId" parameterType="long" resultType="fileInfo">
+		/* getFileInfoByFileId */
+		SELECT * FROM file_info WHERE file_info_id = #{file_info_id}
+	</select>
+	
+	<!-- 파일 총 건수 -->
+	<select id="getFileTotalCount" parameterType= "fileInfo" resultType="long">
+		/* getFileTotalCount */
+		SELECT COUNT(file_info) FROM file_info
+	</select>
+	
+	<!-- 맵노트 별 파일 총 건수 -->
+	<select id="getFileCountByMapnoteId" parameterType= "long" resultType="long">
+		/* getFileCountByMapnoteId */
+		SELECT COUNT(file_info) FROM file_info
+		WHERE map_note_id = #{map_note_id}
+	</select>
+	
+	<!-- 파일 목록 -->
+	<select id="getFileList" parameterType="long" resultType="fileInfo">
+		/* getFileList */
+		SELECT * FROM file_info
+	</select>
+	
+	<!-- 파일 등록 -->
+  	<insert id="insertFileInfo" parameterType="fileInfo">
+		/* insertFileInfo */
+		<selectKey keyProperty="file_info_id" resultType="long" order="BEFORE">
+    		SELECT NEXTVAL('file_info_seq')
+  		</selectKey>
+		INSERT INTO file_info(
+			file_info_id, map_note_id, user_id, file_name, file_real_name, file_path, file_size, file_ext, thumbnail_name, thumbnail_path
+		) values(
+			#{file_info_id}, #{map_note_id}, #{user_id}, #{file_name}, #{file_real_name}, #{file_path}, #{file_size}, #{file_ext}, #{thumbnail_name}, #{thumbnail_path} 
+		)
+	</insert> 
+	
+	<!-- 맵노트 파일 정보 수정 -->
+	<update id="updateFileInfo" parameterType="fileInfo">
+		/* updateFileInfo */
+		
+	</update>
+	
+	<!-- 맵노트 파일 삭제 -->
+	<delete id="deleteFileInfo" parameterType="long">
+		/* deleteFileInfo */
+		DELETE FROM file_info 
+		WHERE map_note_id = #{map_note_id}
+	</delete>
+
+</mapper>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.nipa.mgps.persistence.MapnoteMapper">
+
+	<!-- 맵노트 목록 -->
+	<select id="getListMapnote" parameterType="mapnote" resultType="mapnote">
+		/* getListMapnote */
+		SELECT *
+		FROM map_note
+		ORDER BY insert_date DESC, map_note_id DESC
+		OFFSET #{offset} LIMIT #{limit}
+	</select>
+	
+	<!-- 맵노트 총 건수 -->
+	<select id="getMapnoteTotalCount" parameterType= "mapnote" resultType="long">
+		/* getMapnoteTotalCount */
+		SELECT COUNT(map_note_id) FROM map_note
+	</select>
+
+	<!-- 맵노트 아이디로 한 건 조회 -->
+	<select id="getMapnoteById" parameterType="long" resultType="mapnote">
+		/* getListMapnote */
+		SELECT *
+		FROM map_note
+		WHERE map_note_id = #{map_note_id}
+	</select>
+		
+	<!-- 맵노트 아이디(seq) 조회 -->
+	<select id="getMapnoteId" resultType="long">
+		/* getMapnoteId */
+		SELECT NEXTVAL('map_note_seq')
+	</select>
+		
+	<!-- 맵노트 등록 -->
+	<insert id="insertMapnote" parameterType="mapnote">
+		/* insertMapnote */
+		INSERT INTO map_note(
+			map_note_id, user_id, note_title, description, longitude, latitude, height
+		) VALUES (
+			#{map_note_id}, #{user_id}, #{note_title}, #{description},
+			#{longitude}, #{latitude}, #{height}
+		)
+	</insert>
+	
+	<!-- 맵노트 삭제 -->
+	<delete id="deleteMapnote" parameterType="long">
+		/* deleteMapnote */
+		DELETE FROM map_note WHERE map_note_id = #{map_note_id}
+	</delete>
+	
+</mapper>

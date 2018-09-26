@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.nipa.mgps.persistence.SearchMapMapper">
+	
+	<!-- Sdo 목록(geom 은 제외) -->
+	<select id="getListSdoExceptGeom" resultType="skSdo">
+		/* getListSdoExceptGeom */
+		SELECT A.bjcd, SUBSTR(A.bjcd, 1, 2) AS sdo_code, A.name
+		FROM sk_sdo A, ( 
+			SELECT MIN(gid) AS gid, name 
+			FROM sk_sdo GROUP BY name
+		) B
+		WHERE A.gid = B.gid
+		ORDER BY A.bjcd
+	</select>
+	
+	<!-- Sgg 목록(geom 은 제외) -->
+	<select id="getListSggBySdoExceptGeom" parameterType="string" resultType="skSgg">
+		/* getListSggBySdoExceptGeom */
+		SELECT B.bjcd, SUBSTR(B.bjcd, 1, 2) AS sdo_code, SUBSTR(B.bjcd, 3, 3) AS sgg_code, B.name	
+		FROM sk_sgg B, (
+			SELECT MIN(A.gid) AS gid, A.code AS bjcd, A.name 
+			FROM (
+				SELECT gid, SUBSTR(bjcd, 1, 5) as code, name 
+				FROM sk_sgg 
+				WHERE bjcd LIKE #{sdo_code} || '%'
+			) A
+			GROUP BY A.code, A.name
+		) C
+		WHERE B.gid = C.gid
+		ORDER BY C.bjcd
+	</select>
+	
+	<!-- emd 목록(geom 은 제외) -->
+	<select id="getListEmdBySdoAndSggExceptGeom" parameterType="skEmd" resultType="skEmd">
+		/* getListEmdBySdoAndSggExceptGeom */
+		SELECT B.bjcd, SUBSTR(B.bjcd, 1, 2) AS sdo_code, 
+			SUBSTR(B.bjcd, 3, 3) AS sgg_code,
+			SUBSTR(B.bjcd, 1, 8) AS emd_code,
+			B.name	
+		FROM sk_emd B, (
+			SELECT MIN(A.gid) AS gid, A.code AS bjcd, A.name 
+			FROM (
+				SELECT gid, SUBSTR(bjcd, 6, 3) as code, name 
+				FROM sk_emd 
+				WHERE bjcd LIKE #{sdo_code} || #{sgg_code} ||'%'
+			) A
+			GROUP BY A.code, A.name
+		) C
+		WHERE B.gid = C.gid
+		ORDER BY C.bjcd
+	</select>
+	
+	<!-- 선택한 시도의 center point를 구함 -->
+	<select id="getCentroidSdo" parameterType="skSdo" resultType="string">
+		/* getCentroidSdo */
+		SELECT ST_AsText(ST_Centroid(A.geom))
+		FROM (
+			SELECT geom 
+			FROM sk_sdo 
+			WHERE name = #{name}
+			ORDER BY bjcd LIMIT 1
+		) A
+	</select>
+	
+	<!-- 선택한 시군구의 center point를 구함 -->
+	<select id="getCentroidSgg" parameterType="skSgg" resultType="string">
+		/* getCentroidSgg */
+		SELECT ST_AsText(ST_Centroid(A.geom))
+		FROM (
+			SELECT geom 
+			FROM sk_sgg 
+			WHERE bjcd LIKE #{bjcd} ||'%'
+				AND name = #{name}
+			ORDER BY bjcd LIMIT 1
+		) A
+	</select>
+	
+	<!-- 선택한 읍면동의 center point를 구함 -->
+	<select id="getCentroidEmd" parameterType="skEmd" resultType="string">
+		/* getCentroidEmd */
+		SELECT ST_AsText(ST_Centroid(A.geom))
+		FROM (
+			SELECT geom 
+			FROM sk_emd 
+			WHERE bjcd LIKE #{bjcd} ||'%'
+				AND name = #{name}
+			ORDER BY bjcd LIMIT 1
+		) A
+	</select>
+	
+	<!-- 행정 구역 검색 -->
+	<select id="getListDistrict" parameterType="string" resultType="skEmd">
+		/* getListDistrict */
+		SELECT 1 AS layer_type, X.name, SUBSTR(X.bjcd, 1, 2) AS sdo_code, '' AS sgg_code, '' AS emd_code
+		FROM sk_sdo X, ( 
+			SELECT MIN(A.gid) AS gid, A.name 
+			FROM (
+				SELECT gid, name, bjcd
+				FROM sk_sdo
+				WHERE name like #{search_word} || '%'
+			) A
+			GROUP BY A.name
+		) Y
+		WHERE X.gid = Y.gid
+		UNION ALL
+		SELECT 2 AS layer_type, X.name, SUBSTR(X.bjcd, 1, 2) AS sdo_code, 
+			SUBSTR(X.bjcd, 3, 3) AS sgg_code,
+			'' AS emd_code
+		FROM sk_sgg X, (
+			SELECT MIN(A.gid) AS gid, SUBSTR(A.bjcd, 1, 5) AS bjcd, A.name 
+			FROM (
+				SELECT gid, bjcd, name 
+				FROM sk_sgg 
+				WHERE name like #{search_word} || '%'
+			) A
+			GROUP BY SUBSTR(A.bjcd, 1, 5), A.name
+		) Y
+		WHERE X.gid = Y.gid
+		UNION ALL
+		SELECT 3  AS layer_type, X.name, SUBSTR(X.bjcd, 1, 2) AS sdo_code, 
+			SUBSTR(X.bjcd, 3, 3) AS sgg_code,
+			SUBSTR(X.bjcd, 1, 8) AS emd_code
+		FROM sk_emd X, (
+			SELECT MIN(A.gid) AS gid, SUBSTR(A.bjcd, 4, 4) AS bjcd, A.name 
+			FROM (
+				SELECT gid, bjcd, name 
+				FROM sk_emd 
+				WHERE name like #{search_word} || '%'
+			) A
+			GROUP BY SUBSTR(A.bjcd, 4, 4), A.name
+		) Y
+		WHERE X.gid = Y.gid
+		ORDER BY name
+	</select>
+</mapper>

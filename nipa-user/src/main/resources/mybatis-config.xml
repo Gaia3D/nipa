@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+    PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<settings>
+		<setting name="lazyLoadingEnabled" value="false" />
+	</settings>
+	
+ 	<typeAliases>
+ 		<typeAlias type="kr.nipa.mgps.domain.Mapnote" alias="mapnote"/>
+ 		<typeAlias type="kr.nipa.mgps.domain.FileInfo" alias="fileInfo"/>
+ 		<typeAlias type="kr.nipa.mgps.domain.Policy" alias="policy"/>
+ 		<typeAlias type="kr.nipa.mgps.domain.SkSdo" alias="skSdo"/>
+ 		<typeAlias type="kr.nipa.mgps.domain.SkSgg" alias="skSgg"/>
+ 		<typeAlias type="kr.nipa.mgps.domain.SkEmd" alias="skEmd"/>
+	</typeAliases>
+	
+</configuration>
