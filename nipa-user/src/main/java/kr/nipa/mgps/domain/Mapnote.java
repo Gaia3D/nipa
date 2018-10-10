@@ -45,7 +45,7 @@ public class Mapnote {
 	private String description;
 
 	// location(위도, 경도)
-	private String note_location;
+	private String[] note_location;
 
 	// 경도
 	private BigDecimal longitude;

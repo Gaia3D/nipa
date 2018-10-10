@@ -25,13 +25,13 @@ public interface MapnoteMapper {
 	
 	/**
 	 * 맵노트 아이디로 한 건 조회 
-	 * @param mapnote
+	 * @param map_note_id
 	 * @return
 	 */
-	Mapnote getMapnoteById(Long mapnote);
+	Mapnote getMapnoteById(Long map_note_id);
 	
 	/**
-	 * 맵노트 아이디로 한 건 조회 
+	 * 맵노트 아이디 시퀀스 조회
 	 * @param mapnote
 	 * @return
 	 */
@@ -45,25 +45,17 @@ public interface MapnoteMapper {
 	int insertMapnote(Mapnote mapnote);
 	
 	/**
+	 * 맵노트 수정
+	 * @param mapnote
+	 * @return
+	 */
+	int updateMapnote(Mapnote mapnote);
+	
+	/**
 	 * 맵노트 삭제
 	 * @param map_note_id
 	 * @return
 	 */
 	int deleteMapnote(Long map_note_id);
-	
-	/**
-	 * 맵노트 파일 등록
-	 * @param mapnoteFile
-	 * @return
-	 */
-//	int insertMapnoteFile(MapnoteFile mapnoteFile);
-	
-	/**
-	 * 맵노트 수정
-	 * @param mapnote
-	 * @return
-	 */
-//	int updateMapnote(Mapnote mapnote);
-
 	
 }

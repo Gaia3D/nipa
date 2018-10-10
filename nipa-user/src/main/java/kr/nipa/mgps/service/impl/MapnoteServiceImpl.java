@@ -30,7 +30,7 @@ public class MapnoteServiceImpl implements MapnoteService {
 	public Mapnote getMapnoteById(Long map_note_id) {
 		return mapnoteMapper.getMapnoteById(map_note_id);
 	}
-
+	
 	@Override
 	public Long getMapnoteId() {
 		return mapnoteMapper.getMapnoteId();
@@ -40,6 +40,11 @@ public class MapnoteServiceImpl implements MapnoteService {
 	public Mapnote insertMapnote(Mapnote mapnote) {
 		mapnoteMapper.insertMapnote(mapnote);
 		return mapnote;
+	}
+	
+	@Override
+	public int updateMapnote(Mapnote mapnote) {
+		return mapnoteMapper.updateMapnote(mapnote);
 	}
 
 	@Override

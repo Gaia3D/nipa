@@ -1,5 +1,8 @@
 package kr.nipa.mgps.controller;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +21,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -54,14 +58,15 @@ public class MapnoteController {
 	@Autowired
 	FileService fileService;
 	
-	/** TODO Paging 
-	 * - 페이지당 몇 건 보여줄지
-	 * - 해당 페이지로 바로이동
-	 ** TODO 지점 버튼 
-	 * - 버튼 클릭 시 해당 위치(경위도)읽어오기
+	/** 
+	 ** TODO 버튼 클릭 시 경위도값 읽어오기
+	 ** TODO 해당 위치에 아이콘 표시
 	 **/
+	
 	/**
 	 * 맵노트 목록
+	 * @param request
+	 * @param pageNo
 	 * @return
 	 */
 	@RequestMapping(value ="mapnote/{pageNo}", method = RequestMethod.GET)
@@ -83,7 +88,7 @@ public class MapnoteController {
 			List<Mapnote> mapnoteList = new ArrayList<>();
 			if(totalCount > 0l) {
 				mapnoteList = mapnoteService.getListMapnote(mapnote);
-			map.put("mapnoteList", mapnoteList);
+				map.put("mapnoteList", mapnoteList);
 			}
 			
 		} catch (Exception e) {
@@ -98,71 +103,190 @@ public class MapnoteController {
 	/**
 	 * 맵노트 등록
 	 * @param mapnote
+	 * @param request
 	 * @return
 	 */
-	/*@PostMapping(value = "mapnote")
-	public Map<String, Object> ajaxInsertMapnote(@ModelAttribute Mapnote mapnote) {
+	@RequestMapping(value="insert", method = RequestMethod.POST)
+	public Map<String, Object> insertMapnoteFile(@ModelAttribute Mapnote mapnote, MultipartHttpServletRequest request) {
 		Map<String, Object> map = new HashMap<>();
 		String result = "success";
 		
 		try {
 			mapnote.setUser_id("guest");
-			String noteLocation = mapnote.getNote_location();
-			String longitude = mapnote.getNote_location().substring(0, noteLocation.indexOf(","));
-			String latitude = mapnote.getNote_location().substring(noteLocation.indexOf(",")+1, noteLocation.length());
-			String description = mapnote.getDescription();
-			log.info("latitude = {} ", latitude);
-			log.info("longitude = {} ", longitude);
-			mapnote.setLongitude(new BigDecimal((String)longitude));
-			mapnote.setLatitude(new BigDecimal((String)latitude));
+			String noteTitle = request.getParameter("noteTitle");
+			String[] noteLocation = request.getParameter("noteLocation").split(",");
+			String longitude = noteLocation[0].trim();
+			String latitude = noteLocation[1].trim();
+			String description = request.getParameter("description");
+			log.info("noteTitle = {}, longitude = {}, latitude = {}", noteTitle, longitude, latitude);
+			
+			mapnote.setNote_title(noteTitle);
+			mapnote.setLongitude(new BigDecimal(longitude));
+			mapnote.setLatitude(new BigDecimal(latitude));
 			mapnote.setHeight(new BigDecimal(0));
 			mapnote.setDescription(description);
 			
-			log.info("@@@ before mapnote = {}", mapnote);
 			long map_note_id= mapnoteService.getMapnoteId();
 			mapnote.setMap_note_id(map_note_id);
+			mapnote.setMap_note_detail_id(map_note_id);
 			mapnoteService.insertMapnote(mapnote);
 			map.put("mapnote", mapnote);
 			log.info("@@@ after mapnote = {}", mapnote);
+			
+			// 파일 등록
+			List<FileInfo> fileList = new ArrayList<>();
+			Map<String, MultipartFile> fileMap = request.getFileMap();
+		
+			for(MultipartFile multipartFile :  fileMap.values()) {
+				if(multipartFile.equals("") || multipartFile.getSize() == 0) { // 파일 첨부 없이 등록하는 경우
+					map.put("result", result);
+					return map;
+				}
+
+				FileInfo fileInfo = FileUtil.fileUpload(FileUtil.SUBDIRECTORY_YEAR_MONTH_DAY, multipartFile, policyService.getPolicy(), propertiesConfig.getFileUploadDir(), propertiesConfig.getThumbnailUploadDir());
+				
+				if(fileInfo.getError_code() != null && !"".equals(fileInfo.getError_code())) {
+					log.info("@@@@@ error_code = {}", fileInfo.getError_code());
+					result = fileInfo.getError_code();
+					break;
+				}
+				fileInfo.setMap_note_id(map_note_id);
+				fileList.add(fileInfo);
+			}
+			fileService.insertFiles(fileList);
+			long count = fileService.getFileCountByMapnoteId(map_note_id);
+			map.put("count", count);
+			
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 			result = "db.exception";
 		}
-		
 		map.put("result", result);
 		return map;
-	}*/
+	}
 	
 	/**
-	 * 맵노트 수정
-	 * @param mapnote
+	 * 썸네일 파일 이미지 다운로드
+	 * @param file_info_id
+	 * @return
+	 * @throws IOException
+	 */
+	@RequestMapping(value="displayImg/{file_info_id}", method = RequestMethod.GET)
+	public ResponseEntity<byte[]> displayImg(@PathVariable("file_info_id")Long file_info_id) throws IOException {
+		log.info("@@@@@ file_info_id = {}", file_info_id);
+		FileInfo file = fileService.getFileInfoByFileId(file_info_id);
+		
+		String thumbnailPath = file.getThumbnail_path();
+		String thumbnailName = file.getThumbnail_name();
+		String thumbnailFile =  thumbnailPath + "\\" + thumbnailName;
+		
+		InputStream in = null;
+		ResponseEntity<byte[]> entity = null;
+		try {
+			HttpHeaders headers = new HttpHeaders();
+
+			in = new FileInputStream(thumbnailFile);
+			headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+			headers.add("Content-Disposition", "attachment; filename=\""+ new String(file.getFile_name().getBytes("UTF-8"), "ISO-8859-1") + "\""); 
+			entity = new ResponseEntity<byte[]>(IOUtils.toByteArray(in), headers, HttpStatus.CREATED);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<byte[]>(HttpStatus.BAD_REQUEST);
+		} finally {
+			in.close();
+		}
+		return entity;
+	}
+	
+	/**
+	 * 원본 파일 이미지 다운로드
+	 * @param file_info_id
+	 * @return
+	 * @throws IOException
+	 */
+	@RequestMapping(value="showImg/{file_info_id}", method = RequestMethod.GET)
+	@ResponseBody
+	public void showImg (@PathVariable("file_info_id")Long file_info_id, HttpServletResponse response) throws IOException {
+		log.info("@@@@@ file_info_id = {}", file_info_id);
+		FileInfo fileInfo = fileService.getFileInfoByFileId(file_info_id);
+		
+		log.info("@@@@@ file_info_id = {}", file_info_id);
+		
+		String originalFilePath = fileInfo.getFile_path();
+		String originalName = fileInfo.getFile_real_name();
+		String originallFile =  originalFilePath + "\\" + originalName;
+		String fileExt = fileInfo.getFile_ext();
+		
+		response.setContentType("image/" + fileExt);
+
+		BufferedInputStream in = null;
+		BufferedOutputStream out = null;
+		try {
+			File file = new File(originallFile);
+			in = new BufferedInputStream(new FileInputStream(file));
+			out = new BufferedOutputStream(response.getOutputStream());
+
+			FileCopyUtils.copy(in, out);
+			out.flush();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(out != null) { try { out.close(); } catch(Exception e) { e.printStackTrace(); } }
+			if(in != null) { try { in.close(); } catch(Exception e) { e.printStackTrace(); } }
+		}
+	}
+	
+	/**
+	 * 맵노트 상세
+	 * @param pageNo
+	 * @param map_note_id
 	 * @return
 	 */
-	@PostMapping(value = "update")
-	public Map<String, Object> ajaxUpdateMapnote(@ModelAttribute Mapnote mapnote, @PathVariable("map_note_id")Long map_note_id) {
-		
-		log.info("####################### map_note_id = {}", map_note_id);
-		
+	@RequestMapping(value="mapnote/{pageNo}/{map_note_id}", method = RequestMethod.GET)
+	public Map<String, Object> detailMapnote(@PathVariable("pageNo")Long pageNo, @PathVariable("map_note_id")Long map_note_id) {
+		Map<String, Object> map = new HashMap<>();
+		String result = "success";
+		try {
+			if(map_note_id == null || map_note_id.longValue() <= 0) {
+				result = "map_note_id.invalid";
+				map.put("result", result);
+			} else {
+				Mapnote mapnote = mapnoteService.getMapnoteById(map_note_id);
+				List<FileInfo> files = fileService.getListFileInfo(map_note_id);
+				log.info("@@@ detail mapnote = {}", mapnote);
+				map.put("pageNo", pageNo);
+				map.put("mapnote", mapnote);
+				map.put("file", files);
+			}
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+			result = "db.exception";
+		}
+		map.put("result", result);
+		return map;
+	}
+
+	/**
+	 * 맵노트 수정 화면
+	 * @param map_note_id
+	 * @return
+	 */
+	@GetMapping(value= "updateForm/{map_note_id}")
+	public Map<String, Object> updateForm(@PathVariable("map_note_id") Long map_note_id) {
 		Map<String, Object> map = new HashMap<>();
 		String result = "success";
 		
 		try {
-			mapnote.setUser_id("guest");
-			String noteLocation = mapnote.getNote_location();
-			String longitude = mapnote.getNote_location().substring(0, noteLocation.indexOf(","));
-			String latitude = mapnote.getNote_location().substring(noteLocation.indexOf(",")+1, noteLocation.length());
-			log.info("latitude = {} ", latitude);
-			log.info("longitude = {} ", longitude);
-			mapnote.setLongitude(new BigDecimal((String)longitude));
-			mapnote.setLatitude(new BigDecimal((String)latitude));
-			mapnote.setHeight(new BigDecimal(0));
-			
-			log.info("@@@ before mapnote = {}", mapnote);
-			mapnoteService.insertMapnote(mapnote);
+			if(map_note_id == null || map_note_id.longValue() <= 0) {
+				result = "map_note_id.invalid";
+				map.put("result", result);
+				return map;
+			}
+			Mapnote mapnote = mapnoteService.getMapnoteById(map_note_id);
 			map.put("mapnote", mapnote);
-			log.info("@@@ after mapnote = {}", mapnote);
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 			result = "db.exception";
@@ -172,7 +296,79 @@ public class MapnoteController {
 		return map;
 	}
 	
-	// 맵노트 삭제
+	/**
+	 * 맵노트 수정
+	 * @param mapnote
+	 * @return
+	 */
+	@RequestMapping(value="update//{map_note_id}", method = RequestMethod.POST)
+	public Map<String, Object> updateMapnoteFile(@ModelAttribute Mapnote mapnote, MultipartHttpServletRequest request, @PathVariable("map_note_id")Long map_note_id) {
+		log.info("####################### map_note_id = {}", map_note_id);
+		
+		Map<String, Object> map = new HashMap<>();
+		String result = "success";
+		
+		try {
+			mapnote.setMap_note_id(map_note_id);
+			mapnote.setUser_id("guest");
+			String noteTitle = request.getParameter("noteTitle");
+			String[] noteLocation = request.getParameter("noteLocation").split(",");
+			String longitude = noteLocation[0].trim();
+			String latitude = noteLocation[1].trim();
+			String description = request.getParameter("description");
+			log.info("noteTitle = {}, longitude = {}, latitude = {}", noteTitle, longitude, latitude);
+			
+			mapnote.setNote_title(noteTitle);
+			mapnote.setLongitude(new BigDecimal(longitude));
+			mapnote.setLatitude(new BigDecimal(latitude));
+			mapnote.setHeight(new BigDecimal(0));
+			mapnote.setDescription(description);
+			
+			log.info("@@@ before mapnote = {}", mapnote);
+			mapnoteService.updateMapnote(mapnote);
+			map.put("mapnote", mapnote);
+			log.info("@@@ after mapnote = {}", mapnote);
+			
+			// 파일 등록
+			List<FileInfo> fileList = new ArrayList<>();
+			Map<String, MultipartFile> fileMap = request.getFileMap();
+		
+			for(MultipartFile multipartFile :  fileMap.values()) {
+				if(multipartFile.equals("") || multipartFile.getSize() == 0) {
+					map.put("result", result);
+					return map;
+				}
+				
+				fileService.deleteFileInfo(map_note_id); // 기존의 파일을 지워준다.
+
+				FileInfo fileInfo = FileUtil.fileUpload(FileUtil.SUBDIRECTORY_YEAR_MONTH_DAY, multipartFile, policyService.getPolicy(), propertiesConfig.getFileUploadDir(), propertiesConfig.getThumbnailUploadDir());
+				
+				if(fileInfo.getError_code() != null && !"".equals(fileInfo.getError_code())) {
+					log.info("@@@@@ error_code = {}", fileInfo.getError_code());
+					result = fileInfo.getError_code();
+					break;
+				}
+				fileInfo.setMap_note_id(map_note_id);
+				fileList.add(fileInfo);
+			}
+			fileService.insertFiles(fileList);
+			long count = fileService.getFileCountByMapnoteId(map_note_id);
+			map.put("count", count);
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = "db.exception";
+		}
+		map.put("result", result);
+		return map;
+	}
+	
+	/**
+	 * 맵노트 삭제
+	 * @param map_note_id
+	 * @return
+	 */
 	@RequestMapping(value ="mapnote/{map_note_id}", method = RequestMethod.DELETE)
 	public Map<String, Object> deleteMapnote(@PathVariable("map_note_id")Long map_note_id) {
 		Map<String, Object> map = new HashMap<>();
@@ -218,112 +414,6 @@ public class MapnoteController {
 		return map;
 	}
 	
-	// 맵노트 상세
-	@RequestMapping(value="mapnote/{pageNo}/{map_note_id}", method = RequestMethod.GET)
-	public Map<String, Object> detailMapnote(@PathVariable("pageNo")Long pageNo, @PathVariable("map_note_id")Long map_note_id) {
-		Map<String, Object> map = new HashMap<>();
-		String result = "success";
-		try {
-			if(map_note_id == null || map_note_id.longValue() <= 0) {
-				result = "map_note_id.invalid";
-				map.put("result", result);
-			} else {
-				Mapnote mapnote = mapnoteService.getMapnoteById(map_note_id);
-				List<FileInfo> files = fileService.getListFileInfo(map_note_id);
-				log.info("@@@ detail mapnote = {}", mapnote);
-				map.put("pageNo", pageNo);
-				map.put("mapnote", mapnote);
-				map.put("file", files);
-			}
-			
-		} catch(Exception e) {
-			e.printStackTrace();
-			result = "db.exception";
-		}
-		map.put("result", result);
-		return map;
-	}
-		
-	// 맵노트 파일 등록
-	@RequestMapping(value="insert", method = RequestMethod.POST)
-	public Map<String, Object> insertMapnoteFile(@ModelAttribute Mapnote mapnote, MultipartHttpServletRequest request) {
-		Map<String, Object> map = new HashMap<>();
-		String result = "success";
-		try {
-			mapnote.setUser_id("guest");
-			String noteLocation = mapnote.getNote_location();
-			String longitude = mapnote.getNote_location().substring(0, noteLocation.indexOf(","));
-			String latitude = mapnote.getNote_location().substring(noteLocation.indexOf(",")+1, noteLocation.length());
-			String description = mapnote.getDescription();
-			log.info("latitude = {} ", latitude);
-			log.info("longitude = {} ", longitude);
-			mapnote.setLongitude(new BigDecimal((String)longitude));
-			mapnote.setLatitude(new BigDecimal((String)latitude));
-			mapnote.setHeight(new BigDecimal(0));
-			mapnote.setDescription(description);
-			
-			log.info("@@@ before mapnote = {}", mapnote);
-			long map_note_id= mapnoteService.getMapnoteId();
-			mapnote.setMap_note_id(map_note_id);
-			mapnoteService.insertMapnote(mapnote);
-			map.put("mapnote", mapnote);
-			log.info("@@@ after mapnote = {}", mapnote);
-			
-			// 파일 등록
-			List<FileInfo> fileList = new ArrayList<>();
-			Map<String, MultipartFile> fileMap = request.getFileMap();
-			
-			for(MultipartFile multipartFile :  fileMap.values()) {
-				FileInfo fileInfo = FileUtil.fileUpload(FileUtil.SUBDIRECTORY_YEAR_MONTH_DAY, multipartFile, policyService.getPolicy(), propertiesConfig.getFileUploadDir(), propertiesConfig.getThumbnailUploadDir());
-				
-				if(fileInfo.getError_code() != null && !"".equals(fileInfo.getError_code())) {
-					log.info("@@@@@ error_code = {}", fileInfo.getError_code());
-					result = fileInfo.getError_code();
-					break;
-				}
-				fileInfo.setMap_note_id(map_note_id);
-				fileList.add(fileInfo);
-			}
-			fileService.insertFiles(fileList);
-			long count = fileService.getFileCountByMapnoteId(map_note_id);
-			map.put("count", count);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			result = "db.exception";
-		}
-		map.put("result", result);
-		return map;
-	}
-	
-	// 파일 이미지 다운로드
-	@RequestMapping(value="displayImg/{file_info_id}", method = RequestMethod.GET)
-	public ResponseEntity<byte[]> displayImg(@PathVariable("file_info_id")Long file_info_id) throws IOException {
-		log.info("@@@@@ file_info_id = {}", file_info_id);
-		FileInfo file = fileService.getFileInfoByFileId(file_info_id);
-		
-		String thumbnailPath = file.getThumbnail_path();
-		String thumbnailName = file.getThumbnail_name();
-		String thumbnailFile =  thumbnailPath + "\\" + thumbnailName;
-	
-		InputStream in = null;
-		ResponseEntity<byte[]> entity = null;
-		try {
-			HttpHeaders headers = new HttpHeaders();
-	
-			in = new FileInputStream(thumbnailFile);
-			headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-			headers.add("Content-Disposition", "attachment; filename=\""+ new String(file.getFile_name().getBytes("UTF-8"), "ISO-8859-1") + "\""); 
-			entity = new ResponseEntity<byte[]>(IOUtils.toByteArray(in), headers, HttpStatus.CREATED);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			entity = new ResponseEntity<byte[]>(HttpStatus.BAD_REQUEST);
-		} finally {
-			in.close();
-		}
-		return entity;
-}
 }
 
 

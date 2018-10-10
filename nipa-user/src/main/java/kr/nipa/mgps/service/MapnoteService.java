@@ -12,7 +12,7 @@ public interface MapnoteService {
 	 * @return
 	 */
 	List<Mapnote> getListMapnote(Mapnote mapnote);
-	
+
 	/**
 	 * 맵노트 총 건수
 	 * @param mapnote
@@ -28,7 +28,7 @@ public interface MapnoteService {
 	Mapnote getMapnoteById(Long map_note_id);
 
 	/**
-	 * 맵노트 아이디로 한 건 조회 
+	 * 맵노트 아이디 시퀀스 조회
 	 * @param map_note_id
 	 * @return
 	 */
@@ -37,10 +37,16 @@ public interface MapnoteService {
 	/**
 	 * 맵노트 등록
 	 * @param mapnote
-	 * @param mapnoteFile
 	 * @return
 	 */
 	Mapnote insertMapnote(Mapnote mapnote);
+	
+	/**
+	 * 맵노트 수정
+	 * @param mapnote
+	 * @return
+	 */
+	int updateMapnote(Mapnote mapnote);
 	
 	/**
 	 * 맵노트 삭제
