@@ -2,6 +2,39 @@ apply plugin: 'war'
 
 dependencies {
     compile('org.mybatis.spring.boot:mybatis-spring-boot-starter:1.3.2')
+    compile('commons-io:commons-io:2.6')
+    compile('org.imgscalr:imgscalr-lib:4.2')
 
     runtime('org.postgresql:postgresql')
+}
+
+task cleanResource {
+    delete 'src/main/resources/templates', 'src/main/resources/static'
+}
+
+task resourceCopy {
+    doLast {
+        println "Copy resources..."
+        // copy template
+        copy {
+            from 'src/main/webapp/index.html'
+            into 'src/main/resources/templates'
+        }
+
+        // copy static
+        copy {
+            from('src/main/webapp') {
+                include "css/**","externlib/**", "images/**", "js/**", "persistence/**", "favicon.ico"
+            }
+            into 'src/main/resources/static'
+        }
+    }
+}
+
+processResources {
+    dependsOn resourceCopy
+}
+
+clean {
+    dependsOn cleanResource
 }
