@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="ko-KR">
+<head>
+<meta charset="utf-8">
+<meta content="IE=edge" http-equiv="X-UA-Compatible">
+<title>군 공간정보 포털시스템</title>
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/externlib/cesium-1.44/Widgets/widgets.css">
+<link rel="stylesheet" type="text/css" href="/externlib/drawHelper/DrawHelper.css">
+<link rel="stylesheet" type="text/css" href="/externlib/geostats/geostats.css">
+<link rel="stylesheet" href="/externlib/dropzone/dropzone.css">
+<link rel="stylesheet" href="/externlib/photoswipe/css/photoswipe.css">
+<link rel="stylesheet" href="/externlib/photoswipe/css/default-skin/default-skin.css"> 
+</head>
+
+<body>
+<div id="wrap">
+	<!-- S: GNB WRAP -->
+	<div id="gnbWrap" style="left:40px;"><!-- 메뉴 on 시 확장됨, left:110px 조정 -->
+		<!-- S: 통합검색 -->
+		<div class="totalSearch">
+			<input type="text" placeholder="지명, 좌표, 검색어를 입력하세요.">
+			<button type="button" title="검색" class="btnTotalSearch">검색</button>
+		</div>
+		<!-- S: 화면행정구역 -->
+		<div class="district">
+			<p id="viewDistrictName"></p>
+		</div>
+		<!-- S: 행정구역 레이어 -->
+		<div class="districtWrap" style="display:none; ">
+			<div class="districtLayer">
+				<ul id="sdoList">
+					<li class="on">전체</li>
+				</ul>
+				<ul id="sggList">
+					<li class="on">전체</li>
+				</ul>
+				<ul id="emdList">
+					<li class="on">전체</li>
+				</ul>
+			</div>
+			<div class="districtBtn">
+				<button type="button" class="focusB">이동</button>
+				<button type="button" class="basicB">취소</button>
+			</div>
+		</div>
+		<!-- E: 행정구역 레이어 -->
+	</div>
+	<!-- E: GNB WRAP -->
+
+
+	<!-- S: NAV WRAP -->
+	<div id="navWrap" class=""><!-- 메뉴 on시 확장됨, class="on"과 함께 #gnbWrap의 left:110px 변경 -->
+		<h1>국방지형정보단</h1>
+		<ul class="nav">
+			<li id="menu" class="menu" title="메뉴"><span>메뉴</span></li>
+			<li id="searchMenu" class="search" data-nav="searchContent" title="검색"><span>검색</span></li>
+			<li id="layerMenu" class="layer" data-nav="layerContent" title="레이어"><span>레이어</span></li>
+			<li id="analysisMenu" class="analysis" data-nav="analysisContent" title="분석"><span>분석</span></li>
+			<li id="coordinateMenu" class="coordinate" data-nav="coordinateContent" title="좌표"><span>좌표</span></li>
+			<li id="mapnoteMenu" class="mapnote" data-nav="mapnoteContent" title="맵노트" onclick="ajaxMapnoteList(1)"><span>맵노트</span></li>
+		</ul>
+	</div>
+	<!-- E: NAV WRAP -->
+
+	<div id="contentsWrap" style=" display:none;">
+		<div class="contentsBtn">
+			<button type="button">레이어 닫기</button>
+		</div>
+
+		<!-- S: 검색 -->
+		<div id="searchContent" class="contentsList yScroll" style="height: 780px; display:none;">
+			<h2 class="hide">검색</h2>
+			<ul class="listDrop">
+				<li id="distrirct">
+					<p>행정구역<span>2</span></p>
+				</li>
+				<li id="placeName">
+					<p>지명<span>8</span></p>
+				</li>
+				<li id="aLotNumber" class="on">
+					<p>지번주소<span>210</span></p>
+					<ul style="height: 200px;">
+						<li	onclick="gotoFly('3ds.json', '133', 'ISSUE_TYPE_MODIFY', '128.5532670', '38.2764500', '100', '2')">
+							<span class="title">아야진해수욕장</span>
+							<span>강원도 동해시 북평동 34</span>
+						</li>
+						<li	onclick="gotoFly('3ds.json', '133', 'ISSUE_TYPE_MODIFY', '129.090010', '37.593887', '100', '2')">
+							<span class="title">망상해수욕장</span>
+							<span>강원도 동해시 망상동 34</span>
+						</li>
+						<li onclick="gotoFly('3ds.json', '133', 'ISSUE_TYPE_MODIFY', '129.159449', '37.477680', '100', '2')">
+							<span class="title">추암해수욕장</span>
+							<span>강원도 동해시 북평동 34</span>
+						</li>
+						<li onclick="gotoFly('3ds.json', '133', 'ISSUE_TYPE_MODIFY', '129.1219580', '37.5205530', 100, '2')">
+							<span class="title">한섬해수욕장</span>
+							<span>강원도 동해시 천곡동 34</span>
+						</li>
+						<li onclick="gotoFly('3ds.json', '133', 'ISSUE_TYPE_MODIFY', '129.1257070', '37.5151650', '100', '2')">
+							<span class="title">감추해수욕장</span>
+							<span>강원도 강릉시 사근진 34</span>
+						</li>
+						<li onclick="gotoFly('3ds.json', '133', 'ISSUE_TYPE_MODIFY', '129.101230', '37.587773', '300', '2')">
+							<span class="title">노봉해수욕장</span>
+							<span>강원도 동해시 망상동</span>
+						</li>
+						<li onclick="gotoFly('3ds.json', '133', 'ISSUE_TYPE_MODIFY', '129.1161990', '37.5344990', '100', '2')">
+							<span class="title">하평해수욕장</span>
+							<span>강원도 동해시 용정동</span>
+						</li>
+						<li onclick="gotoFly('3ds.json', '133', 'ISSUE_TYPE_MODIFY', '129.1191580', '37.5669040', '100', '2')">
+							<span class="title">어달해수욕장</span>
+							<span>강원도 동해시 어달동</span>
+						</li>
+					</ul>
+
+					<!-- S: PAGER -->
+					<div id="pagerB topLine" class="pagerB topLine">
+						<span class="countPage">20</span> /
+						<span class="countTotal">총 210</span>
+						<div>
+							<button type="button" class="first" title="처음">처음</button>
+							<button type="button" class="forward" title="이전">이전</button>
+							<input type="text" size="1"> /
+							<span>11</span>
+							<button type="button" class="next" title="다음">다음</button>
+							<button type="button" class="last" title="마지막">마지막</button>
+							<button type="button" class="btnText">이동</button>
+						</div>
+					</div>
+
+				</li>
+				<li id="newAddress">
+					<p>새주소<span>7</span></p>
+				</li>
+				<li id="nationPointNumber">
+					<p>국가지점번호<span>2</span></p>
+				</li>
+			</ul>
+		</div>
+		<!-- E: 검색 -->
+
+
+		<!-- S: 레이어 -->
+		<div id="layerContent" class="contentsList yScroll" style="height: 780px; display:none;">
+			<h2 class="hide">레이어</h2>
+			<ul class="listLayer">
+				<li class="imageLayer">
+					<p>영상레이어</p>
+					<ul>
+						<li class="on">
+							<span>디지털지도</span>
+							<div>
+								<span class="opacity" title="투명도">100%</span>
+							</div>
+						</li>
+						<li>
+							<span>육도 1:25,000</span>
+							<div>
+								<span class="opacity" title="투명도">50%</span>
+							</div>
+						</li>
+						<li>
+							<span>해도 1:500,000</span>
+							<div>
+								<span class="opacity" title="투명도">100%</span>
+							</div>
+						</li>
+						<li class="on">
+							<span>공도 1:2,000,000</span>
+							<div>
+								<span class="opacity" title="투명도">100%</span>
+							</div>
+						</li>
+						<li class="on">
+							<span>디지털지도</span>
+							<div>
+								<span class="opacity" title="투명도">100%</span>
+							</div>
+						</li>
+						<li>
+							<span>육도 1:25,000</span>
+							<div>
+								<span class="opacity" title="투명도">50%</span>
+							</div>
+						</li>
+						<li>
+							<span>해도 1:500,000</span>
+							<div>
+								<span class="opacity" title="투명도">100%</span>
+							</div>
+						</li>
+						<li class="on">
+							<span>공도 1:2,000,000</span>
+							<div>
+								<span class="opacity" title="투명도">100%</span>
+							</div>
+						</li>
+						<li class="on">
+							<span>디지털지도</span>
+							<div>
+								<span class="opacity" title="투명도">100%</span>
+							</div>
+						</li>
+						<li>
+							<span>육도 1:25,000</span>
+							<div>
+								<span class="opacity" title="투명도">50%</span>
+							</div>
+						</li>
+						<li>
+							<span>해도 1:500,000</span>
+							<div>
+								<span class="opacity" title="투명도">100%</span>
+							</div>
+						</li>
+						<li class="on">
+							<span>공도 1:2,000,000</span>
+							<div>
+								<span class="opacity" title="투명도">100%</span>
+							</div>
+						</li>
+					</ul>
+				</li>
+				<li class="mapLayer">
+					<p>지도레이어</p>
+					<ul>
+						<li class="on">
+							<span>행정경계</span>
+							<div>
+								<span class="color" title="색상" style="background-color: darkmagenta">색상</span>
+								<span class="opacity" title="투명도">100%</span>
+							</div>
+						</li>
+						<li class="on">
+							<span>전국지적도</span>
+							<div>
+								<span class="color" title="색상" style="background-color: turquoise">색상</span>
+								<span class="opacity" title="투명도">100%</span>
+							</div>
+						</li>
+						<li>
+							<span>삼각점</span>
+							<div>
+								<span class="opacity" title="투명도">100%</span>
+							</div>
+						</li>
+						<li>
+							<span>군사지도 인덱스</span>
+							<div>
+								<span class="color" title="색상">색상</span>
+								<span class="opacity" title="투명도">100%</span>
+							</div>
+						</li>
+						<li class="on">
+							<span>행정경계</span>
+							<div>
+								<span class="color" title="색상">색상</span>
+								<span class="opacity" title="투명도">100%</span>
+							</div>
+						</li>
+						<li class="on">
+							<span>전국지적도</span>
+							<div>
+								<span class="color" title="색상">색상</span>
+								<span class="opacity" title="투명도">100%</span>
+							</div>
+						</li>
+						<li>
+							<span>삼각점</span>
+							<div>
+								<span class="color" title="색상">색상</span>
+								<span class="opacity" title="투명도">100%</span>
+							</div>
+						</li>
+						<li>
+							<span>군사지도 인덱스</span>
+							<div>
+								<span class="color" title="색상">색상</span>
+								<span class="opacity" title="투명도">100%</span>
+							</div>
+						</li>
+					</ul>
+				</li>
+			</ul>
+
+
+			<!-- S: 레이어설정 -->
+			<div id="settingLayer" class="option" data-id="setting" style="top:175px; left: 230px; display:none;">
+				<div class="layerHeader">
+					<h3>${layerName}</h3>
+					<button type="button" class="layerClose" title="닫기">닫기</button>
+				</div>
+				<div class="layerContents">
+					<ul class="layerSetup">
+						<li>
+							<label for="">투명도</label>
+							<input id="range-value" type="text" size="3" placeholder="100%" class="underline"><input id="range-slider" type="range" value="100" min="0" max="100">
+						</li>
+						<li>
+							<label for="">스타일</label>
+							<input type="number" value="1" min="1" max="5" size="3" class="underline">
+							<input type="color" class="picker">
+						</li>
+					</ul>
+					<div>
+						<button type="button" title="적용" class="focusA" style="width: 120px;">적용</button>
+						<button type="button" title="초기화" class="basicA">초기화</button>
+						<button type="button" id="closeBtn" title="닫기" class="basicA">닫기</button>
+					</div>
+				</div>
+			</div>
+			<!-- E: 레이어설정  -->
+		</div>
+		<!-- E: 레이어 -->
+
+
+		<!-- S: 분석 -->
+		<div id="analysisContent" class="contentsList yScroll" style="height: 780px; display:none;">
+			<h2 class="hide">분석</h2>
+			<ul class="listDrop">
+				<li>
+					<p>가시권 분석</p>
+					<div class="listContents" id="analysisRadialLineOfSight">
+						<ul class="analysisGroup">
+							<li>
+								<label for="">관찰자높이 (m)</label>
+								<input class="observerOffset" type="text" placeholder="" value="1.73">
+							</li>
+							<li>
+								<label for="">반경 (m)</label>
+								<input class="radius" type="text" placeholder="" value="1000">
+							</li>
+							<li>
+								<label for="">방위수 (개)</label>
+								<input class="sides" type="text" placeholder="" value="180">
+							</li>
+							<li>
+								<label for="">관측지점</label>
+								<input type="text" placeholder="" class="withBtn observerPointMGRS">
+								<input type="hidden" class="observerPoint">
+								<button type="button" class="btnText drawObserverPoint">위치선택</button>
+							</li>
+							<li class="btns">
+								<button type="button" class="btnTextF execute" title="분석">분석</button>
+								<button type="button" class="btnText reset" title="초기화">초기화</button>
+							</li>
+						</ul>
+					</div>
+				</li>
+				<li>
+					<p>가시선 분석</p>
+					<div class="listContents" id="analysisLinearLineOfSight">
+						<ul class="analysisGroup">
+							<li>
+								<label for="">관찰자높이 (m)</label>
+								<input class="observerOffset" type="text" placeholder="" value="1.73">
+							</li>
+							<li>
+								<label for="">관측지점</label>
+								<input type="text" placeholder="" class="withBtn observerPointMGRS">
+								<input type="hidden" class="observerPoint">
+								<button type="button" class="btnText drawObserverPoint">위치선택</button>
+							</li>
+							<li>
+								<label for="">대상지점</label>
+								<input type="text" placeholder="" class="withBtn targetPointMGRS">
+								<input type="hidden" class="targetPoint">
+								<button type="button" class="btnText drawTargetPoint">위치선택</button>
+							</li>
+							<li class="btns">
+								<button type="button" class="btnTextF execute" title="분석">분석</button>
+								<button type="button" class="btnText reset" title="초기화">초기화</button>
+							</li>
+						</ul>
+					</div>
+				</li>
+				<li>
+					<p>연직 분석</p>
+					<div class="listContents" id="analysisRasterProfile">
+						<ul class="analysisGroup">
+							<li>
+								<label for="">측정간격 (개)</label>
+								<input class="interval" type="text" placeholder="" value="20" />
+							</li>
+							<li>
+								<label for="">측정경로</label>
+								<button type="button" class="btnText drawUserLine">위치선택</button>
+								<input type="hidden" class="userLine" />
+								<div class="coordsText"></div>
+								<!--
+								<div>
+									<span class="coordText">52SDE9096049531<button type="button" class="btnText coordBtn">보기</button></span>
+									<span class="coordText">52SGF1366504253<button type="button" class="btnText coordBtn">보기</button></span>
+								</div>
+								-->
+							</li>
+							<li class="btns">
+								<button type="button" class="btnTextF execute" title="분석">분석</button>
+								<button type="button" class="btnText reset" title="초기화">초기화</button>
+							</li>
+							<li>
+								<svg class="viewGraph" width="0" height="0"></svg>
+							</li>
+							<li>
+								<div class="legend"></div>
+							</li>
+						</ul>
+					</div>
+				</li>
+				<li>
+					<p>최고/최저 지점찾기</p>
+					<div class="listContents" id="analysisRasterHighLowPoints">
+						<ul class="analysisGroup">
+							<li>
+								<label for="">분석영역</label>
+								<select class="areaType">
+									<option value="extent">현재 지도 범위</option>
+									<option value="useArea">사용자 선택 범위</option>
+								</select>
+							</li>
+							<li class="wrapCropShape" style="display: none;">
+								<label for=""></label>
+								<input type="hidden" class="cropShape" />
+								<button type="button" class="btnText drawCropShape">영역선택</button>
+							</li>
+							<li>
+								<label for="">값유형</label>
+								<select class="valueType">
+									<option value="High">최고값</option>
+									<option value="Low">최저값</option>
+								</select>
+							</li>
+							<li class="btns">
+								<input type="hidden" class="wcsExtent" />
+								<button type="button" class="btnTextF execute" title="분석">분석</button>
+								<button type="button" class="btnText reset" title="초기화">초기화</button>
+							</li>
+						</ul>
+					</div>
+				</li>
+				<li>
+					<p>경로 분석</p>
+					<div class="listContents" id="analysisFromAtoB">
+						<ul class="analysisGroup">
+							<li>
+								<label for="">경로유형</label>
+								<select class="routeType">
+									<option value="false">최단거리</option>
+									<option value="true">최적거리</option>
+								</select>
+							</li>
+							<li>
+								<label for="">출발지점</label>
+								<input type="text" placeholder="" class="withBtn startPointMGRS">
+								<input type="hidden" class="startPointX">
+								<input type="hidden" class="startPointY">
+								<button type="button" class="btnText drawStartPoint">위치선택</button>
+							</li>
+							<li>
+								<label for="">도착지점</label>
+								<input type="text" placeholder="" class="withBtn endPointMGRS">
+								<input type="hidden" class="endPointX">
+								<input type="hidden" class="endPointY">
+								<button type="button" class="btnText drawEndPoint">위치선택</button>
+							</li>
+							<li class="btns">
+								<button type="button" class="btnTextF execute" title="분석">분석</button>
+								<button type="button" class="btnText reset" title="초기화">초기화</button>
+							</li>
+						</ul>
+					</div>
+				</li>
+				<!--
+				<li>
+					<p>화망 분석</p>
+					<div class="listContents">
+						내용없음
+					</div>
+				</li>
+				-->
+			</ul>
+		</div>
+		<!-- E: 분석 -->
+
+		<!-- S: 좌표 -->
+		<div id="coordinateContent" class="contents" style="height: 780px; display:none;">
+			<h2 class="hide">좌표</h2>
+			<div class="contentsIn">
+				<div class="coordinateBtns">
+					<button id="getScreen" type="button" title="화면중심 좌표독취" class="getScreen">화면중심 좌표독취</button>
+					<button id="getPoint" type="button" title="포인트 좌표독취" class="getPoint">포인트 좌표독취</button>
+					<button id="getSquare" type="button" title="지정영역 중심좌표독취" class="getSquare">지정영역 중심좌표독취</button>
+				</div>
+				<ul class="coordinateGroup plus">
+					<li>
+						<label for="">DD</label>
+						<input id="DD" type="text" placeholder="127° 9' 24.47“, 38° 0' 44.4“">
+					</li>
+					<li>
+						<label for="">DMS</label>
+						<input id="DMS" type="text" placeholder="127.156797, 38.012334">
+					</li>
+					<li>
+						<label for="">MGRS</label>
+						<input id="MGRS" type="text" placeholder="52SCH3819208786">
+					</li>
+					<li>
+						<label for="">UTM</label>
+						<input id="UTM" type="text" placeholder="52S 338192mE 4208786mN">
+					</li>
+					<li class="btns">
+						<button id="moveToLocation" type="button" class="btnTextF" title="이동">이동</button>
+						<button id="coordinateCopy" type="button" class="btnText" title="전체복사">전체복사</button>
+						<button id="addMapnote" type="button" class="btnText" title="맵노트" onclick="addMapnote()">지점등록</button>
+						<button id="textReset" type="button" class="btnText" title="초기화">초기화</button>
+					</li>
+				</ul>
+
+				<button id="insertCoordinate" type="button" title="지점등록" class="focusA full">좌표독취</button>
+
+				<div class="coordinateWrap" style="height:500px;"></div>
+			</div>
+		</div>
+		<!-- E: 좌표 -->
+
+
+		<!-- S: 맵노트 -->
+		<div id="mapnoteContent" class="contents" style="height:780px; display:none;">
+			<h2 class="hide">맵노트</h2>
+			<div class="contentsIn">
+				<button id=inputMapnote type="button" title="지점등록" class="focusA full">지점등록</button>
+
+				<div id ="mapnotePage"class="pagerB">
+					<span class="countPage"></span> / 
+					<span class="countTotal"></span>
+					<div>
+						<button type="button" class="first" title="처음">처음</button>
+						<button type="button" class="forward" title="이전">이전</button>
+						<input type="text" id="gotoPage" value="1" size="1"> /
+						<span id="lastPage"></span>
+						<button type="button" class="next" title="다음">다음</button>
+						<button type="button" class="last" title="마지막">마지막</button>
+						<button type="button" id="goToPageBtn" class="btnText">이동</button>
+					</div>
+				</div>
+			</div>
+
+			<ul id="mapnoteList" class="listNote" style="height: 600px;"></ul>
+		</div>
+		<!-- E: 맵노트 -->
+	</div>
+	<!-- E: CONTENTS WARP -->
+
+
+	<!-- S: 맵영역 -->
+	<div id="mapWrap">
+		<h2 class="hide">맵영역</h2>
+		<!-- S: 맵 컨트롤 버튼 -->
+		<ul class="mapCtrl">
+			<li id="mapCtrlCompass" class="compass" title="나침반">나침반</li>
+			<li id="mapCtrlModeling" class="modeling on" title="3D">3D</li>
+			<li id="mapCtrlReset" class="reset" title="초기화">초기화</li>
+			<li id="mapCtrlDistance" class="distance" title="거리">거리</li>
+			<li id="mapCtrlArea" class="area" title="면적">면적</li>
+			<li id="mapCtrlZoomIn" class="zoomin" title="확대">확대</li>
+			<li id="mapCtrlZoomOut" class="zoomout" title="축소">축소</li>
+		</ul>
+		<!-- E: 맵 컨트롤 버튼 -->
+
+		<!-- S: 레이어 / 거리 -->
+		<div id="distanceLayer" class="option" data-id="distance" style="top:55px; right: 23px; display:none;">
+			<div class="layerHeader">
+				<h2 class="hide">거리측정</h2>
+				<!-- 측정 전
+				<button type="button" class="disableA">초기화</button>
+				-->
+				<!-- 측정 후 -->
+				<button type="button" class="focusA">초기화</button>
+				<button type="button" class="layerClose" title="닫기">닫기</button>
+			</div>
+			<div class="layerContents">
+				<div class="measure distance">
+					거리<span>0</span>km
+				</div>
+			</div>
+		</div>
+		<!-- E: 레이어 / 거리 -->
+
+		<!-- S: 레이어 / 면적 -->
+		<div id="areaLayer" class="option" data-id="area" style="top:55px; right: 23px; display:none;">
+			<div class="layerHeader">
+				<h2 class="hide">면적측정</h2>
+				<!-- 측정 전
+				<button type="button" class="disable">초기화</button>
+				-->
+				<!-- 측정 후 -->
+				<button type="button" class="focusA">초기화</button>
+				<button type="button" class="layerClose" title="닫기">닫기</button>
+			</div>
+			<div class="layerContents">
+				<div class="measure area">
+					면적
+					<span>0</span>
+					km²
+				</div>
+			</div>
+		</div>
+		<!-- E: 레이어 / 면적 -->
+
+		<!-- S: 레이어 / 지점등록 -->
+		<div id="mapnoteLayer" class="option" data-id="pointRegister" style="top:55px; right: 5px; display:none;">
+			<div class="layerHeader">
+				<h2>지점등록</h2>
+				<button type="button" class="layerClose" title="닫기">닫기</button>
+			</div>
+			<div class="layerContents">
+				<form id="uploadForm">
+				<ul class="note">
+					<li>
+						<input id="noteTitle" type="text" size="34" placeholder="지점명을 입력하세요">
+					</li>
+					<li>
+						<input id="noteLocation" type="text" size="26" placeholder="126.6075050765, 37.5820583757">
+						<button class="basicA">지점</button>
+					</li>
+					<li>
+						<textarea id="description" cols="36" rows="5"></textarea>
+					</li>
+				</ul>
+					<div id="my-dropzone" class="dropzone yScroll" ></div>
+
+					<div class="uploadBtn">
+						<button type="submit" id="mapnoteBtn" class="focusA">등록</button>
+						<button id="allFileClear" type="button" class="focusC">전체 삭제</button>
+					</div>
+				</form>	
+			</div>
+		</div>
+		<!-- E: 레이어 / 지점등록 -->
+				
+		<!-- S: 레이어 / 지점등록 / 상세보기 -->
+		<div id="mapnoteDetailLayer" class="option" style="display: none;">
+			<div class="layerHeader">
+				<h2>상세보기</h2>
+				<button type="button" class="layerClose" title="닫기">닫기</button>
+			</div>
+			<div class="layerContents">
+				<ul id="mapnoteDetail"></ul>
+				
+				<div id="thumbnail" itemscope itemtype="http://schema.org/ImageGallery"></div>
+
+				<div style="text-align: center;">
+					<button type="button" id="closeBtn" class="focusA" title="닫기">닫기</button>
+					<button type="button" id="updateBtn" class="basicA" title="수정">수정</button>
+			</div>
+				
+		</div>
+		</div>
+		<!-- E: 레이어 / 지점등록 / 상세보기 -->
+
+		<!-- S: PhotoSwipe -->
+		<!-- PhotoSwipe의 루트. pswp 클래스가 있어함 -->
+		<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+		
+		    <!-- PhotoSwipe의 배경 -->
+		    <div class="pswp__bg"></div>
+		
+		    <!-- 오버플로가있는 슬라이드 래퍼 : 숨김 -->
+		    <div class="pswp__scroll-wrap">
+
+		        <!-- 슬라이드를 보관하는 컨테이너 -->
+		        <div class="pswp__container">
+		            <div class="pswp__item"></div>
+		            <div class="pswp__item"></div>
+		            <div class="pswp__item"></div>
+		        </div>
+		
+		        <!-- 슬라이딩 영역의 맨 위에있는 기본 (PhotoSwipeUI_Default) 인터페이스 : 변경 가능 -->
+		        <div class="pswp__ui pswp__ui--hidden">
+		            <div class="pswp__top-bar">
+		                <div class="pswp__counter"></div>
+		                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+		                <button class="pswp__button pswp__button--share" title="Share"></button>
+		                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+		                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+		
+		                <!-- 엘리먼트는 클래스 pswp__preloader를 얻어 프리 로더가 실행될 때 활성화  -->
+		                <div class="pswp__preloader">
+		                    <div class="pswp__preloader__icn">
+		                      <div class="pswp__preloader__cut">
+		                        <div class="pswp__preloader__donut"></div>
+		                      </div>
+		                    </div>
+		                </div>
+		            </div>
+		
+		            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+		                <div class="pswp__share-tooltip"></div> 
+		            </div>
+		            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+		            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+		            <div class="pswp__caption">
+		                <div class="pswp__caption__center"></div>
+		            </div>
+		        </div>
+		    </div>
+		</div>
+		<!-- S: PhotoSwipe -->
+
+		<!-- S: 맵 -->
+		<div id="magoContainer" class="map"></div>
+		<canvas id="objectLabel"></canvas>
+		<!-- E: 맵 -->
+	</div>
+	<!-- E: MAP WRAP -->
+
+	<!-- S: FOOTER -->
+	<div id="footer">
+		<span><label>고도</label><span id="positionAlt"><!--10m--></span></span>
+		<span><label>DD</label><span id="positionDD"><!--127.156797°,38.012334°--></span></span>
+		<span><label>DM</label><span id="positionDM"><!--126°56.302',37°53.752'--></span></span>
+		<span><label>DMS</label><span id="positionDMS"><!--127°09'24.47'',38°00'44.40''--></span></span>
+		<span><label>MGRS</label><span id="positionMGRS"><!--52SCH3819208787--></span></span>
+		<span><label>UTM</label><span id="positionUTM"><!--52N 338192mE 4208787mN--></span></span>
+	</div>
+	<!-- E: FOOTER -->
+
+</div>
+<!-- E: WRAP -->
+
+<script type="text/javascript" src="/externlib/cesium-1.44/Cesium.js"></script>
+<script type="text/javascript" src="/externlib/mago3d/mago3d.js"></script>
+<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/externlib/proj4js-2.4.3/proj4.min.js"></script>
+<script type="text/javascript" src="/externlib/handlebars-4.0.12/handlebars.runtime.js"></script>
+<script type="text/javascript" src="/externlib/geostats/geostats.js"></script>
+<script type="text/javascript" src="/externlib/d3js/d3.js"></script>
+<script type="text/javascript" src="/externlib/wellknown/wellknown.js"></script>
+<script type="text/javascript" src="/externlib/drawHelper/DrawHelper.js"></script>
+<script type="text/javascript" src="/externlib/dropzone/dropzone.js"></script>
+<script type="text/javascript" src="/externlib/photoswipe/js/photoswipe.min.js"></script>
+<script type="text/javascript" src="/externlib/photoswipe/js/photoswipe-ui-default.min.js"></script>
+
+<script type="text/javascript" src="/js/UIControll.js"></script>
+<script type="text/javascript" src="/js/Tooltip.js"></script>
+<script type="text/javascript" src="/js/NumberFormatter.js"></script>
+<script type="text/javascript" src="/js/CoordControll.js"></script>
+<script type="text/javascript" src="/js/MouseControll.js"></script>
+<script type="text/javascript" src="/js/MapControll.js"></script>
+<script type="text/javascript" src="/js/wpsRequest.js"></script>
+<script type="text/javascript" src="/js/AnalysisControll.js"></script>
+<script type="text/javascript" src="/js/templates.js"></script>
+<script type="text/javascript" src="/js/DistrictControll.js"></script>
+<script type="text/javascript" src="/js/photoswipe.js"></script>
+<script type="text/javascript" src="/js/Mapnote.js"></script>
+
+<script>
+	var MAP_NOTE_ID = null;
+
+	var agent = navigator.userAgent.toLowerCase();
+	if(agent.indexOf('chrome') < 0) { 
+		alert("This page is optimized for the Chrome browser for massive data processing.\n Please use the Chrome browser for seamless service.");
+	}
+	
+	var managerFactory = null;
+	var imagePath = "/images";
+	var dataInformationUrl = "/persistence/json/";
+	magoStart(null, "magoContainer", imagePath);
+	var intervalCount = 0;
+	var timerId = setInterval("startMogoUI()", 1000);
+
+	function startMogoUI() {
+		intervalCount++;
+		if(managerFactory != null && managerFactory.getMagoManagerState() === CODE.magoManagerState.READY) {
+			var viewer = managerFactory.getViewer();
+			// Label 표시
+			changeLabelAPI(managerFactory, false);
+			// object 정보 표시
+			changeObjectInfoViewModeAPI(managerFactory, true);
+            // Origin 표시
+            changeOriginAPI(managerFactory, false);
+			// BoundingBox
+			changeBoundingBoxAPI(managerFactory, false);
+			// Selecting And Moving
+			changeObjectMoveAPI(managerFactory, "2");
+			// 3PView Mode
+			changeFPVModeAPI(managerFactory, false);
+
+			MouseControll(viewer);
+			MapControll(viewer);
+			AnalysisControll(viewer);
+			CoordControll(viewer);
+			DistrictControll(viewer);
+
+			clearInterval(timerId);
+			console.log(" managerFactory != null, managerFactory.getMagoManagerState() = " + managerFactory.getMagoManagerState() + ", intervalCount = " + intervalCount);
+			return;
+		}
+		console.log("--------- intervalCount = " + intervalCount);
+	}
+
+    // mago3d 시작, 정책 데이터 파일을 로딩
+	function magoStart(viewer, renderDivId, imagePath) {
+		$.ajax({
+			url: dataInformationUrl + "policy-cesium.json",
+			type: "GET",
+			dataType: "json",
+			success: function(serverPolicy){
+				loadData(viewer, renderDivId, serverPolicy);
+			},
+			error: function(e){
+				alert(e.responseText);
+			}
+		});
+	}
+
+	function loadData(viewer, renderDivId, serverPolicy) {
+		if(serverPolicy.geo_data_default_projects === null || serverPolicy.geo_data_default_projects.length < 1) {
+			managerFactory = new ManagerFactory(viewer, renderDivId, serverPolicy, null, null, null, imagePath);	
+		} else {
+			var defaultProjectArray = serverPolicy.geo_data_default_projects;
+			var projectIdArray = new Array(defaultProjectArray.length);
+			var projectDataArray = new Array(defaultProjectArray.length);
+			var projectDataFolderArray = new Array(defaultProjectArray.length);
+			
+			var dataCount = 0;
+			defaultProjectArray.forEach(function(projectId, index) {
+				projectIdArray[index] = projectId;
+				//console.log("url = " + dataInformationUrl + projectId);
+				$.ajax({
+					url: dataInformationUrl + projectId,
+					type: "GET",
+					dataType: "json",
+					success: function(serverData) {
+						//console.log("index = " + index + ", data = " + serverData);
+						projectDataArray[index] = serverData;
+						projectDataFolderArray[index] = serverData.data_key;
+						if(defaultProjectArray.length === (dataCount + 1)) {
+							createManagerFactory(viewer, renderDivId, serverPolicy, projectIdArray, projectDataArray, projectDataFolderArray, imagePath);
+						}
+						dataCount++;
+					},
+					error: function(e){
+						alert(e.responseText);
+					}
+				});
+			});
+		}
+	}
+	
+	function createManagerFactory(viewer, renderDivId, serverPolicy, projectIdArray, projectDataArray, projectDataFolderArray, imagePath) {
+		managerFactory = new ManagerFactory(viewer, renderDivId, serverPolicy, projectIdArray, projectDataArray, projectDataFolderArray, imagePath);
+	}
+
+	// 클릭 지점으로이동
+	function gotoFly(projectId, issueId, issueType, longitude, latitude, height, duration) {
+		var projectData = getDataAPI(CODE.PROJECT_ID_PREFIX + projectId);
+		if (projectData === null || projectData === undefined) {
+		$.ajax({
+				url: dataInformationUrl + projectId,
+			type: "GET",
+			dataType: "json",
+				success: function(serverData) {
+					gotoFlyAPI(managerFactory, projectId, serverData, serverData.data_key, issueId, issueType, longitude, latitude, height, duration);		
+			},
+			error: function(request, status, error) {
+					console.log("code : " + request.status + "\n" + "message : " + request.responseText + "\n" + "error : " + error);
+			}
+		});
+		} else {
+			gotoFlyAPI(managerFactory, projectId, projectData, projectData.data_key, issueId, issueType, longitude, latitude, height, duration);	
+		}
+	}
+
+	//TODO 지점버튼 클릭 - 경위도 위치
+	
+	// 맵노트 validation - 지점 버튼 클릭으로 바뀔 것, 문자열 체크
+	function check() {
+		var noteLocation = $('#noteLocation').val().replace(/ /g, '');
+		var noteLongitude = noteLocation.substring(0, noteLocation.indexOf(","));
+		var noteLatitude = noteLocation.substring(noteLocation.indexOf(",")+1, noteLocation.length);
+		
+		if($('#noteTitle').val() === "") {
+			alert("지점명을 입력하여 주십시오.");
+			$('#noteTitle').focus();
+			return false;
+		}
+		if(noteLocation === "") {
+			alert("지점 위치를 선택하여 주십시오.");
+			$('#noteLocation').focus();
+			return false;
+		}
+		if(noteLongitude < (-180) || noteLongitude > 180) {
+			alert("경도의 값을 확인해 주십시오.");
+			$('#noteLocation').focus();
+			return false;
+		}
+		if(noteLatitude < (-90) || noteLatitude > 90) {
+			alert("위도의 값을 확인해 주십시오.");
+			return false;
+		}
+	}
+	
+	// 맵노트 validation - 지점 버튼 클릭으로 바뀔 것, 문자열 체크
+	function check() {
+		var noteLocation = $('#noteLocation').val().replace(/ /g, '');
+		var noteLongitude = noteLocation.substring(0, noteLocation.indexOf(","));
+		var noteLatitude = noteLocation.substring(noteLocation.indexOf(",")+1, noteLocation.length);
+		
+		if($('#noteTitle').val() === "") {
+			alert("지점명을 입력하여 주십시오.");
+			$('#noteTitle').focus();
+			return false;
+		}
+		if(noteLocation === "") {
+			alert("지점 위치를 선택하여 주십시오.");
+			$('#noteLocation').focus();
+			return false;
+		}
+		if(noteLongitude < (-180) || noteLongitude > 180) {
+			alert("경도의 값을 확인해 주십시오.");
+			$('#noteLocation').focus();
+			return false;
+		}
+		if(noteLatitude < (-90) || noteLatitude > 90) {
+			alert("위도의 값을 확인해 주십시오.");
+			return false;
+		}
+	}
+	
+	
+	Dropzone.options.myDropzone = {
+			url: "/insert",
+			autoProcessQueue: false,
+			uploadMultiple: true,
+			method: "post",
+			parallelUploads: 8,
+			maxFiles: 8,
+			maxFilesize: 500,
+			dictDefaultMessage: "Drop files here or click to upload",
+			acceptedFiles: ".jpeg, .jpg, .gif, .png, .JPEG, .JPG, .GIF, .PNG",
+			clickable: true,
+			fallback: function() {
+		    	alert("죄송합니다. 최신의 브라우저로 Update 후 사용해 주십시오.");
+		    	return;
+		    },
+			init: function() {
+				var _dropzone = this; 
+				var uploadingTask = document.querySelector("#mapnoteBtn");
+				var clearTask = document.querySelector("#allFileClear");
+
+				uploadingTask.addEventListener('click', function(e) {
+					e.preventDefault();
+		            e.stopPropagation();
+	            	if(check() == false) return false;
+
+	            	if(_dropzone.getQueuedFiles().length > 0) {		            	
+			            _dropzone.processQueue();
+		            } else {
+		            	var blob = new Blob();
+		                blob.upload = { 'chunked': _dropzone.defaultOptions.chunking };
+		                _dropzone.uploadFile(blob);
+		            }
+				});
+				
+				this.on("processing", function() {
+					if (MAP_NOTE_ID != null) {
+						this.options.url = "/update/ " + MAP_NOTE_ID;
+					}
+				});
+
+		        this.on('sending', function(file, xhr, formData) {
+		        	formData.append("noteTitle", $('#noteTitle').val());
+		            formData.append("noteLocation", $('#noteLocation').val());
+		            formData.append("description", $('#description').val());
+		            formData.append("MAP_NOTE_ID", MAP_NOTE_ID);
+		        });
+		        
+		        clearTask.addEventListener("click", function () {
+	                if (confirm("전체 항목을 삭제하겠습니까?")) {
+	                	_dropzone.removeAllFiles(true);
+	                }
+	            });
+				
+				this.on("maxfilesexceeded", function (data) {
+					alert("최대 업로드 파일 수는 8개 입니다.");
+				});
+				
+		        
+				this.on("complete", function (data) {
+					console.log("-------------" + data);
+					if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
+						if (data.xhr != undefined) {
+							var res = JSON.parse(data.xhr.responseText);
+							var msg;
+							if (res.result == "success") {
+								if(res.count === undefined) {
+									msg = "맵노트가 등록되었습니다.";
+								} else {
+									msg = "맵노트가 등록되었습니다.\n이미지 업로드 완료( " + res.count + " )";
+								}
+								ajaxMapnoteList(1);
+							} else {
+								// TODO 이미지 등록 실패 -> 맵노트 등록 실패
+								// 		맵노트 등록 실패 -> 이미지 등록 실패 
+								msg = "맵노트 등록에 실패했습니다.\n업로드 실패: " + res.message;
+							}
+							alert(msg);
+						} 
+					} 
+				});
+				
+				this.on("error", function(file, errormessage, xhr){
+				    if(xhr) {
+				        var response = JSON.parse(xhr.responseText);
+				        alert(response.message);
+				    }
+				});
+				
+				this.on("errormultiple", function(files, response) {
+					if(response) {
+				        alert(response.message);
+				    }
+			   });
+			}
+		};
+</script>
+</body>
+</html>

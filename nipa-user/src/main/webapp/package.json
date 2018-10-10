@@ -1,0 +1,28 @@
+{
+  "name": "nipa",
+  "version": "1.0.0",
+  "description": "Web Design Project for NIPA",
+  "dependencies": {
+    "http-server": "^0.11.1"
+  },
+  "devDependencies": {
+    "jasmine-core": "^3.2.1",
+    "karma": "^3.0.0",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-jasmine": "^1.1.2",
+    "karma-jasmine-matchers": "^3.8.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://seoul.gaia3d.com:53000/bcbae/NIPA-design.git"
+  },
+  "keywords": [
+    "nipa",
+    "design"
+  ],
+  "author": "gaia3d",
+  "license": "Apache-2.0"
+}
