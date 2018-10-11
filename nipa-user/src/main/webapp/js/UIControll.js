@@ -1,15 +1,15 @@
-	// 화면 중앙 배치
-	(function($){
-	    $.fn.extend({
-	        center: function () {
-	            return this.each(function() {
-	                var top = ($(window).height() - $(this).outerHeight()) / 2;
-	                var left = ($(window).width() - $(this).outerWidth()) / 2;
-                $(this).offset({top: (top > 0 ? top : 0), left: (left > 0 ? left : 0)});
-	            });
-	        }
-	    }); 
-	})(jQuery);
+// 화면 중앙 배치
+(function($){
+	$.fn.extend({
+		center: function () {
+			return this.each(function() {
+				var top = ($(window).height() - $(this).outerHeight()) / 2;
+				var left = ($(window).width() - $(this).outerWidth()) / 2;
+			$(this).offset({top: (top > 0 ? top : 0), left: (left > 0 ? left : 0)});
+			});
+		}
+	}); 
+})(jQuery);
 
 $(function() {
 	// 레이어 창
@@ -38,8 +38,7 @@ $(function() {
 	// 레이어 창 마우스 드래그
 	$('#settingLayer').draggable();
 	
-	// 페이지 이동 버튼
-			
+	// 컨텐츠 리사이즈	
 	function contentsResize()
 	{
 		var obj = $('#contentsWrap');
@@ -51,17 +50,23 @@ $(function() {
 		coordContentsResize();
 		noteContentsResize();
 	}
+
 	function coordContentsResize()
 	{
-		$('.coordinateWrap').height($('.contents').height()-$('.coordinateWrap').offset().top);
-	}
-	function noteContentsResize()
-	{
-		$('.listNote').height($('.contents').height()-$('.listNote').offset().top);
+		var height = $('.contents').height() - ($('.contentsIn').outerHeight(true) - $('.contentsIn').height());
+		var offsetTop = $('.coordinateWrap').offset().top - $('.coordinateBtns').offset().top;
+		$('.coordinateWrap').height(height - offsetTop);
 	}
 
-	window.onload = contentsResize();
-	window.onresize = contentsResize();
+	function noteContentsResize()
+	{
+		var height = $('.contents').height() - ($('.contentsIn').outerHeight(true) - $('.contentsIn').height());
+		var offsetTop = $('.listNote').offset().top - $('#inputMapnote').offset().top;
+		$('.listNote').height(height - offsetTop);
+	}
+
+	window.onload = contentsResize;
+	window.onresize = contentsResize;
 	
 	
 /***** NAV WRAP: 메뉴 *****/	

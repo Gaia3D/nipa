@@ -403,9 +403,9 @@ background: url(../images/ico.png) no-repeat -150px -300px;
 
 /*  CONTENTS / 분석 */
 .analysisGroup {
-margin: 10px 0;
+/* margin: 10px 0;
 padding-left: 10px;
-padding-right: 10px;
+padding-right: 10px; */
 cursor: pointer;
 }
 .analysisGroup.on {
@@ -430,7 +430,7 @@ border: none;
 border-bottom: 1px solid #e0e0e0;
 }
 .analysisGroup li input.withBtn {
-width: 124px;
+width: 120px;
 }
 
 .analysisGroup li span.coordText {
