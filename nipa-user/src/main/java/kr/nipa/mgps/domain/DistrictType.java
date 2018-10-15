@@ -13,21 +13,21 @@ public enum DistrictType {
 	}
 
 	public DistrictType valueOf(int layerType) {
-		DistrictType DistrictType = null;
+		DistrictType districtType = null;
 		switch (layerType) {
 		case 1:
-			DistrictType = DistrictType.SDO;
+			districtType = DistrictType.SDO;
 			break;
 		case 2:
-			DistrictType = DistrictType.SGG;
+			districtType = DistrictType.SGG;
 			break;
 		case 3:
-			DistrictType = DistrictType.EMD;
+			districtType = DistrictType.EMD;
 			break;
 		default:
 			break;
 		}
-		return DistrictType;
+		return districtType;
 	}
 	
 	public int getLayerType() {

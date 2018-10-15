@@ -25,7 +25,6 @@ public class ProxyController {
 	public void makeProxy(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		String url = request.getQueryString();
-		String param = "";
 		Boolean isPOST = "POST".equalsIgnoreCase(request.getMethod());
 		if (isPOST) {
 			StringBuffer params = new StringBuffer();
@@ -44,7 +43,6 @@ public class ProxyController {
 					++total;
 				}
 			}
-			param = params.toString();
 		} else {
 			url = url.substring(4);
 		}
