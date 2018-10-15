@@ -56,6 +56,41 @@ overflow: hidden;
 	z-index: 1;
 	pointer-events:none;
 }
+
+.distance-legend {
+	pointer-events: auto;
+    position: absolute;
+    border-radius: 15px;
+	background-color: rgba(47,53,60,80%);
+    padding-left: 5px;
+    padding-right: 5px;
+    right: 25px;
+    bottom: 30px;
+    height: 30px;
+    width: 125px;
+    border: 1px solid rgba(255,255,255,0.1);
+    box-sizing: content-box;
+}
+
+.distance-legend-label {
+    display: inline-block;
+    font-size: 14px;
+    font-weight: lighter;
+    line-height: 30px;
+    color: #FFFFFF;
+    width: 125px;
+    text-align: center;
+}
+
+.distance-legend-scale-bar {
+    border-left: 1px solid #FFFFFF;
+    border-right: 1px solid #FFFFFF;
+    border-bottom: 1px solid #FFFFFF;
+    position: absolute;
+    height: 10px;
+    top: 15px;
+}
+
 /* FOOTER */
 #footer {
 position: fixed;
@@ -66,13 +101,13 @@ text-align: right;
 background: rgba(53, 53, 61, 0.8);
 z-index: 0;
 }
-#footer > span {
+#footer > div > span {
 display: inline-block;
 margin: 0 10px;
 color: #fff;
 font-size: 12px;
 }
-#footer > span > label {
+#footer > div > span > label {
 margin-right: 5px;
 }
 
