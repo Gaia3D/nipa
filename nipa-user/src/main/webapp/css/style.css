@@ -371,7 +371,7 @@ background-position: left -205px;
 ul.listLayer li.on ul li > div {
 visibility: hidden;
 float: right;
-display: inline-block;
+/* display: inline-block; */
 height: 30px;
 margin-top: -10px;
 padding-top: 10px;
@@ -773,6 +773,14 @@ background-position: -250px -150px;
 background-position: -300px -150px;
 }
 
+/* 시계열 */
+.timeSeries {
+position: absolute;
+bottom: 0;
+width: 100%;
+background: rgba(0, 0, 0, 0.9);
+z-index: 200;
+}
 
 /* ///// LAYER ///// */
 h3 {

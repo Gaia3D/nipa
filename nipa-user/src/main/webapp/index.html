@@ -146,141 +146,32 @@
 		<div id="layerContent" class="contentsList yScroll" style="height: 780px; display:none;">
 			<h2 class="hide">레이어</h2>
 			<ul class="listLayer">
-				<li class="imageLayer">
+				<li class="imageLayer on">
 					<p>영상레이어</p>
 					<ul>
-						<li class="on">
-							<span>디지털지도</span>
+						<draggable v-model="imgLayers" @change="changeLayer($event, 0, '0')">
+						<li v-for="(layer, index) in imgLayers" :class="{on : layer.show}" v-on:click="toggleLayer(index, layer)">
+							<span>{{layer.name}}</span>
 							<div>
-								<span class="opacity" title="투명도">100%</span>
+								<span v-if="layer.color" class="color" title="색상" :style="{backgroundColor: '#'+layer.color}" v-on:click.stop.prevent="settingLayer(index, layer, defaultImgLayers[index])">색상</span>
+								<span class="opacity" title="투명도" v-on:click.stop.prevent="settingLayer(index, layer, defaultImgLayers[index])">{{layer.alpha | toPercentString}}</span>
 							</div>
 						</li>
-						<li>
-							<span>육도 1:25,000</span>
-							<div>
-								<span class="opacity" title="투명도">50%</span>
-							</div>
-						</li>
-						<li>
-							<span>해도 1:500,000</span>
-							<div>
-								<span class="opacity" title="투명도">100%</span>
-							</div>
-						</li>
-						<li class="on">
-							<span>공도 1:2,000,000</span>
-							<div>
-								<span class="opacity" title="투명도">100%</span>
-							</div>
-						</li>
-						<li class="on">
-							<span>디지털지도</span>
-							<div>
-								<span class="opacity" title="투명도">100%</span>
-							</div>
-						</li>
-						<li>
-							<span>육도 1:25,000</span>
-							<div>
-								<span class="opacity" title="투명도">50%</span>
-							</div>
-						</li>
-						<li>
-							<span>해도 1:500,000</span>
-							<div>
-								<span class="opacity" title="투명도">100%</span>
-							</div>
-						</li>
-						<li class="on">
-							<span>공도 1:2,000,000</span>
-							<div>
-								<span class="opacity" title="투명도">100%</span>
-							</div>
-						</li>
-						<li class="on">
-							<span>디지털지도</span>
-							<div>
-								<span class="opacity" title="투명도">100%</span>
-							</div>
-						</li>
-						<li>
-							<span>육도 1:25,000</span>
-							<div>
-								<span class="opacity" title="투명도">50%</span>
-							</div>
-						</li>
-						<li>
-							<span>해도 1:500,000</span>
-							<div>
-								<span class="opacity" title="투명도">100%</span>
-							</div>
-						</li>
-						<li class="on">
-							<span>공도 1:2,000,000</span>
-							<div>
-								<span class="opacity" title="투명도">100%</span>
-							</div>
-						</li>
+						</draggable>
 					</ul>
 				</li>
-				<li class="mapLayer">
+				<li class="mapLayer on">
 					<p>지도레이어</p>
 					<ul>
-						<li class="on">
-							<span>행정경계</span>
+						<draggable v-model="mapLayers" @change="changeLayer($event, defaultImgLayers.length, '1')">
+						<li v-for="(layer, index) in mapLayers" :class="{on : layer.show}" v-on:click="toggleLayer(index+defaultImgLayers.length, layer)">
+							<span>{{layer.name}}</span>
 							<div>
-								<span class="color" title="색상" style="background-color: darkmagenta">색상</span>
-								<span class="opacity" title="투명도">100%</span>
+								<span v-if="layer.color" class="color" title="색상" :style="{backgroundColor: '#'+layer.color}" v-on:click.stop.prevent="settingLayer(index+defaultImgLayers.length, layer, defaultMapLayers[index])">색상</span>
+								<span class="opacity" title="투명도" v-on:click.stop.prevent="settingLayer(index+defaultImgLayers.length, layer, defaultMapLayers[index])">{{layer.alpha | toPercentString}}</span>
 							</div>
 						</li>
-						<li class="on">
-							<span>전국지적도</span>
-							<div>
-								<span class="color" title="색상" style="background-color: turquoise">색상</span>
-								<span class="opacity" title="투명도">100%</span>
-							</div>
-						</li>
-						<li>
-							<span>삼각점</span>
-							<div>
-								<span class="opacity" title="투명도">100%</span>
-							</div>
-						</li>
-						<li>
-							<span>군사지도 인덱스</span>
-							<div>
-								<span class="color" title="색상">색상</span>
-								<span class="opacity" title="투명도">100%</span>
-							</div>
-						</li>
-						<li class="on">
-							<span>행정경계</span>
-							<div>
-								<span class="color" title="색상">색상</span>
-								<span class="opacity" title="투명도">100%</span>
-							</div>
-						</li>
-						<li class="on">
-							<span>전국지적도</span>
-							<div>
-								<span class="color" title="색상">색상</span>
-								<span class="opacity" title="투명도">100%</span>
-							</div>
-						</li>
-						<li>
-							<span>삼각점</span>
-							<div>
-								<span class="color" title="색상">색상</span>
-								<span class="opacity" title="투명도">100%</span>
-							</div>
-						</li>
-						<li>
-							<span>군사지도 인덱스</span>
-							<div>
-								<span class="color" title="색상">색상</span>
-								<span class="opacity" title="투명도">100%</span>
-							</div>
-						</li>
+						</draggable>
 					</ul>
 				</li>
 			</ul>
@@ -289,24 +180,24 @@
 			<!-- S: 레이어설정 -->
 			<div id="settingLayer" class="option" data-id="setting" style="top:175px; left: 230px; display:none;">
 				<div class="layerHeader">
-					<h3>${layerName}</h3>
+					<h3>설정({{selectedLayer.name}})</h3>
 					<button type="button" class="layerClose" title="닫기">닫기</button>
 				</div>
 				<div class="layerContents">
 					<ul class="layerSetup">
 						<li>
 							<label for="">투명도</label>
-							<input id="range-value" type="text" size="3" placeholder="100%" class="underline"><input id="range-slider" type="range" value="100" min="0" max="100">
+							<input id="range-value" type="text" size="3" placeholder="100%" class="underline" :value="selectedLayer.alpha | toPercentString"><input id="range-slider" type="range" min="0" max="100" :value="selectedLayer.alpha | toPercent">
 						</li>
 						<li>
 							<label for="">스타일</label>
 							<input type="number" value="1" min="1" max="5" size="3" class="underline">
-							<input type="color" class="picker">
+							<input v-if="selectedLayer.color" type="color" class="picker" :value="selectedLayer.color | toHexColor">
 						</li>
 					</ul>
 					<div>
-						<button type="button" title="적용" class="focusA" style="width: 120px;">적용</button>
-						<button type="button" title="초기화" class="basicA">초기화</button>
+						<button type="button" title="적용" class="focusA" style="width: 120px;" v-on:click="updateLayer()">적용</button>
+						<button type="button" title="초기화" class="basicA" v-on:click="initLayer()">초기화</button>
 						<button type="button" id="closeBtn" title="닫기" class="basicA">닫기</button>
 					</div>
 				</div>
@@ -545,7 +436,7 @@
 						<button type="button" id="goToPageBtn" class="btnText">이동</button>
 					</div>
 				</div>
-				
+
 				<ul id="mapnoteList" class="listNote" style="height: 600px;"></ul>
 			</div>
 		</div>
@@ -713,6 +604,13 @@
 		<div id="magoContainer" class="map"></div>
 		<canvas id="objectLabel"></canvas>
 		<!-- E: 맵 -->
+
+		<!-- S: 시계열 -->
+		<div class="timeSeries" style="height: 80px; display: none;">
+		메모-시계열
+		</div>
+
+		<!-- E: 시계열 -->
 	</div>
 	<!-- E: MAP WRAP -->
 
@@ -743,11 +641,16 @@
 <script type="text/javascript" src="/externlib/dropzone/dropzone.js"></script>
 <script type="text/javascript" src="/externlib/photoswipe/js/photoswipe.min.js"></script>
 <script type="text/javascript" src="/externlib/photoswipe/js/photoswipe-ui-default.min.js"></script>
+<script type="text/javascript" src="/externlib/vue-2.5.16/vue.js"></script>
+<script type="text/javascript" src="/externlib/sortable-1.7.0/Sortable.js"></script>
+<script type="text/javascript" src="/externlib/vuedraggable-2.16.0/vuedraggable.min.js"></script>
+
 
 <script type="text/javascript" src="/js/UIControll.js"></script>
 <script type="text/javascript" src="/js/Tooltip.js"></script>
 <script type="text/javascript" src="/js/NumberFormatter.js"></script>
 <script type="text/javascript" src="/js/CoordControll.js"></script>
+<script type="text/javascript" src="/js/LayerControll.js"></script>
 <script type="text/javascript" src="/js/MouseControll.js"></script>
 <script type="text/javascript" src="/js/MapControll.js"></script>
 <script type="text/javascript" src="/js/wpsRequest.js"></script>
@@ -794,6 +697,7 @@
 			AnalysisControll(viewer);
 			CoordControll(viewer);
 			DistrictControll(viewer);
+			LayerControll(viewer);
 
 			clearInterval(timerId);
 			console.log(" managerFactory != null, managerFactory.getMagoManagerState() = " + managerFactory.getMagoManagerState() + ", intervalCount = " + intervalCount);
