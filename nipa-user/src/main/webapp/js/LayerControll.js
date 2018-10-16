@@ -13,7 +13,7 @@ var defaultImgLayer = [{
     name : "OpenStreetMaps",
     provider : Cesium.createOpenStreetMapImageryProvider(),
     alpha : 0.7,
-    show : true,
+    show : false,
 },
 {
     id: "2",
@@ -41,7 +41,7 @@ var defaultMapLayer = [{
                     }
                 }),
     alpha : 0.3,
-    show : true,
+    show : false,
 },
 {
     id: "2",
@@ -60,7 +60,7 @@ var defaultMapLayer = [{
                     }
                 }),
     alpha : 0.6,
-    show : true,
+    show : false,
 },
 {
     id: "3",
