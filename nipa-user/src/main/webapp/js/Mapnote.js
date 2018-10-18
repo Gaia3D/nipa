@@ -1,3 +1,5 @@
+var mapnote;
+
 // 맵노트 목록
 function ajaxMapnoteList(pageNo) {
 	var url = "/mapnote/" + pageNo;
@@ -34,7 +36,7 @@ function ajaxMapnoteList(pageNo) {
 				$('button.forward').click(function() {
 					goToPage = $('#gotoPage').val();
 					if(goToPage > firstPage) {
-						pageNo = --goToPage;
+						pageNo -=  1;
 						ajaxMapnoteList(pageNo);
 						$('#gotoPage').val(pageNo);
 					}
@@ -43,7 +45,7 @@ function ajaxMapnoteList(pageNo) {
 				$('button.next').click(function() {
 					goToPage = $('#gotoPage').val();
 					if(goToPage < lastPage) {
-						pageNo = ++goToPage;
+						pageNo += 1;
 						ajaxMapnoteList(pageNo);
 						$('#gotoPage').val(pageNo);
 					}
@@ -69,16 +71,17 @@ function ajaxMapnoteList(pageNo) {
 				} else {
 					for(i=0; i <mapnoteList.length; i++) {
 						var mapnote  = mapnoteList[i];
-						
-					    content 	= 	content
-									+ 	"<li onclick=\"gotoFly('3ds.json', '133', 'ISSUE_TYPE_MODIFY', '" + mapnote.longitude + "', '" + mapnote.latitude+ "', '" + mapnote.height + "', '2')\">"
-									+		"<span class=\"title\">" + mapnote.note_title + "</span>"
-									+		"<span>" + mapnote.longitude + ", " + mapnote.latitude + "</span>"
-									+ 			"<div class=\"along\">"
-									+				"<button type=\"button\" class=\"icoBtn detail\" title=\"상세보기\" onclick=\"detailMapnote("+ pageNo + ", " + mapnote.map_note_id +");\">" + "상세보기" + "</button>"
-									+				"<button type=\"button\" class=\"icoBtn del\" title=\"삭제\" onclick=\"deleteMapnote("+ mapnote.map_note_id +");\">" + "삭제" + "</button>"
-									+			"</div>"
-									+	"</li>";
+						removeAllBillboard();
+						addBillboard(mapnote.longitude, mapnote.latitude, mapnote.note_title);
+						 content 	= 	content
+							+ 	"<li onclick=\"gotoFlyMark(" + mapnote.longitude + ", " + mapnote.latitude + ", " + 200 + ", \'" + mapnote.note_title + "\');\">"
+							+		"<span class=\"title\">" + mapnote.note_title + "</span>"
+							+		"<span>" + mapnote.longitude + ", " + mapnote.latitude + "</span>"
+							+ 			"<div class=\"along\">"
+							+				"<button type=\"button\" class=\"icoBtn detail\" title=\"상세보기\" onclick=\"detailMapnote("+ pageNo + ", " + mapnote.map_note_id +");\">" + "상세보기" + "</button>"
+							+				"<button type=\"button\" class=\"icoBtn del\" title=\"삭제\" onclick=\"deleteMapnote("+ mapnote.map_note_id +");\">" + "삭제" + "</button>"
+							+			"</div>"
+							+	"</li>";
 					}
 				}
 				contentObj = $(content);
@@ -274,9 +277,9 @@ function deleteMapnote(map_note_id) {
 function addMapnote() {
 	var DMS = $('#DMS').attr('placeholder');
 	$('#noteLocation').val(DMS);
-	
 }
 
+// 원본 이미지 보기
 function showDetailImg(file_info_id) {
 	url = "/showImg/" + file_info_id;
 	
@@ -299,5 +302,56 @@ function showDetailImg(file_info_id) {
 	});
 }
 
+function MapnoteControll(viewer) 
+{
+	mapnote = new Mapnote(viewer);
+}
 
+function addBillboard(longitude, latitude, name) 
+{
+	mapnote.addBillboard(longitude, latitude, name);
+}
 
+function removeAllBillboard()
+{
+	mapnote.removeAll();
+}
+
+function gotoFlyMark(longitude, latitude, heigth, name) 
+{
+	mapnote.gotoFly(longitude, latitude, heigth);
+	mapnote.addBillboard(longitude, latitude, name);
+}
+
+function Mapnote(viewer)
+{
+	this.addBillboard = function (longitude, latitude, name) {
+		
+	    var target = viewer.entities.add({
+	        position : Cesium.Cartesian3.fromDegrees(longitude, latitude),
+	        billboard :{
+	        	name : name,
+	        	disableDepthTestDistance : Number.POSITIVE_INFINITY,
+	        	//translucencyByDistance : new Cesium.NearFarScalar(1.5e2, 1.0, 1.5e7, 0.0),
+	            image : '../images/kdg_logo.png',
+	            width : 32,
+	            height : 32
+	        }
+	    });
+	};
+	
+	this.gotoFly = function (longitude, latitude, heigth) {
+		viewer.camera.flyTo({
+		    destination : Cesium.Cartesian3.fromDegrees(longitude, latitude, heigth)
+		});
+	};
+	
+	this.removeAll= function () {
+		viewer.entities.removeAll();
+		
+	};
+	
+	this.removeById= function () {
+		viewer.entities.removeById();
+	};
+}
