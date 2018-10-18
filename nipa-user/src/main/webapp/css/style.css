@@ -669,6 +669,9 @@ padding: 7px;
 margin-top: 10px;
 text-align: center;
 }
+.note li input::-webkit-input-placeholder {
+color: #b2cde0
+}
 
 /* 지점등록 레이어 / 썸네일이미지 */
 ul.thumb {
@@ -866,9 +869,15 @@ background-position: -770px -110px;
 }
 .measure > span {
 display: inline-block;
-padding-left: 10px;
+/* padding-left: 10px; */
 font-weight: bold;
 font-size: 1.4em;
+}
+#distanceFactor {
+margin-bottom: 10px;
+}
+#areaFactor {
+margin-bottom: 10px;	
 }
 
 /* 레이어설정 */

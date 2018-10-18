@@ -1,3 +1,5 @@
+var lengthInMeters = 0;
+
 function MapControll(viewer, option) {
     this._viewer = viewer;
     this._scene = viewer.scene;
@@ -161,7 +163,6 @@ function MapControll(viewer, option) {
         }
     */
     function getLineLength(positions) {
-        var lengthInMeters = 0;
         for (var i = 1, len = positions.length; i < len; i++) {
             var startPoint = positions[i - 1];
             var endPoint = positions[i];
@@ -174,7 +175,7 @@ function MapControll(viewer, option) {
 
             lengthInMeters += isNaN(length) ? 0 : length;
         }
-        $('#distanceLayer div.measure > span').text(Math.round(lengthInMeters / 1000 * 100) / 100);
+        updateDistance(lengthInMeters);
         return formatDistance(lengthInMeters);
     }
 
@@ -286,8 +287,9 @@ function MapControll(viewer, option) {
         console.log("맵컨트롤 : 거리");
         that.clearMap();
         drawingMode = 'line';
-        $('#distanceLayer div.measure > span').text(0);
-
+        //$('#distanceLayer div.measure > span').text(0);
+        updateDistance(0);
+        
         if ($(this).hasClass('on')) {
             startDrawPolyLine();
         }
@@ -381,14 +383,9 @@ function MapControll(viewer, option) {
 
 var formatDistance = function (_length) {
     var length = Math.round(_length * 100) / 100;
-    var output;
-    if (length > 100) {
-        output = (Math.round(length / 1000 * 100) / 100) +
-            ' ' + 'km';
-    } else {
-        output = (Math.round(length * 100) / 100) +
-            ' ' + 'm';
-    }
+    var unitFactor = parseFloat($('#distanceFactor option:selected').val());
+    var unitName = $('#distanceFactor option:selected').text();
+    var output= Math.round(_length / unitFactor * 100) / 100 + " " + unitName.substring(0, unitName.indexOf('('));
     return output;
 };
 

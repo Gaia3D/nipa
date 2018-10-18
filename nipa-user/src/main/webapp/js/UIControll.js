@@ -130,17 +130,18 @@ $(function() {
 		distanceLayer.toggle('on') // 거리 측정 레이어창
 		
 		if($(this).hasClass('on') === true) {
-			$(areaLayer).css({'margin-top': '100px'}); 
+			$(areaLayer).css({'margin-top': '130px'}); 
 		} else {
 			$(areaLayer).css({'margin-top': '0px'});
 		}
 		$(this).trigger('afterClick');
-	});	
+	});
+	
 	// 거리 측정 옵션창 닫기
 	$('#distanceLayer .layerHeader .layerClose').click(function() {
 		distanceLayer.hide();
 		if($(this).hasClass('on') === true) {
-			$(areaLayer).css({'margin-top': '100px'}); 
+			$(areaLayer).css({'margin-top': '130px'}); 
 		} else {
 			$(areaLayer).css({'margin-top': '0px'});
 		}
@@ -159,23 +160,19 @@ $(function() {
 		$('#mapCtrlArea').removeClass('on').trigger('afterClick');
 	});
 
-	// TODO 최초 클릭시에는 초기화 버튼이 disable 되어야 함.
-	// TODO disable 상태에서는 조작이 되면 안됨.- function
 	// 거리,면적 측정 시 초기화
 	$('#distanceLayer button.focusA').click(function() {
-		$('#distanceLayer div.measure > span').text("0");
+		updateDistance(0);
 	});
+	
 	$('#areaLayer button.focusA').click(function() {
 		$('#areaLayer div.measure > span').text("0");
 	});
 	
-	// 확대
+	$('#distanceFactor').change(function (){
+		updateDistance(lengthInMeters);
+	});
 	
-	
-	// 축소
-	
-	
-
 /***** NAV WRAP: 검색 *****/
 	// 검색 메뉴 클릭 시 추가 동작
 	$('#searchMenu').on('click', function() { 
@@ -386,7 +383,6 @@ $(function() {
 	});
 	
 	// 지점등록
-	//$(document).on('click', '#inputMapnote.focusA', function(e) {
 	$('#inputMapnote.focusA').click(function() {
 		console.log("지점등록 클릭");
 		$('#mapnoteLayer h2').text("지점등록");
@@ -403,6 +399,11 @@ $(function() {
 			$('#mapCtrlArea').removeClass('on');
 		}
 		layerClose(mapnoteLayer);
+	});
+	
+	// 지점 버튼 클릭
+	$('#getMapnotePoint').click(function() {
+		alert("!");
 	});
 	
 	// 맵노트 상세
@@ -475,4 +476,11 @@ function hex2rgb(hex, opacity) {
     else h.push(1);
 
     return 'rgba('+h.join(',')+')';
+}
+
+function updateDistance(value)
+{
+    var unitFactor = parseFloat($('#distanceFactor option:selected').val());
+    var unitName = $('#distanceFactor option:selected').text();
+    $('#distanceLayer div.measure > span').text(Math.round(value / unitFactor * 100) / 100 + " " + unitName.substring(0, unitName.indexOf('(')));
 }

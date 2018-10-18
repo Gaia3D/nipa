@@ -390,6 +390,10 @@
 						<input id="DD" type="text" placeholder="127° 9' 24.47“, 38° 0' 44.4“">
 					</li>
 					<li>
+						<label for="">DM</label>
+						<input id="DM" type="text" placeholder="127° 09.376', 38° 00.694'">
+					</li>
+					<li>
 						<label for="">DMS</label>
 						<input id="DMS" type="text" placeholder="127.156797, 38.012334">
 					</li>
@@ -473,7 +477,18 @@
 			</div>
 			<div class="layerContents">
 				<div class="measure distance">
-					거리<span>0</span>km
+					거리단위
+					<select id="distanceFactor">
+						<option value="1">m(미터)</option>
+						<option value="1000" selected="selected">km (킬로미터)</option>
+						<option value="1852">nmi (해리)</option>
+						<option value="0.0254">in (인치)</option>
+						<option value="0.3048">ft (피트)</option>
+						<option value="0.9144">yd (야드)</option>
+						<option value="1609.344">mi (마일)</option>
+					</select>
+					<br>
+					<span>0 km</span>
 				</div>
 			</div>
 		</div>
@@ -492,9 +507,17 @@
 			</div>
 			<div class="layerContents">
 				<div class="measure area">
-					면적
-					<span>0</span>
-					km²
+					면적측정
+					<select id="areaFactor">
+						<option value="1" selected="selected">제곱미터 (m2)</option>
+						<option value="1e+6">제곱킬로미터 (km2)</option>
+						<option value="0.8361">제곱 야드 (sq yd)</option>
+						<option value="2.59e+6">제곱마일 (sq mile)</option>
+						<option value="4046.856">에이커 (acre)</option>
+						<option value="10000">헥타르 (ha)</option>
+					</select>
+					<br>
+					<span>0 km²</span>
 				</div>
 			</div>
 		</div>
@@ -704,6 +727,7 @@
 			CoordControll(viewer);
 			DistrictControll(viewer);
 			LayerControll(viewer);
+			MapnoteControll(viewer);
 
 			clearInterval(timerId);
 			console.log(" managerFactory != null, managerFactory.getMagoManagerState() = " + managerFactory.getMagoManagerState() + ", intervalCount = " + intervalCount);
@@ -785,8 +809,6 @@
 		}
 	}
 
-	//TODO 지점버튼 클릭 - 경위도 위치
-	
 	// 맵노트 validation - 지점 버튼 클릭으로 바뀔 것, 문자열 체크
 	function check() {
 		var noteLocation = $('#noteLocation').val().replace(/ /g, '');
@@ -926,13 +948,13 @@
 				this.on("error", function(file, errormessage, xhr){
 				    if(xhr) {
 				        var response = JSON.parse(xhr.responseText);
-				        alert(response.message);
+				        alert("이미지 업로드 중에 에러가 발생했습니다.\n" + "error : " + response.message);
 				    }
 				});
 				
 				this.on("errormultiple", function(files, response) {
 					if(response) {
-				        alert(response.message);
+				        alert("이미지 업로드 중에 에러가 발생했습니다.\n" + "error : " + response.message);
 				    }
 			   });
 			}

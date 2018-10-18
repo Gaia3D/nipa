@@ -7067,31 +7067,31 @@ MagoManager.prototype.startRender = function(scene, isLastFrustum, frustumIdx, n
 		if (this.pin.texture === undefined)
 		{
 			this.pin.texture = new Texture();
-			var filePath_inServer = this.magoPolicy.imagePath + "/bugger.png";
+			var filePath_inServer = this.magoPolicy.imagePath + "/kdg_logo.png";
 			this.pin.texture.texId = gl.createTexture();
 			this.readerWriter.readNeoReferenceTexture(gl, filePath_inServer, this.pin.texture, undefined, this);
 			this.pin.texturesArray.push(this.pin.texture);
 			
 			var cabreadoTex = new Texture();
-			filePath_inServer = this.magoPolicy.imagePath + "/improve.png";
+			filePath_inServer = this.magoPolicy.imagePath + "/kdg_logo.png";
 			cabreadoTex.texId = gl.createTexture();
 			this.readerWriter.readNeoReferenceTexture(gl, filePath_inServer, cabreadoTex, undefined, this);
 			this.pin.texturesArray.push(cabreadoTex);
 			
 			cabreadoTex = new Texture();
-			filePath_inServer = this.magoPolicy.imagePath + "/etc.png";
+			filePath_inServer = this.magoPolicy.imagePath + "/kdg_logo.png";
 			cabreadoTex.texId = gl.createTexture();
 			this.readerWriter.readNeoReferenceTexture(gl, filePath_inServer, cabreadoTex, undefined, this);
 			this.pin.texturesArray.push(cabreadoTex);
 			
 			cabreadoTex = new Texture();
-			filePath_inServer = this.magoPolicy.imagePath + "/new.png";
+			filePath_inServer = this.magoPolicy.imagePath + "/kdg_logo.png";
 			cabreadoTex.texId = gl.createTexture();
 			this.readerWriter.readNeoReferenceTexture(gl, filePath_inServer, cabreadoTex, undefined, this);
 			this.pin.texturesArray.push(cabreadoTex);
 			
 			cabreadoTex = new Texture();
-			filePath_inServer = this.magoPolicy.imagePath + "/funny.jpg";
+			filePath_inServer = this.magoPolicy.imagePath + "/kdg_logo.png";
 			cabreadoTex.texId = gl.createTexture();
 			this.readerWriter.readNeoReferenceTexture(gl, filePath_inServer, cabreadoTex, undefined, this);
 			this.pin.texturesArray.push(cabreadoTex);
