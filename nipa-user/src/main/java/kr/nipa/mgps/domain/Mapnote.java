@@ -17,6 +17,7 @@ public class Mapnote {
 
 	// 맵노트 파일 고유번호
 	private Long file_info_id;
+	
 	// 맵노트 파일 이름
 	private String file_name;
 

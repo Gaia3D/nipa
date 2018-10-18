@@ -41,9 +41,9 @@
     		SELECT NEXTVAL('file_info_seq')
   		</selectKey>
 		INSERT INTO file_info(
-			file_info_id, map_note_id, user_id, file_name, file_real_name, file_path, file_size, file_ext, thumbnail_name, thumbnail_path
+			file_info_id, map_note_id, user_id, file_name, file_real_name, file_path, file_size, file_ext, thumbnail_name, thumbnail_path, file_width, file_height
 		) values(
-			#{file_info_id}, #{map_note_id}, #{user_id}, #{file_name}, #{file_real_name}, #{file_path}, #{file_size}, #{file_ext}, #{thumbnail_name}, #{thumbnail_path} 
+			#{file_info_id}, #{map_note_id}, #{user_id}, #{file_name}, #{file_real_name}, #{file_path}, #{file_size}, #{file_ext}, #{thumbnail_name}, #{thumbnail_path}, #{file_width}, #{file_height} 
 		)
 	</insert> 
 	

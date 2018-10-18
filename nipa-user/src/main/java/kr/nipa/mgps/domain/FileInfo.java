@@ -33,6 +33,10 @@ public class FileInfo {
 	private String file_size;
 	// 파일 확장자
 	private String file_ext;
+	// 파일 가로 크기
+	private int file_width;
+	// 파일 세로 크기
+	private int file_height;
 	// 수정일
 	private String update_date;
 	// 등록일

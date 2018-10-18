@@ -226,6 +226,8 @@ public class FileUtil {
 	    // 원본 이미지의 너비와 높이
 	    int ow = srcImg.getWidth();
 	    int oh = srcImg.getHeight();
+	    fileInfo.setFile_width(ow);
+	    fileInfo.setFile_height(oh);
 	    
 	    // 원본 너비를 기준으로 하여 썸네일의 비율로 높이를 계산
 	    int nw = ow;
