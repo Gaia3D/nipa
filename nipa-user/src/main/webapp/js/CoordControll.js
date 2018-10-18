@@ -19,6 +19,7 @@ function CoordControll(viewer, option) {
   // 좌표 복사
   $('#coordinateCopy').click(function () {
     var copyText = "DD : " + $('#DD').val() + "\n"
+      + "DM : " + $('#DM').val() + "\n"
       + "DMS : " + $('#DMS').val() + "\n"
       + "MGRS : " + $('#MGRS').val() + "\n"
       + "UTM : " + $('#UTM').val() + "\n";
@@ -52,6 +53,7 @@ function CoordControll(viewer, option) {
     this.clear();
 
     $('#DD').val("");
+    $('#DM').val("");
     $('#DMS').val("");
     $('#MGRS').val("");
     $('#UTM').val("");
@@ -199,6 +201,7 @@ function CoordControll(viewer, option) {
     //console.log(lon + "," + lat);
 
     $('#DD').val(getposition(lon, lat, positionFormatterDD));
+    $('#DM').val(getposition(lon, lat, positionFormatterDM));
     $('#DMS').val(getposition(lon, lat, positionFormatterDMS));
     $('#MGRS').val(getposition(lon, lat, positionFormatterMGRS));
     $('#UTM').val(getposition(lon, lat, positionFormatterUTM));
@@ -208,6 +211,7 @@ function CoordControll(viewer, option) {
     if (that._position != null) {
       var data = {
         coordinateDD: $('#DD').val(),
+        coordinateDM: $('#DM').val(),
         coordinateDMS: $('#DMS').val(),
         coordinateMGRS: $('#MGRS').val(),
         coordinateUTM: $('#UTM').val()
@@ -217,6 +221,7 @@ function CoordControll(viewer, option) {
       var lat = that._latitude;
 
       var copyText = "DD : " + $('#DD').val() + "\n"
+        + "DM : " + $('#DM').val() + "\n"
         + "DMS : " + $('#DMS').val() + "\n"
         + "MGRS : " + $('#MGRS').val() + "\n"
         + "UTM : " + $('#UTM').val() + "\n";

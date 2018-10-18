@@ -5,6 +5,8 @@ templates['coordinate'] = template({"compiler":[7,">= 4.0.0"],"main":function(co
 
   return "<ul class=\"coordinateGroup\">\r\n    <li>\r\n        <label for=\"\">DD</label>\r\n        <input type=\"text\" value=\""
     + alias4(((helper = (helper = helpers.coordinateDD || (depth0 != null ? depth0.coordinateDD : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"coordinateDD","hash":{},"data":data}) : helper)))
+    + "\" readonly>\r\n    </li>\r\n    <li>\r\n        <label for=\"\">DM</label>\r\n        <input type=\"text\" value=\""
+    + alias4(((helper = (helper = helpers.coordinateDM || (depth0 != null ? depth0.coordinateDM : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"coordinateDM","hash":{},"data":data}) : helper)))
     + "\" readonly>\r\n    </li>\r\n    <li>\r\n        <label for=\"\">DMS</label>\r\n        <input type=\"text\" value=\""
     + alias4(((helper = (helper = helpers.coordinateDMS || (depth0 != null ? depth0.coordinateDMS : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"coordinateDMS","hash":{},"data":data}) : helper)))
     + "\" readonly>\r\n    </li>\r\n    <li>\r\n        <label for=\"\">MGRS</label>\r\n        <input type=\"text\" value=\""
