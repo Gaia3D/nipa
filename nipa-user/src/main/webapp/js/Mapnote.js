@@ -1,5 +1,44 @@
 var mapnote;
 
+var pageNo;
+var totalCount;
+var firstPage;
+var lastPage;
+var pageListCount;
+var gotoPage;
+var forwardPage;
+var nextPage;
+
+// 해당 페이지 바로가기
+$('#gotoPageBtn').click(function() {
+	pageNo = $('#gotoPage').val();
+	ajaxMapnoteList(pageNo);
+});
+// 이전 페이지 목록 조회
+$('button.forward').click(function() {
+	if(firstPage <= forwardPage) {
+		pageNo = forwardPage;
+	}
+	ajaxMapnoteList(pageNo);
+});
+// 다음 페이지 목록 조회
+$('button.next').click(function() {
+	if(lastPage >= nextPage) {
+		pageNo = nextPage;
+	}
+	ajaxMapnoteList(pageNo);
+});
+// 처음 페이지 목록 조회
+$('button.first').click(function() {
+	pageNo = firstPage;
+	ajaxMapnoteList(pageNo);
+});
+// 마지막 페이지 목록 조회
+$('button.last').click(function() {
+	pageNo = lastPage;
+	ajaxMapnoteList(pageNo);
+});
+
 // 맵노트 목록
 function ajaxMapnoteList(pageNo) {
 	var url = "/mapnote/" + pageNo;
@@ -13,55 +52,18 @@ function ajaxMapnoteList(pageNo) {
 				var contentObj;
 				var mapnoteList = msg.mapnoteList;
 				
-				var pageNo = msg.pagination.pageNo;
-				var totalCount = msg.pagination.totalCount;
-				var firstPage = msg.pagination.firstPage;
-				var lastPage = msg.pagination.lastPage;
-				var pageListCount = msg.pagination.pageListCount;
-				var goToPage;
-				var forwardPage;
-				var nextPage;
+				pageNo = msg.pagination.pageNo;
+				totalCount = msg.pagination.totalCount;
+				firstPage = msg.pagination.firstPage;
+				lastPage = msg.pagination.lastPage;
+				pageListCount = msg.pagination.pageListCount;
+				gotoPage = $('#gotoPage').val(pageNo);
+				forwardPage = pageNo - 1;
+				nextPage = pageNo + 1;
 				
 				$('#mapnotePage').find('.countPage').text(pageNo);
 				$('#mapnotePage').find('.countTotal').text(lastPage);
 				$('#lastPage').text(lastPage);
-				
-				// 해당 페이지 바로가기
-				$('#goToPageBtn').click(function() {
-					goToPage = $('#gotoPage').val();
-					pageNo = goToPage;
-					ajaxMapnoteList(pageNo);
-				});
-				// 이전 페이지 목록 조회
-				$('button.forward').click(function() {
-					goToPage = $('#gotoPage').val();
-					if(goToPage > firstPage) {
-						pageNo -=  1;
-						ajaxMapnoteList(pageNo);
-						$('#gotoPage').val(pageNo);
-					}
-				});
-				// 다음 페이지 목록 조회
-				$('button.next').click(function() {
-					goToPage = $('#gotoPage').val();
-					if(goToPage < lastPage) {
-						pageNo += 1;
-						ajaxMapnoteList(pageNo);
-						$('#gotoPage').val(pageNo);
-					}
-				});
-				// 처음 페이지 목록 조회
-				$('button.first').click(function() {
-					pageNo = firstPage;
-					$('#gotoPage').val(pageNo);
-					ajaxMapnoteList(pageNo);
-				});
-				// 마지막 페이지 목록 조회
-				$('button.last').click(function() {
-					pageNo = lastPage;
-					$('#gotoPage').val(pageNo);
-					ajaxMapnoteList(pageNo);
-				});
 				
 				if(mapnoteList === null || mapnoteList.length === 0) {
 					content 	= 	content
@@ -73,6 +75,7 @@ function ajaxMapnoteList(pageNo) {
 						var mapnote  = mapnoteList[i];
 						removeAllBillboard();
 						addBillboard(mapnote.longitude, mapnote.latitude, mapnote.note_title);
+						
 						 content 	= 	content
 							+ 	"<li onclick=\"gotoFlyMark(" + mapnote.longitude + ", " + mapnote.latitude + ", " + 200 + ", \'" + mapnote.note_title + "\');\">"
 							+		"<span class=\"title\">" + mapnote.note_title + "</span>"
