@@ -1,0 +1,81 @@
+************************************
+ centos 7.2 에 postgresql9.4 설치 할때
+
+************************************
+
+1 백업
+ ex) /usr/pgsql-9.4/bin/pg_dump -U [소유계정] -d [데이터베이스명] -f [덤프파일 생성위치]
+     /usr/pgsql-9.4/bin/pg_dump -U postgres -d postgres -f /nipa/db_dump/postgres_dump_20180830.sql
+
+2 linux 기본 버전 삭제
+    2-1) 실행중인 postgresql 중지
+        [root@gaia3d db_dump]# su - postgres
+        -bash-4.1$ pg_ctl -m fast stop
+    2-2) 삭제
+        [root@gaia3d opt]# yum erase postgresql94*
+        [root@gaia3d usr]# rm -rf /usr/pgsql-9.4/
+        [root@gaia3d lib]# rm -rf /var/lib/pgsql/
+        [root@gaia3d lib]# userdel postgres
+
+3 소스 다운로드
+    3-1) 관련 라이브러리 설치
+        yum install zlib-devel readline-devel tcl-devel perl-devel python-devel krb5-devel pam-devel \
+        openldap-devel openssl-devel libxml2-devel libxslt-devel uuid-devel perl-ExtUtils-Embed
+    3-2) postgresql 설치
+        http://www.postgresql.org/ftp/source/v9.4.4/postgresql-9.4.4.tar.gz http://www.postgresql.org/ftp/source/v9.4.4/postgresql-9.4.4.tar.gz
+
+        [root@gaia3d ~]# cd /nipa/tools/
+        [root@gaia3d tools]# gunzip postgresql-9.4.4.tar.gz
+        [root@gaia3d tools]# tar xf postgresql-9.4.4.tar
+        [root@gaia3d tools]# cd postgresql-9.4.4
+        [root@gaia3d postgresql-9.4.4]# ./configure --prefix=/var/lib/pgsql/9.4.4 --enable-nls=ko --with-tcl --with-perl --with-python --with-gssapi --with-krb5 --with-pam --with-ldap --with-openssl --with-ossp-uuid --with-libxml --with-libxslt
+        [root@gaia3d postgresql-9.4.4]# make all && make install
+        [root@gaia3d postgresql-9.4.4]# cd contrib && make all && make install
+
+4 postgres 사용자 추가
+    4-1) 계정 생성
+        [root@gaia3d ~]# userdel postgres
+        [root@gaia3d ~]# useradd postgres
+        [root@gaia3d ~]# passwd postgres
+        비밀번호 : xxxxxxxx
+    4-2) postgres 권한 설정
+
+    전체 설정 또는 .bash_profile에 설정
+        [root@gaia3d ~]# vi /etc/profile
+        export POSTGRES_HOME=/var/lib/pgsql/9.4.4 export PATH=$JAVA_HOME/bin:$POSTGRES_HOME/bin:$PATH
+        [root@gaia3d ~]# source /etc/profile
+        root@gaia3d lib]# chown -R postgres.postgres /var/lib/pgsql/
+
+5 iptables 포트 open
+        [root@gaia3d ~]# vi /etc/sysconfig/iptables
+        -A INPUT -p tcp -m state --state NEW -m tcp --dport 5432 -j ACCEPT
+        [root@gaia3d ~]# service iptables restart
+
+6 postgres 초기화
+        [root@gaia3d lib]# su - postgres
+        [postgres@gaia3d ~]$ initdb -D /var/lib/pgsql/9.4.4/data -E utf8 --no-locale 
+        [postgres@gaia3d ~]$ exit
+
+7 pg_xlog 디렉토리 분리
+        [root@gaia3d data]# mv /var/lib/pgsql/9.4.4/data/pg_xlog /audit/
+        [root@gaia3d data]# ln -s /audit/pg_xlog /var/lib/pgsql/9.4.4/data/ 
+        [root@gaia3d data]# chown -R postgres.postgres /var/lib/pgsql
+
+8 postgres 환경 설정 세팅
+    8-1) postgresql.conf 수정
+        [root@gaia3d data]# vi postgresql.conf
+        listen_addresses = '*' # 이 서버를 사용할 클라이언트들이 해당 호스트 외부에서 접속 할 때
+        shared_buffers = 512MB # 통상 해당 호스트의 물리적 메모리의 1/4 정도를 할당합니다
+        work_mem = 64MB # sort, 작업 대상이 되는 테이블의 해당 칼럼 자료량 정도 maintenance_work_mem = 128MB # 통상 vacuum 작업 대상이 되는 테이블 중 무난하게 큰 놈의 크기 checkpoint_segments = 64 # pg_xlog 공간이 넉넉하다면, 넉넉하게 (64 * 2.5 * 16MB 정도 사용됨) logging_collector = on # pg_log 디렉토리로 서버 로그를 남깁니다 log_line_prefix = '%t %u@%r/%d(%p) ' # 서버 로그의 앞부분 내용 effective_cache_size = 2GB # 통상 호스트의 물리적 메모리 1/2 정도를 지정합니다. log_directory = '/var/lib/pgsql/9.4.4/data/pg_log' # pg_log 디렉토리도 data 디렉토리 밖으로 뺍니다. #stats_temp_directory = '/dev/shm' # 공유메모리 쪽으로 2) pg_hba.conf
+
+    IPv4 local connections:
+
+        host all all 0.0.0.0/0 trust # 위와 같이 추가해 줘야 로컬에서 tool 로 접속 가능 9 postgres 재가동
+        [root@gaia3d lib]# su - postgres
+    시작
+        [postgres@gaia3d ~]$ pg_ctl -D /var/lib/pgsql/9.4.4/data start
+    정지
+        [postgres@gaia3d ~]$ pg_ctl -D /var/lib/pgsql/9.4.4/data -m fast stop
+        
+        
+        
