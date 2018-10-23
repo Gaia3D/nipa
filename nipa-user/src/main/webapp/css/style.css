@@ -709,6 +709,13 @@ background-position: -536px -109px;
 }
 
 /* 지점 상세보기 레이어  */
+#mapnoteDetailLayer {
+max-width: 500px;
+}
+#thumbnail {
+margin-bottom: 20px; 
+text-align: center;
+}
 #fileImage {
 margin-top: 20px; 
 text-align: center;
