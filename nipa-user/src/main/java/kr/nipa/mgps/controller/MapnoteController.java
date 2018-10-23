@@ -59,8 +59,7 @@ public class MapnoteController {
 	FileService fileService;
 	
 	/** 
-	 ** TODO 버튼 클릭 시 경위도값 읽어오기
-	 ** TODO 해당 위치에 아이콘 표시
+	 ** TODO 지점 - 버튼 클릭 시 경위도값 읽어오기
 	 **/
 	
 	/**
@@ -287,6 +286,13 @@ public class MapnoteController {
 			}
 			Mapnote mapnote = mapnoteService.getMapnoteById(map_note_id);
 			map.put("mapnote", mapnote);
+			
+			long fileCount = fileService.getFileCountByMapnoteId(map_note_id);
+			map.put("fileCount", fileCount);
+			
+			List<FileInfo> fileInfoList = fileService.getListFileInfo(map_note_id);
+			map.put("fileInfoList", fileInfoList);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			result = "db.exception";
@@ -299,11 +305,13 @@ public class MapnoteController {
 	/**
 	 * 맵노트 수정
 	 * @param mapnote
+	 * @param request
+	 * @param map_note_id
 	 * @return
 	 */
-	@RequestMapping(value="update//{map_note_id}", method = RequestMethod.POST)
+	@RequestMapping(value="update/{map_note_id}", method = RequestMethod.POST)
 	public Map<String, Object> updateMapnoteFile(@ModelAttribute Mapnote mapnote, MultipartHttpServletRequest request, @PathVariable("map_note_id")Long map_note_id) {
-		log.info("####################### map_note_id = {}", map_note_id);
+		log.info("############## map_note_id = {}", map_note_id);
 		
 		Map<String, Object> map = new HashMap<>();
 		String result = "success";
@@ -329,18 +337,15 @@ public class MapnoteController {
 			map.put("mapnote", mapnote);
 			log.info("@@@ after mapnote = {}", mapnote);
 			
-			// 파일 등록
 			List<FileInfo> fileList = new ArrayList<>();
 			Map<String, MultipartFile> fileMap = request.getFileMap();
 		
 			for(MultipartFile multipartFile :  fileMap.values()) {
-				if(multipartFile.equals("") || multipartFile.getSize() == 0) {
+				if(multipartFile.equals("") || multipartFile.getSize() == 0) { // 파일 재첨부 없이 수정하는 경우
 					map.put("result", result);
 					return map;
 				}
 				
-				fileService.deleteFileInfo(map_note_id); // 기존의 파일을 지워준다.
-
 				FileInfo fileInfo = FileUtil.fileUpload(FileUtil.SUBDIRECTORY_YEAR_MONTH_DAY, multipartFile, policyService.getPolicy(), propertiesConfig.getFileUploadDir(), propertiesConfig.getThumbnailUploadDir());
 				
 				if(fileInfo.getError_code() != null && !"".equals(fileInfo.getError_code())) {
@@ -352,8 +357,7 @@ public class MapnoteController {
 				fileList.add(fileInfo);
 			}
 			fileService.insertFiles(fileList);
-			long count = fileService.getFileCountByMapnoteId(map_note_id);
-			map.put("count", count);
+			map.put("count", fileList.size());
 			
 			
 		} catch (Exception e) {
@@ -410,6 +414,45 @@ public class MapnoteController {
 			result = "db.exception";
 		}
 		
+		map.put("result", result);
+		return map;
+	}
+	
+	
+	/**
+	 * 개별 파일 삭제
+	 * @param file_info_id
+	 * @return
+	 */
+	@RequestMapping(value ="fileInfo/{file_info_id}", method = RequestMethod.DELETE)
+	public Map<String, Object> deleteEachFile(@PathVariable("file_info_id")Long file_info_id) {
+		Map<String, Object> map = new HashMap<>();
+		String result = "success";
+		
+		try {
+			if(file_info_id == null || file_info_id.longValue() <= 0) {
+				result = "file_info_id.invalid";
+				map.put("result", result);
+			}
+			FileInfo fileInfo = fileService.getFileInfoByFileId(file_info_id);
+			String uploadName = fileInfo.getFile_real_name();
+			String thumbName = fileInfo.getThumbnail_name();
+			String  uploadPath = fileInfo.getFile_path();
+			String thumbPath = fileInfo.getThumbnail_path();
+			FileUtil.deleteFile(uploadPath, thumbPath, uploadName, thumbName);
+			log.info("삭제된 원본 파일 = {}, 삭제된 썸네일 파일 = {}", uploadName, thumbName);
+			
+			fileService.deleteEachFile(file_info_id);
+			log.info("@@@ deleted file = {}", fileInfo);
+			
+			List<FileInfo> fileInfoList = fileService.getListFileInfo(fileInfo.getMap_note_id());
+			map.put("fileInfoList", fileInfoList);
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+			result = "db.exception";
+		}
+
 		map.put("result", result);
 		return map;
 	}

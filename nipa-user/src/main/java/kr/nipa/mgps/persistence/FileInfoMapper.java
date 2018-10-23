@@ -50,4 +50,12 @@ public interface FileInfoMapper {
 	 * @return
 	 */
 	int deleteFileInfo(Long map_note_id);
+	
+	/**
+	 * 개별 파일 삭제
+	 * @param file_info_id
+	 * @return
+	 */
+	int deleteEachFile(Long file_info_id);
+	
 }

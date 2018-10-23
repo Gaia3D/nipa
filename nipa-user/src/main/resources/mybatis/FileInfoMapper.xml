@@ -59,5 +59,12 @@
 		DELETE FROM file_info 
 		WHERE map_note_id = #{map_note_id}
 	</delete>
+	
+	<!-- 개별 파일 삭제 -->
+	<delete id="deleteEachFile" parameterType="long">
+		/* deleteEachFile */
+		DELETE FROM file_info 
+		WHERE file_info_id = #{file_info_id}
+	</delete>
 
 </mapper>

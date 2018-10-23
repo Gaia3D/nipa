@@ -47,6 +47,9 @@ public class FileServiceImpl implements FileService {
 		return fileMapper.deleteFileInfo(map_note_id);
 	}
 
-	
+	@Override
+	public int deleteEachFile(Long file_info_id) {
+		return fileMapper.deleteEachFile(file_info_id);
+	}
 	
 }
