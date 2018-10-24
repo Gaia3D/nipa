@@ -1,0 +1,4 @@
+
+select ST_AsText(ST_Centroid(geom)) from map_sdo where sdo_code = '11';
+
+

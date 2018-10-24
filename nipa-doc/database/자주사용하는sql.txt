@@ -1,0 +1,1 @@
+psql --username=postgres --password=postgres --dbname=nipa < c:\mgps_data-sk_sgg.sql
