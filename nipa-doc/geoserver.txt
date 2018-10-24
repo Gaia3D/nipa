@@ -39,12 +39,15 @@
  - NIPA
  
 * 저장소
+ - postgis로 생성
  - NIPA
 
 * 레이어
  - NIPA:sk_sdo
  - NIPA:sk_sgg
  - NIPA:sk_emd
+ 
+ 원본 영역으로부터 계산하기 클릭
 
 * 스타일
  - boundary 추가 

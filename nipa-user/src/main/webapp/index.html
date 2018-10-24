@@ -347,7 +347,7 @@
 								<button type="button" class="btnText reset" title="초기화">초기화</button>
 							</li>
 							<li>
-								<svg class="viewGraph" width="0" height="0"></svg>
+								<svg class="viewGraph" style="width: 0px; height: 0px;"></svg>
 							</li>
 							<li>
 								<div class="legend"></div>
@@ -892,7 +892,7 @@
 	}
 	
 	// 맵노트 validation - 지점 버튼 클릭으로 바뀔 것, 문자열 체크
-	function check() {
+	/* function check() {
 		var noteLocation = $('#noteLocation').val().replace(/ /g, '');
 		var noteLongitude = noteLocation.substring(0, noteLocation.indexOf(","));
 		var noteLatitude = noteLocation.substring(noteLocation.indexOf(",")+1, noteLocation.length);
@@ -916,7 +916,7 @@
 			alert("위도의 값을 확인해 주십시오.");
 			return false;
 		}
-	}
+	} */
 	
 	
 	/*

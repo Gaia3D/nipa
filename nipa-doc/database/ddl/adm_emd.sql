@@ -73,4 +73,3 @@ CREATE INDEX sidx_adm_emd_geom ON public.adm_emd USING gist (geom);
 --
 -- complete
 --
-
