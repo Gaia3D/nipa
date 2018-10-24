@@ -2,6 +2,7 @@ package kr.nipa.mgps.service;
 
 import java.util.List;
 
+import kr.nipa.mgps.domain.AddrJibun;
 import kr.nipa.mgps.domain.SkEmd;
 import kr.nipa.mgps.domain.SkSdo;
 import kr.nipa.mgps.domain.SkSgg;
@@ -55,4 +56,18 @@ public interface SearchMapService {
 	 * @return
 	 */
 	public List<SkEmd> getListDistrict(String search_word);
+	
+	/**
+	 * 지번 검색 총 건수
+	 * @param addrJibun
+	 * @return
+	 */
+	Long getJibunTotalCount(AddrJibun addrJibun);
+	
+	/**
+	 * 지번 검색 목록
+	 * @param addrJibun
+	 * @return
+	 */
+	List<AddrJibun> getListJibun(AddrJibun addrJibun);
 }

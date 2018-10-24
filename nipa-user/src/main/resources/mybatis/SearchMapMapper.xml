@@ -134,4 +134,28 @@
 		WHERE X.gid = Y.gid
 		ORDER BY name
 	</select>
+	
+	<!-- 지번 검색 총 건수 -->
+	<select id="getJibunTotalCount" parameterType="addrJibun" resultType="long">
+		/* getJibunTotalCount */
+		SELECT COUNT(*) 
+		FROM addr_jibun
+		WHERE kname_sido LIKE '%' || #{search_value} || '%'
+			OR kname_sgg LIKE '%' || #{search_value} || '%'
+			OR kname_emd LIKE '%' || #{search_value} || '%'
+			OR kname_li LIKE '%' || #{search_value} || '%'		
+	</select>
+
+	<!-- 서비스 요청 이력 목록 -->
+	<select id="getListJibun" parameterType="addrJibun" resultType="addrJibun">
+		/* getListJibun */
+		SELECT *
+		FROM addr_jibun 
+		WHERE kname_sido LIKE '%' || #{search_value} || '%'
+			OR kname_sgg LIKE '%' || #{search_value} || '%'
+			OR kname_emd LIKE '%' || #{search_value} || '%'
+			OR kname_li LIKE '%' || #{search_value} || '%'
+		ORDER BY kname_sido ASC, kname_sgg ASC, kname_emd ASC, kname_li ASC 
+		OFFSET #{offset} LIMIT #{limit}
+	</select>
 </mapper>

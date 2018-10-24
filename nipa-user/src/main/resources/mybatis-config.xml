@@ -9,6 +9,7 @@
 	</settings>
 	
  	<typeAliases>
+ 		<typeAlias type="kr.nipa.mgps.domain.AddrJibun" alias="addrJibun"/>
  		<typeAlias type="kr.nipa.mgps.domain.Mapnote" alias="mapnote"/>
  		<typeAlias type="kr.nipa.mgps.domain.FileInfo" alias="fileInfo"/>
  		<typeAlias type="kr.nipa.mgps.domain.Policy" alias="policy"/>

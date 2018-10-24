@@ -15,7 +15,33 @@ var defaultDistrictObject = '<li class="on">전체</li>';
 
 function updateViewDistrictName()
 {
-    $("#viewDistrictName").html([sdo_name, sgg_name, emd_name].join(" "));
+	// 시군구가 blank
+	if(sgg_name.trim() === "" || sdo_name === sgg_name) {
+		// 읍면동이 blan 이거나 시도랑 같은 경우
+		if(emd_name.trim() === "" || sdo_name === emd_name) {
+			$("#viewDistrictName").html([sdo_name]);
+		} else {
+			$("#viewDistrictName").html([sdo_name, emd_name].join(" "));
+		}
+	} else {
+		// 시도랑 시군구랑 다를때
+		// 시도랑 읍면동이 같을때
+		if(sdo_name === emd_name) {
+			$("#viewDistrictName").html([sdo_name, sgg_name].join(" "));
+		} else {
+			if(sgg_name === emd_name) {
+				$("#viewDistrictName").html([sdo_name, sgg_name].join(" "));
+			} else {
+				$("#viewDistrictName").html([sdo_name, sgg_name, emd_name].join(" "));
+			}
+		}
+			
+		if(sgg_name === emd_name) {
+			$("#viewDistrictName").html([sdo_name, sgg_name].join(" "));
+		} else {
+			$("#viewDistrictName").html([sdo_name, sgg_name, emd_name].join(" "));
+		}
+	}
 }
 /**
  * 시도 목록을 로딩

@@ -1,16 +1,22 @@
 package kr.nipa.mgps.controller;
 
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+import kr.nipa.mgps.domain.Pagination;
+import kr.nipa.mgps.domain.AddrJibun;
 import kr.nipa.mgps.domain.SkEmd;
 import kr.nipa.mgps.domain.SkSdo;
 import kr.nipa.mgps.domain.SkSgg;
@@ -19,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequestMapping("/searchmap/")
-@Controller
+@RestController
 public class SearchMapController {
 	
 	@Autowired
@@ -30,7 +36,6 @@ public class SearchMapController {
 	 * @return
 	 */
 	@GetMapping("sdos")
-	@ResponseBody
 	public Map<String, Object> getListSdo() {
 		Map<String, Object> map = new HashMap<>();
 		String result = "success";
@@ -53,7 +58,6 @@ public class SearchMapController {
 	 * @return
 	 */
 	@GetMapping("sdos/{sdo_code:[0-9]+}/sggs")
-	@ResponseBody
 	public Map<String, Object> getListSggBySdo(@PathVariable String sdo_code) {
 		Map<String, Object> map = new HashMap<>();
 		String result = "success";
@@ -84,7 +88,6 @@ public class SearchMapController {
 	 * @return
 	 */
 	@GetMapping("sdos/{sdo_code:[0-9]+}/sggs/{sgg_code:[0-9]+}/emds")
-	@ResponseBody
 	public Map<String, Object> getListEmdBySdoAndSgg(@PathVariable String sdo_code, @PathVariable String sgg_code) {
 		Map<String, Object> map = new HashMap<>();
 		String result = "success";
@@ -122,7 +125,6 @@ public class SearchMapController {
 	 * @return
 	 */
 	@GetMapping("centroids")
-	@ResponseBody
 	public Map<String, Object> getCentroid(SkEmd skEmd) {
 		log.info("@@@@ skEmd = {}", skEmd);
 		
@@ -171,7 +173,6 @@ public class SearchMapController {
 	 * @return
 	 */
 	@GetMapping("districts")
-	@ResponseBody
 	public Map<String, Object> getListDistrict(String search_word) {
 		Map<String, Object> map = new HashMap<>();
 		String result = "success";
@@ -191,5 +192,62 @@ public class SearchMapController {
 		
 		map.put("result", result);
 		return map;
+	}
+	
+	/**
+	 * 지번 검색
+	 * @param addrJibun
+	 * @return
+	 */
+	@GetMapping("jibuns")
+	public Map<String, Object> jibuns(HttpServletRequest request, AddrJibun addrJibun, @RequestParam(defaultValue="1") String pageNo) {
+		
+		// TODO 아직 정리가 안되서.... fullTextSearch라는 변수를 임시로 추가해 두었음. 다음에 고쳐야 함
+		
+		Map<String, Object> map = new HashMap<>();
+		String result = "success";
+		log.info("@@ addrJibun = {}", addrJibun);
+		addrJibun.setSearch_value(addrJibun.getFullTextSearch());
+		
+		try {
+			if(addrJibun.getSearch_value() == null || "".equals(addrJibun.getSearch_value())) {
+				map.put("result", "search.word.invalid");
+				log.info("validate error 발생: {} ", map.toString());
+				return map;
+			}
+			
+			long totalCount = searchMapService.getJibunTotalCount(addrJibun);
+			Pagination pagination = new Pagination(request.getRequestURI(), getSearchParameters(addrJibun.getFullTextSearch()), totalCount, Long.valueOf(pageNo).longValue());
+			log.info("@@ pagination = {}", pagination);
+			
+			addrJibun.setOffset(pagination.getOffset());
+			addrJibun.setLimit(pagination.getPageRows());
+			List<AddrJibun> addrJibunList = new ArrayList<>();
+			if(totalCount > 0l) {
+				addrJibunList = searchMapService.getListJibun(addrJibun);
+			}
+			
+			map.put("pagination", pagination);
+			map.put("totalCount", totalCount);
+			map.put("addrJibunList", addrJibunList);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = "db.exception";
+		}
+		
+		map.put("result", result);
+		return map;
+	}
+	
+	private String getSearchParameters(String fullTextSearch) {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("&");
+		try {
+			buffer.append("search_value=" + URLEncoder.encode(fullTextSearch, "UTF-8"));
+		} catch(Exception e) {
+			e.printStackTrace();
+			buffer.append("search_value=");
+		}
+		return buffer.toString();
 	}
 }

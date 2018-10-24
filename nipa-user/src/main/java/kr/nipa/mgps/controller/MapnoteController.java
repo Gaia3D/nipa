@@ -42,6 +42,11 @@ import kr.nipa.mgps.service.PolicyService;
 import kr.nipa.mgps.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * @RestController = @Controller + ResponseBody
+ * @Controller로 바꾸고 ResponseBody 를 사용하던지, RestController 와 Controller 파일을 분리 하던지....
+ *
+ */
 @Slf4j
 @RestController
 public class MapnoteController {
@@ -87,8 +92,8 @@ public class MapnoteController {
 			List<Mapnote> mapnoteList = new ArrayList<>();
 			if(totalCount > 0l) {
 				mapnoteList = mapnoteService.getListMapnote(mapnote);
-				map.put("mapnoteList", mapnoteList);
 			}
+			map.put("mapnoteList", mapnoteList);
 			
 		} catch (Exception e) {
 			e.printStackTrace();

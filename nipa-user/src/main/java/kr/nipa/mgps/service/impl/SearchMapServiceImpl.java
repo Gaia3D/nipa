@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kr.nipa.mgps.domain.AddrJibun;
 import kr.nipa.mgps.domain.SkEmd;
 import kr.nipa.mgps.domain.SkSdo;
 import kr.nipa.mgps.domain.SkSgg;
@@ -82,7 +83,28 @@ public class SearchMapServiceImpl implements SearchMapService {
 	 * @param search_word
 	 * @return
 	 */
+	@Transactional(readOnly=true)
 	public List<SkEmd> getListDistrict(String search_word) {
 		return searchMapMapper.getListDistrict(search_word);
+	}
+	
+	/**
+	 * 지번 검색 총 건수
+	 * @param addrJibun
+	 * @return
+	 */
+	@Transactional(readOnly=true)
+	public Long getJibunTotalCount(AddrJibun addrJibun) {
+		return searchMapMapper.getJibunTotalCount(addrJibun);
+	}
+	
+	/**
+	 * 지번 검색 목록
+	 * @param addrJibun
+	 * @return
+	 */
+	@Transactional(readOnly=true)
+	public List<AddrJibun> getListJibun(AddrJibun addrJibun) {
+		return searchMapMapper.getListJibun(addrJibun);
 	}
 }

@@ -302,6 +302,7 @@ function ajaxMapnoteList(pageNo) {
 				$('#mapnotePage').find('.countTotal').text(lastPage);
 				$('#lastPage').text(lastPage);
 				
+				// TODO 위치가 틀렸습니다. 페이징 위에 가야됨
 				if(mapnoteList === null || mapnoteList.length === 0) {
 					content 	= 	content
 						+ 	"<p style=\"text-align: center; font-size: 14px;\">"
