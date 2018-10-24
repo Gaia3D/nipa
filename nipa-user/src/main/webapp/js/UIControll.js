@@ -385,22 +385,10 @@ $(function() {
 	// 지점등록
 	$('#inputMapnote.focusA').click(function() {
 		console.log("지점등록 클릭");
-		
-		
 //		mapnoteDropzone.clearAllFiles(true);
-		
-		mapnoteDropzone.removeAllFiles(true);
-		
-//		mapnoteDropzone.emit("reset");
-		
-//		for(var i = 0; i < mapnoteDropzone.files.length; i++) {
-//			mapnoteDropzone.emit("reset", mapnoteDropzone.files[i]);
-//		}
-		
-//		mapnoteDropzone.files = [];
-		
 //		$('#my-dropzone').empty();
 		
+		mapnoteDropzone.emit("resetFiles");
 		
 		$('#mapnoteLayer h2').text("지점등록");
 		$('#mapnoteBtn').text("등록");
@@ -456,7 +444,9 @@ $(function() {
 			$('#mapCtrlArea').removeClass('on');
 		}
 		layerClose(mapnoteLayer);
+		mapnoteDetailLayer.hide();
 	});
+	
 });
 
 function rgbaToHex(color) {

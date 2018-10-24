@@ -844,8 +844,9 @@
 		managerFactory = new ManagerFactory(viewer, renderDivId, serverPolicy, projectIdArray, projectDataArray, projectDataFolderArray, imagePath);
 	}
 
+	/*
 	// 클릭 지점으로이동
-	function gotoFly(projectId, issueId, issueType, longitude, latitude, height, duration) {
+ 	function gotoFly(projectId, issueId, issueType, longitude, latitude, height, duration) {
 		var projectData = getDataAPI(CODE.PROJECT_ID_PREFIX + projectId);
 		if (projectData === null || projectData === undefined) {
 		$.ajax({
@@ -862,160 +863,11 @@
 		} else {
 			gotoFlyAPI(managerFactory, projectId, projectData, projectData.data_key, issueId, issueType, longitude, latitude, height, duration);	
 		}
-	}
-
-	// 맵노트 validation - 지점 버튼 클릭으로 바뀔 것, 문자열 체크
-	function check() {
-		var noteLocation = $('#noteLocation').val().replace(/ /g, '');
-		var noteLongitude = noteLocation.substring(0, noteLocation.indexOf(","));
-		var noteLatitude = noteLocation.substring(noteLocation.indexOf(",")+1, noteLocation.length);
-		
-		if($('#noteTitle').val() === "") {
-			alert("지점명을 입력하여 주십시오.");
-			$('#noteTitle').focus();
-			return false;
-		}
-		if(noteLocation === "") {
-			alert("지점 위치를 선택하여 주십시오.");
-			$('#noteLocation').focus();
-			return false;
-		}
-		if(noteLongitude < (-180) || noteLongitude > 180) {
-			alert("경도의 값을 확인해 주십시오.");
-			$('#noteLocation').focus();
-			return false;
-		}
-		if(noteLatitude < (-90) || noteLatitude > 90) {
-			alert("위도의 값을 확인해 주십시오.");
-			return false;
-		}
-	}
-	
-	// 맵노트 validation - 지점 버튼 클릭으로 바뀔 것, 문자열 체크
-	/* function check() {
-		var noteLocation = $('#noteLocation').val().replace(/ /g, '');
-		var noteLongitude = noteLocation.substring(0, noteLocation.indexOf(","));
-		var noteLatitude = noteLocation.substring(noteLocation.indexOf(",")+1, noteLocation.length);
-		
-		if($('#noteTitle').val() === "") {
-			alert("지점명을 입력하여 주십시오.");
-			$('#noteTitle').focus();
-			return false;
-		}
-		if(noteLocation === "") {
-			alert("지점 위치를 선택하여 주십시오.");
-			$('#noteLocation').focus();
-			return false;
-		}
-		if(noteLongitude < (-180) || noteLongitude > 180) {
-			alert("경도의 값을 확인해 주십시오.");
-			$('#noteLocation').focus();
-			return false;
-		}
-		if(noteLatitude < (-90) || noteLatitude > 90) {
-			alert("위도의 값을 확인해 주십시오.");
-			return false;
-		}
-	} */
-	
-	
-	/*
-	Dropzone.options.myDropzone = {
-			url: "/insert",
-			autoProcessQueue: false,
-			uploadMultiple: true,
-			method: "post",
-			parallelUploads: 8,
-			maxFiles: 8,
-			maxFilesize: 500,
-			dictDefaultMessage: "Drop files here or click to upload",
-			acceptedFiles: ".jpeg, .jpg, .gif, .png, .JPEG, .JPG, .GIF, .PNG",
-			clickable: true,
-			fallback: function() {
-		    	alert("죄송합니다. 최신의 브라우저로 Update 후 사용해 주십시오.");
-		    	return;
-		    },
-			init: function() {
-				var _dropzone = this; 
-				var uploadingTask = document.querySelector("#mapnoteBtn");
-				var clearTask = document.querySelector("#allFileClear");
-
-				uploadingTask.addEventListener('click', function(e) {
-					e.preventDefault();
-		            e.stopPropagation();
-	            	if(check() == false) return false;
-
-	            	if(_dropzone.getQueuedFiles().length > 0) {		            	
-			            _dropzone.processQueue();
-		            } else {
-		            	var blob = new Blob();
-		                blob.upload = { 'chunked': _dropzone.defaultOptions.chunking };
-		                _dropzone.uploadFile(blob);
-		            }
-				});
-				
-				this.on("processing", function() {
-					if (MAP_NOTE_ID != null) {
-						this.options.url = "/update/ " + MAP_NOTE_ID;
-					}
-				});
-
-		        this.on('sending', function(file, xhr, formData) {
-		        	formData.append("noteTitle", $('#noteTitle').val());
-		            formData.append("noteLocation", $('#noteLocation').val());
-		            formData.append("description", $('#description').val());
-		            formData.append("MAP_NOTE_ID", MAP_NOTE_ID);
-		        });
-		        
-		        clearTask.addEventListener("click", function () {
-	                if (confirm("전체 항목을 삭제하겠습니까?")) {
-	                	_dropzone.removeAllFiles(true);
-	                }
-	            });
-				
-				this.on("maxfilesexceeded", function (data) {
-					alert("최대 업로드 파일 수는 8개 입니다.");
-				});
-				
-		        
-				this.on("complete", function (data) {
-					console.log("-------------" + data);
-					if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
-						if (data.xhr != undefined) {
-							var res = JSON.parse(data.xhr.responseText);
-							var msg;
-							if (res.result == "success") {
-								if(res.count === undefined) {
-									msg = "맵노트가 등록되었습니다.";
-								} else {
-									msg = "맵노트가 등록되었습니다.\n이미지 업로드 완료( " + res.count + " )";
-								}
-								ajaxMapnoteList(1);
-							} else {
-								// TODO 이미지 등록 실패 -> 맵노트 등록 실패
-								// 		맵노트 등록 실패 -> 이미지 등록 실패 
-								msg = "맵노트 등록에 실패했습니다.\n업로드 실패: " + res.message;
-							}
-							alert(msg);
-						} 
-					} 
-				});
-				
-				this.on("error", function(file, errormessage, xhr){
-				    if(xhr) {
-				        var response = JSON.parse(xhr.responseText);
-				        alert("이미지 업로드 중에 에러가 발생했습니다.\n" + "error : " + response.message);
-				    }
-				});
-				
-				this.on("errormultiple", function(files, response) {
-					if(response) {
-				        alert("이미지 업로드 중에 에러가 발생했습니다.\n" + "error : " + response.message);
-				    }
-			   });
-			}
-		};
+	} 
 	*/
+
+
+	
 </script>
 </body>
 </html>

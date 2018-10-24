@@ -722,7 +722,7 @@ margin-top: 10px;
 text-align: center;
 }
 .note li input::-webkit-input-placeholder {
-color: #b2cde0
+color: #b2cde0;
 }
 
 /* 지점등록 레이어 / 썸네일이미지 */

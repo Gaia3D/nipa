@@ -1,4 +1,6 @@
+var MAP_NOTE_ID = null;
 var mapnote;
+var status;
 
 var pageNo;
 var totalCount;
@@ -8,6 +10,14 @@ var pageListCount;
 var gotoPage;
 var forwardPage;
 var nextPage;
+
+// 맵노트 메뉴
+$('#mapnoteMenu').on('click', function() {
+	if($('#mapnoteMenu').hasClass('on') === true) {
+		MapnoteControll();
+//		removeAllBillboard();
+	}
+});
 
 // 맵노트 등록
 var file_up_names = new Array;
@@ -24,13 +34,11 @@ var mapnoteDropzone = new Dropzone('#my-dropzone', {
 	dictDefaultMessage : "파일을 업로드하려면 드래그하거나 클릭하십시오.",
 	acceptedFiles : ".jpeg, .jpg, .gif, .png, .JPEG, .JPG, .GIF, .PNG",
 	clickable : true,
-//	addRemoveLinks : true,
-//	dictRemoveFile : "X",
 	fallback : function() {
 		alert("죄송합니다. 최신의 브라우저로 Update 후 사용해 주십시오.");
 		return;
 	},
-	// dropzone 초기화
+
 	init : function() {
 		var _dropzone = this;
 		var uploadingTask = document.querySelector("#mapnoteBtn");
@@ -42,6 +50,18 @@ var mapnoteDropzone = new Dropzone('#my-dropzone', {
 			if (check() == false)
 				return false;
 			
+			if (MAP_NOTE_ID != null) {
+				_dropzone.options.url = "/update/ " + MAP_NOTE_ID;
+			} else {
+				_dropzone.options.url = "/insert";
+			}
+			
+			if(_dropzone.options.url === "/insert") {
+				status = "등록";
+			} else {
+				status = "수정";
+			}
+			
 			if (_dropzone.getQueuedFiles().length > 0) {
 				_dropzone.processQueue();
 			} else {
@@ -52,32 +72,46 @@ var mapnoteDropzone = new Dropzone('#my-dropzone', {
 				};
 				_dropzone.uploadFile(blob);
 			}
-	
 		});
-		
-		// 맵노트 수정
-		this.on("processing", function() {
-			if (MAP_NOTE_ID != null) {
-				this.options.url = "/update/ " + MAP_NOTE_ID;
-			}
-		});
-	    
+
 		this.on('sending', function(file, xhr, formData) {
 			formData.append("noteTitle", $('#noteTitle').val());
 			formData.append("noteLocation", $('#noteLocation').val());
 			formData.append("description", $('#description').val());
 			formData.append("MAP_NOTE_ID", MAP_NOTE_ID);
 		});
-
-		clearTask.addEventListener("click", function() {
-			if (confirm("전체 항목을 삭제하겠습니까?")) {
-				_dropzone.removeAllFiles(true);
-			}
+		
+		this.on('resetFiles', function() {
+	        if(this.files.length != 0){
+	            for(i=0; i<this.files.length; i++){
+	                this.files[i].previewElement.remove();
+	            }
+	            this.options.maxFiles = this.options.maxFiles + this.files.length;
+	            if (this.element.classList.contains("dropzone")) {
+	            	Dropzone.createElement("<div class=\"dz-default dz-message\"><span>" + this.options.dictDefaultMessage + "</span></div>");
+	            }
+	        }
+	    });
+		
+		clearTask.addEventListener("click", function(files) {
+//			if (confirm("전체 파일을 삭제하겠습니까?")) {
+//				_dropzone.clearAllfiles(true);
+//			}
+			if(mapnoteDropzone.files.length > 0) {
+				mapnoteDropzone.emit("resetFiles");
+				for(var i = 0; i < mapnoteDropzone.files.length; i++) {
+					if(mapnoteDropzone.files[i].fid !== undefined) {
+						mapnoteDropzone.emit("addedfile", mapnoteDropzone.files[i]);
+						mapnoteDropzone.emit("thumbnail", mapnoteDropzone.files[i], "/displayImg/"+ mapnoteDropzone.files[i].fid);
+						mapnoteDropzone.emit("complete", mapnoteDropzone.files[i]);
+					}
+				}
+			} 
 		});
 
-		this.on("addedfile", function(file) {
+		this.on("addedfile", function(file) { // 개별 파일 삭제
  			var _this = this;
-	        var removeButton = Dropzone.createElement("<button style=\"margin-left: 23px;\">삭제</button>");
+	        var removeButton = Dropzone.createElement("<button style=\"margin-left: 25px; margin-top: 3px; border: 0px; background-color: #eee; padding: 1px;\">삭제</button>");
 
 	        removeButton.addEventListener("click", function(e) {
 	          e.preventDefault();
@@ -99,15 +133,21 @@ var mapnoteDropzone = new Dropzone('#my-dropzone', {
 					var msg;
 					if (res.result == "success") {
 						if (res.count === undefined) {
-							msg = "맵노트가 등록되었습니다.";
+							msg = "맵노트가 " + status + "되었습니다.";
 						} else {
-							msg = "맵노트가 등록되었습니다.\n이미지 업로드 완료( " + res.count + " )";
+							msg = "맵노트가  " + status + "되었습니다.\n이미지 업로드 완료( " + res.count + " )";
 						}
 						ajaxMapnoteList(1);
 					} else {
-						msg = "맵노트 등록에 실패했습니다.\n업로드 실패: " + res.message;
+						msg = "맵노트   " + status + "에 실패했습니다.\n업로드 실패: " + res.message;
 					}
+					MAP_NOTE_ID = null;
 					alert(msg);
+					
+					$('#noteTitle').val('');
+					$('#noteLocation').val('');
+					$('#description').val('');
+					$('#mapnoteLayer').hide();
 				}
 			}
 		});
@@ -125,14 +165,13 @@ var mapnoteDropzone = new Dropzone('#my-dropzone', {
 			}
 		});
 	},
-	// 개별 파일 삭제
 	removedfile : function(file) {
-		x = confirm('정말 삭제하시겠습니까?');
+		x = confirm('파일을 삭제하시겠습니까?');
 		console.log("remove file before : " + file);
 	    if(!x)  return false;	
 		console.log("removedfile : " + file);
 
-		if(file.fid !== null && file.fid !== "") {
+		if(file.fid !== undefined && file.fid !== null && file.fid !== "") {
 			$.ajax({
 				url : "/fileInfo/" + file.fid,
 				type : 'DELETE',
@@ -150,6 +189,7 @@ var mapnoteDropzone = new Dropzone('#my-dropzone', {
 		var _ref;
 		return (_ref = file.previewElement) != null ? _ref.parentNode.removeChild(file.previewElement) : void 0;
 	}
+	
 });
 
 // 해당 페이지 바로가기
@@ -181,6 +221,60 @@ $('button.last').click(function() {
 	pageNo = lastPage;
 	ajaxMapnoteList(pageNo);
 });
+
+//맵노트 validation - 지점 버튼 클릭으로 바뀔 것, 문자열 체크
+function check() {
+	var noteLocation = $('#noteLocation').val().replace(/ /g, '');
+	var noteLongitude = noteLocation.substring(0, noteLocation.indexOf(","));
+	var noteLatitude = noteLocation.substring(noteLocation.indexOf(",")+1, noteLocation.length);
+	
+	if($('#noteTitle').val() === "") {
+		alert("지점명을 입력하여 주십시오.");
+		$('#noteTitle').focus();
+		return false;
+	}
+	if(noteLocation === "") {
+		alert("지점 위치를 선택하여 주십시오.");
+		$('#noteLocation').focus();
+		return false;
+	}
+	if(noteLongitude < (-180) || noteLongitude > 180) {
+		alert("경도의 값을 확인해 주십시오.");
+		$('#noteLocation').focus();
+		return false;
+	}
+	if(noteLatitude < (-90) || noteLatitude > 90) {
+		alert("위도의 값을 확인해 주십시오.");
+		return false;
+	}
+}
+
+// 맵노트 validation - 지점 버튼 클릭으로 바뀔 것, 문자열 체크
+function check() {
+	var noteLocation = $('#noteLocation').val().replace(/ /g, '');
+	var noteLongitude = noteLocation.substring(0, noteLocation.indexOf(","));
+	var noteLatitude = noteLocation.substring(noteLocation.indexOf(",")+1, noteLocation.length);
+	
+	if($('#noteTitle').val() === "") {
+		alert("지점명을 입력하여 주십시오.");
+		$('#noteTitle').focus();
+		return false;
+	}
+	if(noteLocation === "") {
+		alert("지점 위치를 선택하여 주십시오.");
+		$('#noteLocation').focus();
+		return false;
+	}
+	if(noteLongitude < (-180) || noteLongitude > 180) {
+		alert("경도의 값을 확인해 주십시오.");
+		$('#noteLocation').focus();
+		return false;
+	}
+	if(noteLatitude < (-90) || noteLatitude > 90) {
+		alert("위도의 값을 확인해 주십시오.");
+		return false;
+	}
+}
 
 // 맵노트 목록
 function ajaxMapnoteList(pageNo) {
@@ -338,7 +432,9 @@ function updateForm (map_note_id) {
 	var url = "/updateForm/" + map_note_id;
 	
 //	mapnoteDropzone.clearAllFiles(true);
-	mapnoteDropzone.removeAllFiles(true);
+//  mapnoteDropzone.removeAllFiles(true);
+//	$('#my-dropzone').empty();
+	mapnoteDropzone.emit("resetFiles");
 	
 	$.ajax({
 			url: "/updateForm/" + map_note_id,
@@ -420,7 +516,7 @@ function submitUpdateMapnote (map_note_id) {
 function deleteMapnote(map_note_id) {
 	var url = "/mapnote/" + map_note_id;
 
-	if (confirm("정말 삭제하시겠습니까??") == true){    
+	if (confirm("맵노트를 삭제하시겠습니까??") == true){    
 		$.ajax({
 			url: url,
 			type: 'DELETE',
@@ -434,12 +530,6 @@ function deleteMapnote(map_note_id) {
 	} else {  
 	    return false;
 	}
-}
-
-// 좌표 독취 지점등록
-function addMapnote() {
-	var DMS = $('#DMS').val();
-	$('#noteLocation').val(DMS);
 }
 
 // 원본 이미지 보기
