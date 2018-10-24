@@ -1,5 +1,187 @@
 var mapnote;
 
+var pageNo;
+var totalCount;
+var firstPage;
+var lastPage;
+var pageListCount;
+var gotoPage;
+var forwardPage;
+var nextPage;
+
+// 맵노트 등록
+var file_up_names = new Array;
+Dropzone.autoDiscover = false;
+var mapnoteDropzone = new Dropzone('#my-dropzone', {
+	
+	url : "/insert",
+	autoProcessQueue : false,
+	uploadMultiple : true,
+	method : "post",
+	parallelUploads : 8,
+	maxFiles : 8,
+	maxFilesize : 500,
+	dictDefaultMessage : "파일을 업로드하려면 드래그하거나 클릭하십시오.",
+	acceptedFiles : ".jpeg, .jpg, .gif, .png, .JPEG, .JPG, .GIF, .PNG",
+	clickable : true,
+//	addRemoveLinks : true,
+//	dictRemoveFile : "X",
+	fallback : function() {
+		alert("죄송합니다. 최신의 브라우저로 Update 후 사용해 주십시오.");
+		return;
+	},
+	// dropzone 초기화
+	init : function() {
+		var _dropzone = this;
+		var uploadingTask = document.querySelector("#mapnoteBtn");
+		var clearTask = document.querySelector("#allFileClear");
+
+		uploadingTask.addEventListener('click', function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+			if (check() == false)
+				return false;
+			
+			if (_dropzone.getQueuedFiles().length > 0) {
+				_dropzone.processQueue();
+			} else {
+				var blob = new Blob();
+				blob.upload = {
+					'chunked' : _dropzone.defaultOptions.chunking,
+					'MAP_NOTE_ID' : MAP_NOTE_ID
+				};
+				_dropzone.uploadFile(blob);
+			}
+	
+		});
+		
+		// 맵노트 수정
+		this.on("processing", function() {
+			if (MAP_NOTE_ID != null) {
+				this.options.url = "/update/ " + MAP_NOTE_ID;
+			}
+		});
+	    
+		this.on('sending', function(file, xhr, formData) {
+			formData.append("noteTitle", $('#noteTitle').val());
+			formData.append("noteLocation", $('#noteLocation').val());
+			formData.append("description", $('#description').val());
+			formData.append("MAP_NOTE_ID", MAP_NOTE_ID);
+		});
+
+		clearTask.addEventListener("click", function() {
+			if (confirm("전체 항목을 삭제하겠습니까?")) {
+				_dropzone.removeAllFiles(true);
+			}
+		});
+
+		this.on("addedfile", function(file) {
+ 			var _this = this;
+	        var removeButton = Dropzone.createElement("<button style=\"margin-left: 23px;\">삭제</button>");
+
+	        removeButton.addEventListener("click", function(e) {
+	          e.preventDefault();
+	          e.stopPropagation();
+	          _this.removeFile(file);
+	        });
+	        
+	        file.previewElement.appendChild(removeButton);
+		});
+
+		this.on("maxfilesexceeded", function(data) {
+			alert("최대 업로드 파일 수는 8개 입니다.");
+		});
+
+		this.on("complete", function(data) {
+			if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
+				if (data.xhr != undefined) {
+					var res = JSON.parse(data.xhr.responseText);
+					var msg;
+					if (res.result == "success") {
+						if (res.count === undefined) {
+							msg = "맵노트가 등록되었습니다.";
+						} else {
+							msg = "맵노트가 등록되었습니다.\n이미지 업로드 완료( " + res.count + " )";
+						}
+						ajaxMapnoteList(1);
+					} else {
+						msg = "맵노트 등록에 실패했습니다.\n업로드 실패: " + res.message;
+					}
+					alert(msg);
+				}
+			}
+		});
+
+		this.on("error", function(file, errormessage, xhr) {
+			if (xhr) {
+				var response = JSON.parse(xhr.responseText);
+				alert("이미지 업로드 중에 에러가 발생했습니다.\n" + "error : " + response.message);
+			}
+		});
+
+		this.on("errormultiple", function(files, response) {
+			if (response) {
+				alert("이미지 업로드 중에 에러가 발생했습니다.\n" + "error : "	+ response.message);
+			}
+		});
+	},
+	// 개별 파일 삭제
+	removedfile : function(file) {
+		x = confirm('정말 삭제하시겠습니까?');
+		console.log("remove file before : " + file);
+	    if(!x)  return false;	
+		console.log("removedfile : " + file);
+
+		if(file.fid !== null && file.fid !== "") {
+			$.ajax({
+				url : "/fileInfo/" + file.fid,
+				type : 'DELETE',
+				success : function(data) {
+					console.log('success: ' + data);
+				},
+				error: function(request, status, error) {
+					console.log("code : " + request.status + "\n message : " + request.message +  "\n error : " + error);
+				}
+			});
+		}
+		// 업로드 가능 파일 갯수 변경
+		this.options.maxFiles = this.options.maxFiles + 1;
+		// 화면에서 삭제
+		var _ref;
+		return (_ref = file.previewElement) != null ? _ref.parentNode.removeChild(file.previewElement) : void 0;
+	}
+});
+
+// 해당 페이지 바로가기
+$('#gotoPageBtn').click(function() {
+	pageNo = $('#gotoPage').val();
+	ajaxMapnoteList(pageNo);
+});
+// 이전 페이지 목록 조회
+$('button.forward').click(function() {
+	if(firstPage <= forwardPage) {
+		pageNo = forwardPage;
+	}
+	ajaxMapnoteList(pageNo);
+});
+// 다음 페이지 목록 조회
+$('button.next').click(function() {
+	if(lastPage >= nextPage) {
+		pageNo = nextPage;
+	}
+	ajaxMapnoteList(pageNo);
+});
+// 처음 페이지 목록 조회
+$('button.first').click(function() {
+	pageNo = firstPage;
+	ajaxMapnoteList(pageNo);
+});
+// 마지막 페이지 목록 조회
+$('button.last').click(function() {
+	pageNo = lastPage;
+	ajaxMapnoteList(pageNo);
+});
+
 // 맵노트 목록
 function ajaxMapnoteList(pageNo) {
 	var url = "/mapnote/" + pageNo;
@@ -13,55 +195,18 @@ function ajaxMapnoteList(pageNo) {
 				var contentObj;
 				var mapnoteList = msg.mapnoteList;
 				
-				var pageNo = msg.pagination.pageNo;
-				var totalCount = msg.pagination.totalCount;
-				var firstPage = msg.pagination.firstPage;
-				var lastPage = msg.pagination.lastPage;
-				var pageListCount = msg.pagination.pageListCount;
-				var goToPage;
-				var forwardPage;
-				var nextPage;
+				pageNo = msg.pagination.pageNo;
+				totalCount = msg.pagination.totalCount;
+				firstPage = msg.pagination.firstPage;
+				lastPage = msg.pagination.lastPage;
+				pageListCount = msg.pagination.pageListCount;
+				gotoPage = $('#gotoPage').val(pageNo);
+				forwardPage = pageNo - 1;
+				nextPage = pageNo + 1;
 				
 				$('#mapnotePage').find('.countPage').text(pageNo);
 				$('#mapnotePage').find('.countTotal').text(lastPage);
 				$('#lastPage').text(lastPage);
-				
-				// 해당 페이지 바로가기
-				$('#goToPageBtn').click(function() {
-					goToPage = $('#gotoPage').val();
-					pageNo = goToPage;
-					ajaxMapnoteList(pageNo);
-				});
-				// 이전 페이지 목록 조회
-				$('button.forward').click(function() {
-					goToPage = $('#gotoPage').val();
-					if(goToPage > firstPage) {
-						pageNo -=  1;
-						ajaxMapnoteList(pageNo);
-						$('#gotoPage').val(pageNo);
-					}
-				});
-				// 다음 페이지 목록 조회
-				$('button.next').click(function() {
-					goToPage = $('#gotoPage').val();
-					if(goToPage < lastPage) {
-						pageNo += 1;
-						ajaxMapnoteList(pageNo);
-						$('#gotoPage').val(pageNo);
-					}
-				});
-				// 처음 페이지 목록 조회
-				$('button.first').click(function() {
-					pageNo = firstPage;
-					$('#gotoPage').val(pageNo);
-					ajaxMapnoteList(pageNo);
-				});
-				// 마지막 페이지 목록 조회
-				$('button.last').click(function() {
-					pageNo = lastPage;
-					$('#gotoPage').val(pageNo);
-					ajaxMapnoteList(pageNo);
-				});
 				
 				if(mapnoteList === null || mapnoteList.length === 0) {
 					content 	= 	content
@@ -69,10 +214,11 @@ function ajaxMapnoteList(pageNo) {
 						+		"현재 등록된 지점이 없습니다."
 						+	"</p>";
 				} else {
-					for(i=0; i <mapnoteList.length; i++) {
+					removeAllBillboard();
+					for(i = 0; i < mapnoteList.length; i++) {
 						var mapnote  = mapnoteList[i];
-						removeAllBillboard();
 						addBillboard(mapnote.longitude, mapnote.latitude, mapnote.note_title);
+						
 						 content 	= 	content
 							+ 	"<li onclick=\"gotoFlyMark(" + mapnote.longitude + ", " + mapnote.latitude + ", " + 200 + ", \'" + mapnote.note_title + "\');\">"
 							+		"<span class=\"title\">" + mapnote.note_title + "</span>"
@@ -150,7 +296,7 @@ function detailMapnote(pageNo, map_note_id) {
 			content 	= 	content
 						+ 	"<li style=\"text-align: left; font-size: 17px; padding: 10px;\">" + msg.mapnote.note_title + "</li><hr>"
 						+	"<li style=\"text-align: right; font-size: 12px; margin-right: 10px;\">" + msg.mapnote.longitude + ", " + msg.mapnote.latitude + "</li>"
-						+	"<li style=\"text-align: left; margin-left: 20px; margin-top: 10px;\">" + msg.mapnote.description + "</li>";
+						+	"<li style=\"text-align: left; margin-left: 20px; margin-top: 20px; margin-bottom: 20px;\">" + msg.mapnote.description + "</li>";
 			$('#mapnoteDetail').empty();
 			$('#mapnoteDetail').html(content);
 			$('#updateBtn').attr("onclick", "updateForm(" + map_note_id + ")");
@@ -189,10 +335,13 @@ function detailMapnote(pageNo, map_note_id) {
 
 // 맵노트 수정 화면
 function updateForm (map_note_id) {
-var url = "/updateForm/" + map_note_id;
-     
+	var url = "/updateForm/" + map_note_id;
+	
+//	mapnoteDropzone.clearAllFiles(true);
+	mapnoteDropzone.removeAllFiles(true);
+	
 	$.ajax({
-			url: url,
+			url: "/updateForm/" + map_note_id,
 			type: 'GET',
 	        success: function(msg) {
 				if(msg.result === "success") {
@@ -201,6 +350,20 @@ var url = "/updateForm/" + map_note_id;
 					$('#mapnoteLayer').find('#description').val(msg.mapnote.description);
 					MAP_NOTE_ID = map_note_id;
 					$('#uploadForm').attr('action', "/upload/" +  MAP_NOTE_ID);
+					
+					var existingFileCount = msg.fileCount;
+					for(var i = 0; i < existingFileCount; i++)
+					{
+						var fileInfo  = msg.fileInfoList[i];
+						var mockFile = { name: fileInfo.file_name , size: fileInfo.file_size , fid: fileInfo.file_info_id};
+						mapnoteDropzone.emit("addedfile", mockFile);
+						mapnoteDropzone.emit("thumbnail", mockFile, "/displayImg/"+ fileInfo.file_info_id);
+						mapnoteDropzone.emit("complete", mockFile);
+						mapnoteDropzone.files.push(mockFile);
+					}
+					// 업로드 가능 파일 갯수 변경
+					mapnoteDropzone.options.maxFiles = mapnoteDropzone.options.maxFiles - existingFileCount;
+
 				} else {
 					alert(msg.result);
 				}
@@ -273,9 +436,9 @@ function deleteMapnote(map_note_id) {
 	}
 }
 
-// 좌표 독취 후 맵노트 등록
+// 좌표 독취 지점등록
 function addMapnote() {
-	var DMS = $('#DMS').attr('placeholder');
+	var DMS = $('#DMS').val();
 	$('#noteLocation').val(DMS);
 }
 
@@ -325,6 +488,8 @@ function gotoFlyMark(longitude, latitude, heigth, name)
 
 function Mapnote(viewer)
 {
+	this.pins = [];
+	
 	this.addBillboard = function (longitude, latitude, name) {
 		
 	    var target = viewer.entities.add({
@@ -338,6 +503,7 @@ function Mapnote(viewer)
 	            height : 32
 	        }
 	    });
+	    this.pins.push(target);
 	};
 	
 	this.gotoFly = function (longitude, latitude, heigth) {
@@ -346,12 +512,21 @@ function Mapnote(viewer)
 		});
 	};
 	
-	this.removeAll= function () {
-		viewer.entities.removeAll();
-		
-	};
+	this.removeAll = function ()
+	{
+		for(var i=0, len = this.pins.length; i <len; i++)
+		{
+			viewer.entities.remove(this.pins[i]);
+		}
+		this.pins= [];
+	}
 	
-	this.removeById= function () {
+	this.removeById = function () {
 		viewer.entities.removeById();
 	};
+	
+	this.pickPosition = function () {
+
+	};
+	
 }

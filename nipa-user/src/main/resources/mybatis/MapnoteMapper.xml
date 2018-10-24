@@ -43,6 +43,15 @@
 		)
 	</insert>
 	
+	<!-- 맵노트 수정 -->
+	<update id="updateMapnote" parameterType="mapnote">
+		/* updateMapnote */
+		UPDATE map_note 
+		SET user_id = #{user_id}, note_title = #{note_title}, description = #{description}, 
+			longitude = #{longitude}, latitude = #{latitude}, height = #{height}, update_date = now()
+		WHERE map_note_id = #{map_note_id}
+	</update>
+	
 	<!-- 맵노트 삭제 -->
 	<delete id="deleteMapnote" parameterType="long">
 		/* deleteMapnote */

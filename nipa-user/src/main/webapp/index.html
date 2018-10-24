@@ -6,8 +6,9 @@
 <title>군 공간정보 포털시스템</title>
 <link rel="stylesheet" href="/css/style.css">
 <link rel="stylesheet" href="/externlib/cesium-1.44/Widgets/widgets.css">
-<link rel="stylesheet" type="text/css" href="/externlib/drawHelper/DrawHelper.css">
-<link rel="stylesheet" type="text/css" href="/externlib/geostats/geostats.css">
+<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.css">
+<link rel="stylesheet" href="/externlib/drawHelper/DrawHelper.css">
+<link rel="stylesheet" href="/externlib/geostats/geostats.css">
 <link rel="stylesheet" href="/externlib/dropzone/dropzone.css">
 <link rel="stylesheet" href="/externlib/photoswipe/css/photoswipe.css">
 <link rel="stylesheet" href="/externlib/photoswipe/css/default-skin/default-skin.css"> 
@@ -56,6 +57,7 @@
 			<li id="menu" class="menu" title="메뉴"><span>메뉴</span></li>
 			<li id="searchMenu" class="search" data-nav="searchContent" title="검색"><span>검색</span></li>
 			<li id="layerMenu" class="layer" data-nav="layerContent" title="레이어"><span>레이어</span></li>
+			<li id="timeseriesMenu" class="timeseries" data-nav="timeseriesContent" title="시계열"><span>시계열</span></li>
 			<li id="analysisMenu" class="analysis" data-nav="analysisContent" title="분석"><span>분석</span></li>
 			<li id="coordinateMenu" class="coordinate" data-nav="coordinateContent" title="좌표"><span>좌표</span></li>
 			<li id="mapnoteMenu" class="mapnote" data-nav="mapnoteContent" title="맵노트" onclick="ajaxMapnoteList(1)"><span>맵노트</span></li>
@@ -116,7 +118,8 @@
 					</ul>
 
 					<!-- S: PAGER -->
-					<div id="pagerB topLine" class="pagerB topLine">
+
+					<div class="pagerB topLine">
 						<span class="countPage">20</span> /
 						<span class="countTotal">총 210</span>
 						<div>
@@ -129,7 +132,6 @@
 							<button type="button" class="btnText">이동</button>
 						</div>
 					</div>
-
 				</li>
 				<li id="newAddress">
 					<p>새주소<span>7</span></p>
@@ -205,6 +207,59 @@
 			<!-- E: 레이어설정  -->
 		</div>
 		<!-- E: 레이어 -->
+
+
+
+		<!-- S: 시계열 -->
+		<div id="timeseriesContent" class="contents" style="height: 780px; display:none;">
+			<h2 class="hide">시계열</h2>
+			<div class="contentsIn">
+				<div class="coordinateBtns">
+					<button id="getSatPoint" type="button" title="위치 선택" class="getPoint">위치 선택</button>
+				</div>
+				<ul class="coordinateGroup plus">
+					<li>
+						<label for="">DD</label>
+						<input id="satDD" type="text" placeholder="127° 9' 24.47“, 38° 0' 44.4“">
+					</li>
+					<li>
+						<label for="">DMS</label>
+						<input id="satDMS" type="text" placeholder="127.156797, 38.012334">
+					</li>
+					<li>
+						<label for="">MGRS</label>
+						<input id="satMGRS" type="text" placeholder="52SCH3819208786">
+					</li>
+					<li>
+						<label for="">UTM</label>
+						<input id="satUTM" type="text" placeholder="52S 338192mE 4208786mN">
+					</li>
+					<li class="btns">
+						<button id="satCoordCopy" type="button" class="btnText" title="전체복사">전체복사</button>
+						<button id="satTextReset" type="button" class="btnText" title="초기화">초기화</button>
+					</li>
+				</ul>
+
+				<ul class="timeseriesGroup">
+					<li>
+						<label for="startDate">시작일</label>
+						<input id="startDatepicker" name="startDate" class="date" type="text" placeholder="">
+					</li>
+					<li>
+						<label for="endDate">종료일</label>
+						<input id="endDatepicker" name="endDate" class="date" type="text" placeholder="">
+					</li>
+					<li>
+						<label for="">위성유형</label>
+						<select id="satType">
+							<option value="K3" selected="selected">KOMPSAT3A</option>
+						</select>
+					</li>
+				</ul>
+
+				<button id="searchSatImage" type="button" title="검색" class="focusA full">검색</button>
+			</div>
+		</div>
 
 
 		<!-- S: 분석 -->
@@ -437,7 +492,7 @@
 						<span id="lastPage"></span>
 						<button type="button" class="next" title="다음">다음</button>
 						<button type="button" class="last" title="마지막">마지막</button>
-						<button type="button" id="goToPageBtn" class="btnText">이동</button>
+						<button type="button" id="gotoPageBtn" class="btnText">이동</button>
 					</div>
 				</div>
 
@@ -537,7 +592,7 @@
 					</li>
 					<li>
 						<input id="noteLocation" type="text" size="26" placeholder="126.6075050765, 37.5820583757">
-						<button class="basicA">지점</button>
+						<button id="getPointMapnote" class="basicA" onclick="pickPosition();" >지점</button>
 					</li>
 					<li>
 						<textarea id="description" cols="36" rows="5"></textarea>
@@ -864,6 +919,7 @@
 	}
 	
 	
+	/*
 	Dropzone.options.myDropzone = {
 			url: "/insert",
 			autoProcessQueue: false,
@@ -959,6 +1015,7 @@
 			   });
 			}
 		};
+	*/
 </script>
 </body>
 </html>

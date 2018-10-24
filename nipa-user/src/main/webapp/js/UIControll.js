@@ -385,6 +385,23 @@ $(function() {
 	// 지점등록
 	$('#inputMapnote.focusA').click(function() {
 		console.log("지점등록 클릭");
+		
+		
+//		mapnoteDropzone.clearAllFiles(true);
+		
+		mapnoteDropzone.removeAllFiles(true);
+		
+//		mapnoteDropzone.emit("reset");
+		
+//		for(var i = 0; i < mapnoteDropzone.files.length; i++) {
+//			mapnoteDropzone.emit("reset", mapnoteDropzone.files[i]);
+//		}
+		
+//		mapnoteDropzone.files = [];
+		
+//		$('#my-dropzone').empty();
+		
+		
 		$('#mapnoteLayer h2').text("지점등록");
 		$('#mapnoteBtn').text("등록");
 		$('#noteTitle').val('');
@@ -403,6 +420,8 @@ $(function() {
 	
 	// 지점 버튼 클릭
 	$('#getMapnotePoint').click(function() {
+		e.preventDefault();
+		e.stopPropagation();
 		alert("!");
 	});
 	

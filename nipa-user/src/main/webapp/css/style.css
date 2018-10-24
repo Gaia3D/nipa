@@ -48,6 +48,7 @@ height: 100%;
 overflow: hidden;
 /*background: url(../images/@map.png) repeat 0 0;*/
 }
+
 #objectLabel {
 	background-color: transparent;  /* needed because webgl-tutoraisl.css sets canvas bg color to white */
 	position: absolute;
@@ -252,6 +253,9 @@ background-position: -190px 17px;
 #navWrap ul.nav li.layer > span  {
 background-position: -390px 17px;
 }
+#navWrap ul.nav li.timeseries > span  {
+background-position: -590px 17px;
+}
 #navWrap ul.nav li.analysis > span  {
 background-position: 10px -35px;
 }
@@ -436,6 +440,54 @@ text-align: right;
 background: url(../images/ico.png) no-repeat -150px -300px;
 } 
 
+/*  CONTENTS / 시계열 */
+.timeseriesGroup {
+cursor: pointer;
+}
+.timeseriesGroup li {
+position: relative;
+padding: 5px 0;
+}
+.timeseriesGroup li label {
+display: inline-block;
+width: 100px;
+padding: 3px 0;
+}
+.timeseriesGroup li input {
+width: 180px;
+padding: 3px 0;
+border: none;
+border-bottom: 1px solid #e0e0e0;
+}
+.timeseriesGroup li input:hover {
+border-bottom: 1px solid #477cdb;
+}
+.timeseriesGroup li input::-webkit-input-placeholder {
+color: #b2cde0
+}
+.timeseriesGroup li.btns {
+text-align: right;
+}
+.timeseriesGroup li select {
+width: 184px;
+padding: 3px 0;
+border: none;
+border: 1px solid #e0e0e0;
+}
+.timeseriesGroup li select:hover {
+border: 1px solid #477cdb;
+}
+button.getSatPoint {
+background-position: -246px -406px;
+}
+button.getSatPoint.on {
+background-position: -246px -450px;
+background-color: tomato;
+}
+
+.timeseriesGroup li > button.clip {
+visibility: hidden;
+}
 /*  CONTENTS / 분석 */
 .analysisGroup {
 /* margin: 10px 0;
@@ -709,6 +761,13 @@ background-position: -536px -109px;
 }
 
 /* 지점 상세보기 레이어  */
+#mapnoteDetailLayer {
+max-width: 500px;
+}
+#thumbnail {
+margin-bottom: 20px; 
+text-align: center;
+}
 #fileImage {
 margin-top: 20px; 
 text-align: center;
@@ -812,12 +871,63 @@ background-position: -300px -150px;
 }
 
 /* 시계열 */
-.timeSeries {
+.timeSeriesWrap {
 position: absolute;
 bottom: 0;
 width: 100%;
-background: rgba(0, 0, 0, 0.9);
-z-index: 200;
+z-index: 400;
+}
+.timeSeriesWrap > ul.timeSeries {
+min-width: 1000px;
+
+padding: 0 20px;
+background: rgba(0, 0, 0, 0.85);
+}
+.timeSeriesWrap > ul > li {
+display: inline-block;
+width: 80px;
+margin: 0px -4px;
+padding: 2px 5px;
+cursor: pointer;
+text-align: center;
+}
+.timeSeriesWrap > ul > li > span {
+color: #fff;
+}
+.timeSeriesWrap > ul > li:hover {
+background: rgba(71, 105, 255, 1.0);
+}
+.timeSeriesWrap > ul li.on {
+background-color: #4769ff;
+}
+.timeSeriesWrap > ul.on > span {
+display: inline-block;
+color: #4769ff;
+}
+.timeSeriesWrap > ul {
+display: none;
+}
+.timeSeriesWrap.on > ul {
+display: block;
+}
+.timeSeriesWrap > div {
+text-align: center;
+}
+.timeSeriesWrap > div > button {
+display: inline-block;
+width: 50px;
+height: 25px;
+border: none;
+border-radius: 3px 3px 0 0;
+text-indent: -999em;
+background-image: url(../images/ico.png);
+background-repeat: no-repeat;
+background-color: #4769ff;
+background-position: -760px -210px;
+}
+.timeSeriesWrap.on > div > button {
+background-color: #000;
+background-position: -760px -162px;
 }
 
 /* ///// LAYER ///// */
