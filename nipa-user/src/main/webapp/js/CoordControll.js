@@ -29,6 +29,11 @@ function CoordControll(viewer, option) {
 
   // 지점등록
   $('#addMapnote').click(function () {
+	  if(that._longitude != undefined && that._longitude !== null && that._latitude != undefined && that._latitude !==null) {
+		  $('#noteLocation').val(that._longitude + ", " +  that._latitude);
+	  } else {
+		  $('#noteLocation').val('');
+	  }
   });
 
   // 좌표 초기화
