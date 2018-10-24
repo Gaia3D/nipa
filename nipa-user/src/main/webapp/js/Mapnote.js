@@ -35,7 +35,6 @@ var mapnoteDropzone = new Dropzone('#my-dropzone', {
 		var _dropzone = this;
 		var uploadingTask = document.querySelector("#mapnoteBtn");
 		var clearTask = document.querySelector("#allFileClear");
-		this.cleaningUp = false;
 
 		uploadingTask.addEventListener('click', function(e) {
 			e.preventDefault();
@@ -43,34 +42,17 @@ var mapnoteDropzone = new Dropzone('#my-dropzone', {
 			if (check() == false)
 				return false;
 			
-			if($('#mapnoteBtn').val() === "등록") {
-				
-				_if (_dropzone.getQueuedFiles().length > 0) {
-					_dropzone.processQueue();
-				} else {
-					var blob = new Blob();
-					blob.upload = {
-						'chunked' : _dropzone.defaultOptions.chunking
-					};
-					_dropzone.uploadFile(blob);
-				}
-			} else {
-				if (MAP_NOTE_ID != null) {
-					
-				}
-			}
-			
-			/*
 			if (_dropzone.getQueuedFiles().length > 0) {
 				_dropzone.processQueue();
 			} else {
 				var blob = new Blob();
 				blob.upload = {
-					'chunked' : _dropzone.defaultOptions.chunking
+					'chunked' : _dropzone.defaultOptions.chunking,
+					'MAP_NOTE_ID' : MAP_NOTE_ID
 				};
 				_dropzone.uploadFile(blob);
 			}
-			*/
+	
 		});
 		
 		// 맵노트 수정
