@@ -1,0 +1,118 @@
+@charset "utf-8";
+.analysisGroup {
+margin: 10px 0;
+padding-left: 10px;
+padding-right: 10px;
+cursor: pointer;
+}
+.analysisGroup.on {
+background-position: -755px -555px;
+}
+.analysisGroup.plus {
+background-position: -386px -555px;
+}
+.analysisGroup li {
+position: relative;
+padding: 5px 0;
+}
+.analysisGroup li label {
+display: inline-block;
+/* width: 120px; */
+width: 35%;
+padding: 3px 0;
+}
+.analysisGroup li input {
+/* width: 184px; */
+width: 62%;
+padding: 3px 0;
+border: none;
+border-bottom: 1px solid #e0e0e0;
+}
+.analysisGroup li input.withBtn {
+width: 124px;
+}
+
+.analysisGroup li span.coordText {
+padding-left: 123px;
+}
+.analysisGroup li button.coordBtn {
+margin-left: 30px;
+border: 0;
+text-decoration: underline;
+}
+.analysisGroup li input:hover {
+border-bottom: 1px solid #477cdb;
+}
+.analysisGroup li.btns {
+padding-top: 25px;
+text-align: right;
+}
+.analysisGroup li select {
+width: 184px;
+padding: 3px 0;
+border: none;
+border: 1px solid #e0e0e0;
+}
+.analysisGroup li select:hover {
+border: 1px solid #477cdb;
+}
+
+
+.analysisGroup .profileInfo {
+	display: none;
+}
+.analysisGroup .profileInfo .legend {
+}
+.analysisGraphic {
+	position: absolute;
+	bottom: 20px;
+	left: 410px;
+	right: 0;
+	height: 200px;
+	padding: 20px;
+	margin: 10px;
+	background-color: #fff;
+	z-index: 9;
+	display: none;
+}
+.analysisGraphic canvas {
+	border: 1px dotted red;
+}
+
+.analysisGroup .routeInfo {
+	margin-top: 20px;
+	border-top: 2px solid #e0e0e0;
+	display: none;
+}
+.analysisGroup .routeResult .cover {
+	padding: 10px 0 15px;
+	text-align: left;
+	border-bottom: 1px solid #e0e0e0;
+}
+.analysisGroup .routeResult .time {
+	font-size: 20px;
+}
+.analysisGroup .routeResult .length {
+	font-size: 10px;
+}
+.analysisGroup .routeList .r_row {
+	display: flex;
+	border-bottom: 1px solid #e0e0e0;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+.analysisGroup .routeList .r_row .num {
+	width: 20px;
+	border: 1px solid;
+	border-radius: 18px;
+	padding: 6px;
+	margin-left: 10px;
+	margin-right: 16px;
+	text-align: center;
+}
+.analysisGroup .routeList .r_row .name {
+	line-height: 33px;
+}
+.analysisGroup .routeList .r_row.on {
+	background-color: #eee;
+}
