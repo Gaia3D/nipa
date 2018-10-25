@@ -269,15 +269,31 @@ function bodyInputCoverageAll(inputCoverage) {
 	xml += '<ows:Identifier>' + inputCoverage + '</ows:Identifier>';
 	xml += '<wcs:DomainSubset>';
 	xml += '<gml:BoundingBox crs="urn:ogc:def:crs:EPSG::4326">';
-	xml += '<ows:LowerCorner>125.858357764 33.113219016</ows:LowerCorner>';
-	xml += '<ows:UpperCorner>129.816227406 38.665727456</ows:UpperCorner>';
+	// xml += '<ows:LowerCorner>125.858357764 33.113219016</ows:LowerCorner>';
+	// xml += '<ows:UpperCorner>129.816227406 38.665727456</ows:UpperCorner>';
+
+	if ( inputCoverage == 'mnd:dem') {
+		// xml += '<ows:LowerCorner>123.99994444444442 32.99983333333334</ows:LowerCorner>';
+		// xml += '<ows:UpperCorner>132.00016666666664 43.00005555555556</ows:UpperCorner>';
+	} else if ( inputCoverage == 'mnd:dsm') {
+		// xml += '<ows:LowerCorner>125.57264500000001 38.93901000503942</ows:LowerCorner>';
+		// xml += '<ows:UpperCorner>125.92047999121296 39.13849500000006</ows:UpperCorner>';
+	}
+
 	xml += '</gml:BoundingBox>';
 	xml += '</wcs:DomainSubset>';
 	xml += '<wcs:Output format="image/tiff">';
 	xml += '<wcs:GridCRS>';
 	xml += '<wcs:GridBaseCRS>urn:ogc:def:crs:EPSG::4326</wcs:GridBaseCRS>';
 	xml += '<wcs:GridType>urn:ogc:def:method:WCS:1.1:2dSimpleGrid</wcs:GridType>';
-	xml += '<GridOffsets>3.352706177043618E-4 -2.681982533932279E-4</GridOffsets>';
+	// xml += '<GridOffsets>3.352706177043618E-4 -2.681982533932279E-4</GridOffsets>';
+
+	if ( inputCoverage == 'mnd:dem') {
+		// xml += '<GridOffsets>1.1111111111111108E-4 -1.1111111111111109E-4</GridOffsets>';
+	} else if ( inputCoverage == 'mnd:dsm') {
+		// xml += '<GridOffsets>4.999999873689376E-6 -4.999999873689376E-6</GridOffsets>';
+	}
+
 	xml += '<wcs:GridCS>urn:ogc:def:cs:OGC:0.0:Grid2dSquareCS</wcs:GridCS>';
 	xml += '</wcs:GridCRS>';
 	xml += '</wcs:Output>';

@@ -1,20 +1,18 @@
 
 function AnalysisControll(viewer) {
 
-	const WPS_URL = 'http://mango.iptime.org:28985/geoserver1/wps';
-	const WMS_URL = 'http://mango.iptime.org:28985/geoserver1/wms';
-	const WFS_URL = 'http://mango.iptime.org:28985/geoserver1/wfs';
+	const WPS_URL = 'http://localhost:8090/geoserver/wps';
+	const WMS_URL = 'http://localhost:8090/geoserver/wms';
+	const WFS_URL = 'http://localhost:8090/geoserver/wfs';
 
-	// const WPS_URL = 'http://localhost:8585/geoserver1/wps';
-	// const WMS_URL = 'http://localhost:8585/geoserver1/wms';
-	// const WFS_URL = 'http://localhost:8585/geoserver1/wfs';
-
-	const layerDEM = 'mnd:dem_4326';
-	const layerDSM = 'mnd:dem_4326';
+	const layerDEM = 'mnd:dem';
+	const layerDSM = 'mnd:dsm';
 
 	const layerRoute = 'mnd:pgr_fromAtoB';
 	const layerRouteLink = 'link';
 	const layerRouteNode = 'node';
+	const layerRouteLink_nk = 'link_nk';
+	const layerRouteNode_nk = 'node_nk';
 
 	const sourceProjection = 'EPSG:3857';
 	const targetProjection = 'EPSG:4326';
@@ -542,6 +540,19 @@ function AnalysisControll(viewer) {
 		var startPointY = $('#analysisFromAtoB .startPointY').val();
 		var endPointX = $('#analysisFromAtoB .endPointX').val();
 		var endPointY = $('#analysisFromAtoB .endPointY').val();
+
+		var node = '';
+		var link = '';
+		if (locationType == 'south') {
+			node = layerRouteNode;
+			link = layerRouteLink;
+		} else if (locationType == 'north') {
+			node = layerRouteNode_nk;
+			link = layerRouteLink_nk;
+		} else {
+			node = layerRouteNode;
+			link = layerRouteLink;
+		}
 
 		var viewParams = 'link:' + layerRouteLink;
 		viewParams += ';node:' + layerRouteNode;
