@@ -2,8 +2,8 @@ rootProject.name = 'nipa'
 
 include ':nipa-admin'
 include ':nipa-user'
-include ':nipa-doc'
+
 
 project(':nipa-admin').projectDir = "$rootDir/nipa-admin" as File
 project(':nipa-user').projectDir = "$rootDir/nipa-user" as File
-project(':nipa-doc').projectDir = "$rootDir/nipa-doc" as File
+
