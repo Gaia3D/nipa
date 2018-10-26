@@ -10,6 +10,10 @@
 	
  	<typeAliases>
  		<typeAlias type="kr.nipa.mgps.domain.AddrJibun" alias="addrJibun"/>
+ 		<typeAlias type="kr.nipa.mgps.domain.District" alias="district"/>
+ 		<typeAlias type="kr.nipa.mgps.domain.PlaceName" alias="placeName"/>
+ 		<typeAlias type="kr.nipa.mgps.domain.NewAddress" alias="newAddress"/>
+ 		<typeAlias type="kr.nipa.mgps.domain.CountryPlaceNumber" alias="countryPlaceNumber"/>
  		<typeAlias type="kr.nipa.mgps.domain.Mapnote" alias="mapnote"/>
  		<typeAlias type="kr.nipa.mgps.domain.FileInfo" alias="fileInfo"/>
  		<typeAlias type="kr.nipa.mgps.domain.Policy" alias="policy"/>

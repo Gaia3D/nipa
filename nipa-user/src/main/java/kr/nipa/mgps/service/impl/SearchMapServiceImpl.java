@@ -7,6 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.nipa.mgps.domain.AddrJibun;
+import kr.nipa.mgps.domain.CountryPlaceNumber;
+import kr.nipa.mgps.domain.District;
+import kr.nipa.mgps.domain.NewAddress;
+import kr.nipa.mgps.domain.PlaceName;
 import kr.nipa.mgps.domain.SkEmd;
 import kr.nipa.mgps.domain.SkSdo;
 import kr.nipa.mgps.domain.SkSgg;
@@ -79,13 +83,23 @@ public class SearchMapServiceImpl implements SearchMapService {
 	}
 	
 	/**
-	 * 행정 구역 검색
-	 * @param search_word
+	 * 행정구역 검색 총 건수
+	 * @param district
 	 * @return
 	 */
 	@Transactional(readOnly=true)
-	public List<SkEmd> getListDistrict(String search_word) {
-		return searchMapMapper.getListDistrict(search_word);
+	public Long getDistrictTotalCount(District district) {
+		return searchMapMapper.getDistrictTotalCount(district);
+	}
+	
+	/**
+	 * 지명 검색 총 건수
+	 * @param placeName
+	 * @return
+	 */
+	@Transactional(readOnly=true)
+	public Long getPlaceNameTotalCount(PlaceName placeName) {
+		return searchMapMapper.getPlaceNameTotalCount(placeName);
 	}
 	
 	/**
@@ -99,6 +113,46 @@ public class SearchMapServiceImpl implements SearchMapService {
 	}
 	
 	/**
+	 * 새 주소 검색 총 건수
+	 * @param newAddress
+	 * @return
+	 */
+	@Transactional(readOnly=true)
+	public Long getNewAddressTotalCount(NewAddress newAddress) {
+		return searchMapMapper.getNewAddressTotalCount(newAddress);
+	}
+	
+	/**
+	 * 국가 지점 번호 검색 총 건수
+	 * @param countryPlaceNumber
+	 * @return
+	 */
+	@Transactional(readOnly=true)
+	public Long getCountryPlaceNumberTotalCount(CountryPlaceNumber countryPlaceNumber) {
+		return searchMapMapper.getCountryPlaceNumberTotalCount(countryPlaceNumber);
+	}
+	
+	/**
+	 * 행정 구역 검색
+	 * @param district
+	 * @return
+	 */
+	@Transactional(readOnly=true)
+	public List<District> getListDistrict(District district) {
+		return searchMapMapper.getListDistrict(district);
+	}
+	
+	/**
+	 * 지명 구역 검색
+	 * @param placeName
+	 * @return
+	 */
+	@Transactional(readOnly=true)
+	public List<PlaceName> getListPlaceName(PlaceName placeName) {
+		return searchMapMapper.getListPlaceName(placeName);
+	}
+	
+	/**
 	 * 지번 검색 목록
 	 * @param addrJibun
 	 * @return
@@ -106,5 +160,25 @@ public class SearchMapServiceImpl implements SearchMapService {
 	@Transactional(readOnly=true)
 	public List<AddrJibun> getListJibun(AddrJibun addrJibun) {
 		return searchMapMapper.getListJibun(addrJibun);
+	}
+	
+	/**
+	 * 새 주소 검색
+	 * @param newAddress
+	 * @return
+	 */
+	@Transactional(readOnly=true)
+	public List<NewAddress> getListNewAddress(NewAddress newAddress) {
+		return searchMapMapper.getListNewAddress(newAddress);
+	}
+	
+	/**
+	 * 국가 지점번호 검색 검색
+	 * @param countryPlaceNumber
+	 * @return
+	 */
+	@Transactional(readOnly=true)
+	public List<CountryPlaceNumber> getListCountryPlaceNumber(CountryPlaceNumber countryPlaceNumber) {
+		return searchMapMapper.getListCountryPlaceNumber(countryPlaceNumber);
 	}
 }
