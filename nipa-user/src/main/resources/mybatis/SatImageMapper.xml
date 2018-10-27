@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.nipa.mgps.persistence.SatImageMapper">
+    <select id="getListSatImageTotalCount" parameterType="satImageSearch" resultType="long">
+        /* getListSatImageTotalCount */
+        SELECT COUNT(id) 
+        FROM sat
+        WHERE type = #{type}
+            AND daterange(to_date(#{sdate}, 'YYYY-MM-DD'), to_date(#{edate}, 'YYYY-MM-DD')) @> to_timestamp(acquisition,'YYYYMMDDhh24miss')::date
+            AND ST_INTERSECTS(footprint, ST_SetSRID(ST_MakePoint(126.48705, 35.37521), 4326))
+    </select>
+    <select id="getListSatImage" parameterType="satImageSearch" resultType="satImage">
+        /* getListSatImage */
+        SELECT id, type, sat_id, sat, sensor, acquisition, thumbnail, img, ST_AsGeoJSON(bbox) as bbox, ST_AsGeoJSON(footprint) as footprint
+        FROM sat
+        WHERE type = #{type}
+            AND daterange(to_date(#{sdate}, 'YYYY-MM-DD'), to_date(#{edate}, 'YYYY-MM-DD')) @> to_timestamp(acquisition,'YYYYMMDDhh24miss')::date
+            AND ST_INTERSECTS(footprint, ST_SetSRID(ST_MakePoint(#{longitude}, #{latitude}), 4326))
+        ORDER BY acquisition ASC
+        OFFSET #{offset} LIMIT #{limit}
+    </select>
+    <select id="getSatImageById" parameterType="long" resultType="satImage">
+        /* getSatImageById */
+        SELECT id, type, sat_id, sat, sensor, acquisition, thumbnail, img, ST_AsGeoJSON(bbox) as bbox, ST_AsGeoJSON(footprint) as footprint
+        FROM sat
+        WHERE id = #{id}
+    </select>
+</mapper>
+
+<!-- <mapper namespace="kr.nipa.mgps.persistence.SatImageMapper">
+    <select id="getListSatImageTotalCount" parameterType="satImageSearch" resultType="long">
+        /* getListSatImageTotalCount */
+        /*
+        SELECT COUNT(id) 
+        FROM sat
+        WHERE type = #{type}
+            AND '[#{sdate}, #{edate}]'::daterange @> to_timestamp(acquisition,'YYYYMMDDhh24miss')::date
+            AND ST_INTERSECTS(footprint, ST_SetSRID(ST_MakePoint(126.48705, 35.37521), 4326))
+        */
+        SELECT COUNT(id) 
+        FROM sat
+    </select>
+    <select id="getListSatImage" parameterType="satImageSearch" resultType="satImage">
+        /* getListSatImage */
+        /*
+        SELECT * 
+        FROM sat
+        WHERE type = #{type}
+            AND '[#{sdate}, #{edate}]'::daterange @> to_timestamp(acquisition,'YYYYMMDDhh24miss')::date
+            AND ST_INTERSECTS(footprint, ST_SetSRID(ST_MakePoint(#{longitude}, #{latitude}), 4326))
+        ORDER BY acquisition DESC
+        OFFSET #{offset} LIMIT #{limit}
+        */
+        SELECT COUNT(id) 
+        FROM sat
+    </select>
+</mapper> -->

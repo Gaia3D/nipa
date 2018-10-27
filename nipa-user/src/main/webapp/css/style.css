@@ -939,38 +939,41 @@ bottom: 0;
 width: 100%;
 z-index: 400;
 }
-.timeSeriesWrap > ul.timeSeries {
+.timeSeriesWrap > div > ul.timeSeries {
+display: none;
 min-width: 1000px;
-
 padding: 0 20px;
 background: rgba(0, 0, 0, 0.85);
+white-space: nowrap;
 }
-.timeSeriesWrap > ul > li {
+.timeSeriesWrap > div > ul > li {
 display: inline-block;
 width: 80px;
-margin: 0px -4px;
+/* margin: 0px -4px; */
 padding: 2px 5px;
 cursor: pointer;
 text-align: center;
 }
-.timeSeriesWrap > ul > li > span {
+.timeSeriesWrap > div > ul > li > span {
+display: block;
 color: #fff;
 }
-.timeSeriesWrap > ul > li:hover {
+.timeSeriesWrap > div > ul > li:hover {
 background: rgba(71, 105, 255, 1.0);
 }
-.timeSeriesWrap > ul li.on {
+.timeSeriesWrap > div > ul li.on {
 background-color: #4769ff;
 }
-.timeSeriesWrap > ul.on > span {
+.timeSeriesWrap > div > ul.on > span {
 display: inline-block;
 color: #4769ff;
 }
-.timeSeriesWrap > ul {
+.timeSeriesWrap > div > ul {
 display: none;
 }
-.timeSeriesWrap.on > ul {
+.timeSeriesWrap.on > div > ul {
 display: block;
+white-space: nowrap;
 }
 .timeSeriesWrap > div {
 text-align: center;

@@ -212,101 +212,12 @@ $(function() {
 		$('ul.listLayer > li:eq('+ index +')').toggleClass('on');
 	});
 	
-	// // TODO 리펙토링 - 레이어 목록이 늘어날 경우
-	// // 레이어 on / off
-	// $('ul.listLayer li.imageLayer ul li').click(function() {
-	// 	$(this).toggleClass('on');
-	// 	var index = $(this).index();
-	// 	console.log(index);
-	// 	if(!$(this).hasClass('on')) settingLayer.hide();
-	// });
-	// $('ul.listLayer li.mapLayer ul li').click(function() {
-	// 	$(this).toggleClass('on');
-	// 	var index = $(this).index();
-	// 	console.log(index);
-	// 	if(!$(this).hasClass('on')) settingLayer.hide();
-	// });
-	
-	// // 레이어 이동
-	// // TODO 레이어 변경사항이 저장되어야 하는지
-	// $('ul.listLayer li ul').sortable();
-    // $('ul.listLayer li ul').disableSelection();
-    
-	// // 전체 레이어의 인덱스
-    // var layerName;
-	// $('ul.listLayer li').find('li').each(function(index) {
-	// 	$(this).find('div').click(function() {
-	// 		 var liNum = index;
-	// 		layerName = $('ul.listLayer > li > ul li:eq('+liNum+') > span').text();
-	// 		$('#settingLayer h3').text("설정("+layerName+")");
-			
-	// 		// 색상 변경이 필요 없는 경우 설정창에서 색상 변경 옵션이 보이지 않음
-	// 		if($(this).children().length == 1) {
-	// 			$('#settingLayer .picker').hide();
-	// 		} else {
-	// 			$('#settingLayer .picker').show();
-	// 		}
-	// 	});
-	// });
-
-	// // 레이어 on/off
-	// $('ul.listLayer li ul li > div').click(function(e) {
-	// 	e.preventDefault();
-	// 	e.stopPropagation();
-		
-	// 	settingsLayerParent = $(this).parent();
-	// 	var index = settingsLayerParent.index();
-		
-	// 	// 옵션 창 초기 값 세팅
-	// 	var opacity = $(this).find('span.opacity').text();
-	// 	var color = $(this).find('span.color').css("background-color");
-		
-	// 	$('#range-slider').val(parseInt(opacity));
-	// 	$('#range-value').val(parseInt(opacity) + "%");
-	// 	$('input[type="color"]').val(rgbaToHex(color));
-		
-	// 	var display = settingsLayerParent.hasClass('on');
-	// 	settingLayer.toggle(display);
-	// 	$('#settingLayer').center(); // 옵션창을 화면 중앙에 배치
-	// });
-	// layerClose(settingLayer);
-	// closeBtn(settingLayer);
-	
-	// // 레이어 옵션
-	// var range = $('#range-slider');
-	// var value = $('#range-value');
-	// var color = $('input[type="color"]');
-	
-	// // 설정화면 투명도 값 변경 시 동작
-	// value.change(function(){
-	// 	var value = $(this).val();
-	// 	if(value < 0 ) value = 0;
-	// 	if(value > 100) value = 100;
-	// 	if(value.lastIndexOf("%") == 2) {
-	// 		range.val(parseInt(value));
-	// 	} else {
-	// 		$(this).val(parseInt(value) + "%");
-	// 		range.val(parseInt(value));
-	// 	}
-	// });
-	// // 설정화면 투명도 슬라이더 변경 시 동작
-	// range.change(function(){
-	// 	value.val($(this).val() + "%");
-	// });
-	// color.change(function() {
-	// 	selectedColor = $(this).val();
-	// 	$(this).css('fill',selectedColor);
-	// });
-	
-	// // 적용 버튼 클릭 시
-	// $('#settingLayer button.focusA').click(function() {
-	// 	// 투명도 변경
-	// 	settingsLayerParent.find($('span.opacity')).text($('#range-slider').val()+'%');
-	// 	// 색상 변경
-	// 	settingsLayerParent.find($('span.color')).css("background-color", hex2rgb($('input[type="color"]').val()));
-	// 	// 선 스타일 변경
-	// });
-	
+/***** NAV WRAP: 시계열 *****/	
+	// 위치 선택
+	$('#getSatPoint').click(function() {
+		$(this).toggleClass('on');
+		$(this).trigger('afterClick');
+	});
 	
 /***** NAV WRAP: 분석 *****/	
 	// 분석 메뉴 클릭 시 추가 동작

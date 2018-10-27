@@ -72,8 +72,7 @@ var defaultSatLayer = {
     show : true
 };
 
-function showSatImage(queryString)
-{
+function showSatImage(queryString) {
     timeserieslayer._imageryProvider._resource._queryParameters.cql_filter = queryString;
     timeserieslayer._imageryProvider._tileProvider._resource._queryParameters.cql_filter = queryString;
 }
@@ -94,10 +93,10 @@ function TimeseriesControll(viewer, option) {
     var that = this;
     var handler = null;
 
-    timeserieslayer = viewer.imageryLayers.addImageryProvider(defaultSatLayer.provider);
-    timeserieslayer.alpha = Cesium.defaultValue(defaultSatLayer.alpha, 1.0);
-    timeserieslayer.show = Cesium.defaultValue(defaultSatLayer.show, true);
-    timeserieslayer.name = defaultSatLayer.name;
+    // timeserieslayer = viewer.imageryLayers.addImageryProvider(defaultSatLayer.provider);
+    // timeserieslayer.alpha = Cesium.defaultValue(defaultSatLayer.alpha, 1.0);
+    // timeserieslayer.show = Cesium.defaultValue(defaultSatLayer.show, true);
+    // timeserieslayer.name = defaultSatLayer.name;
 
     // 좌표 복사
     $('#satCoordCopy').click(function () {
@@ -185,6 +184,9 @@ function TimeseriesControll(viewer, option) {
     }
 
     $('#searchSatImage').click(function () {
+        if (timeserieslayer !== null && timeserieslayer !== undefined) {
+            viewer.imageryLayers.remove(timeserieslayer, true);
+        }
         var urlSatImageAPI = "http://localhost:8181/timeseries/";
         var form = new FormData();
 /*
@@ -196,13 +198,14 @@ function TimeseriesControll(viewer, option) {
         form.set("type", $('#satType option:selected').val());
         form.set("sdate", $('#startDatepicker').val());
         form.set("edate", $('#endDatepicker').val());
-//        form.set("longitude", that._longitude);
-//        form.set("latitude", that._latitude);
-        //form.set("offset", 0);
-        //form.set("limit", 10);
+        form.set("longitude", that._longitude);
+        form.set("latitude", that._latitude);
+        form.set("offset", 0);
+        form.set("limit", 10);
+
+        satApp.images = [];
 
         var queryString = new URLSearchParams(form).toString();
-
         if (isSearchingSatImage) {
             isSearchingSatImage = false;
             $.ajax({
@@ -212,12 +215,20 @@ function TimeseriesControll(viewer, option) {
                 success: function (msg) {
                     if (msg.result === "success") {
                         var images = msg.imageList;
-                        $('.timeSeries').show();
-                        for(var i=0, len=images.length; i<len; i++)
-                        {
-                            images[i].date = Date.parse(images[i].acquisition);
+                        var len = images.length;
+                        if (len == 0) {
+                            alert("검색된 결과가 없습니다.");
+                        }
+                        else {
+                            for (var i = 0; i < len; i++) {
+                                var date = moment(images[i].acquisition, "YYYYMMDDHHmmss");
+                                if (date.isValid()) {
+                                    images[i].date = date.format("YYYY-MM-DD");
+                                }
+                                images[i].show = false;
                             images[i].src = "http://localhost:8181/timeseries/images/" + images[i].id;
                             satApp.images.push(images[i]);
+                        }
                         }
                     } else {
                         alert(msg.result);
@@ -244,9 +255,36 @@ function TimeseriesControll(viewer, option) {
         mounted : function () {
         },
         methods : {
-            showImage : function()
-            {
-                console.log("showImage");
+            showImage: function (image) {
+                console.log("showImage" + image);
+                for (var i = 0, len = this.images.length; i < len; i++) {
+                    this.images[i].show = false;
+                }
+                image.show = true;
+
+                var queryString = "sat_id='" + image.sat_id + "'";
+                // timeserieslayer.show = false;
+                // timeserieslayer._imageryProvider._resource._queryParameters.cql_filter = queryString;
+                // timeserieslayer._imageryProvider._tileProvider._resource._queryParameters.cql_filter = queryString;
+                // timeserieslayer.show = true;
+
+                if (timeserieslayer !== null && timeserieslayer !== undefined) {
+                    viewer.imageryLayers.remove(timeserieslayer, true);
+                }
+                timeserieslayer = viewer.imageryLayers.addImageryProvider(new Cesium.WebMapServiceImageryProvider({
+                    url: "http://localhost:9999/geoserver/SatTimeseries/wms",
+                    layers: "SatTimeseries:SatTimeseries",
+                    parameters: {
+                        service: "WMS",
+                        version: "1.1.1",
+                        request: "GetMap",
+                        transparent: "true",
+                        format: "image/png",
+                        cql_filter: queryString,
+                        tiled: 'true'
+                    },
+                    enablePickFeatures: false
+                }));
             }
         }
     });
