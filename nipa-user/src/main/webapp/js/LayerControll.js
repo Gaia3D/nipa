@@ -13,7 +13,7 @@ var defaultImgLayer = [{
     name : "OpenStreetMaps",
     provider : Cesium.createOpenStreetMapImageryProvider(),
     alpha : 0.7,
-    show : false,
+    show : false
 },
 {
     id: "2",
@@ -22,7 +22,7 @@ var defaultImgLayer = [{
         url : 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer'
     }),
     alpha : 0.5,
-    show : false,
+    show : false
 }];
 var defaultMapLayer = [{
     id: "1",
@@ -41,7 +41,7 @@ var defaultMapLayer = [{
                     }
                 }),
     alpha : 0.3,
-    show : false,
+    show : false
 },
 {
     id: "2",
@@ -60,7 +60,7 @@ var defaultMapLayer = [{
                     }
                 }),
     alpha : 0.6,
-    show : false,
+    show : false
 },
 {
     id: "3",
@@ -79,7 +79,7 @@ var defaultMapLayer = [{
                     }
                 }),
     alpha : 0.9,
-    show : false,
+    show : false
 }];
 
 function LayerControll(viewer)
@@ -99,12 +99,6 @@ function LayerControll(viewer)
             mapLayers : JSON.parse(JSON.stringify(defaultMapLayer)),
             defaultImgLayers : JSON.parse(JSON.stringify(defaultImgLayer)),
             defaultMapLayers : JSON.parse(JSON.stringify(defaultMapLayer))
-        },
-        watch : {
-            imgLayers: function (val)
-            {
-                console.log(val);
-            }
         },
         beforeMount : function () {
             this.selectedLayer = this.imgLayers[0];
