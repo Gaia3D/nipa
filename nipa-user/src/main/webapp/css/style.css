@@ -488,6 +488,7 @@ background-color: tomato;
 .timeseriesGroup li > button.clip {
 visibility: hidden;
 }
+
 /*  CONTENTS / 분석 */
 .analysisGroup {
 /* margin: 10px 0;
@@ -508,10 +509,12 @@ padding: 5px 0;
 .analysisGroup li label {
 display: inline-block;
 width: 120px;
+/* width: 35%; */
 padding: 3px 0;
 }
 .analysisGroup li input {
 width: 184px;
+/* width: 62%; */
 padding: 3px 0;
 border: none;
 border-bottom: 1px solid #e0e0e0;
@@ -543,6 +546,65 @@ border: 1px solid #e0e0e0;
 }
 .analysisGroup li select:hover {
 border: 1px solid #477cdb;
+}
+
+.analysisGroup .profileInfo {
+	display: none;
+}
+.analysisGroup .profileInfo .legend {
+}
+.analysisGraphic {
+	position: absolute;
+	bottom: 20px;
+	left: 410px;
+	right: 0;
+	height: 200px;
+	padding: 20px;
+	margin: 10px;
+	background-color: #fff;
+	z-index: 9;
+	display: none;
+}
+.analysisGraphic canvas {
+	border: 1px dotted red;
+}
+
+.analysisGroup .routeInfo {
+	margin-top: 20px;
+	border-top: 2px solid #e0e0e0;
+	display: none;
+}
+.analysisGroup .routeResult .cover {
+	padding: 10px 0 15px;
+	text-align: left;
+	border-bottom: 1px solid #e0e0e0;
+}
+.analysisGroup .routeResult .time {
+	font-size: 20px;
+}
+.analysisGroup .routeResult .length {
+	font-size: 10px;
+}
+.analysisGroup .routeList .r_row {
+	display: flex;
+	border-bottom: 1px solid #e0e0e0;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+.analysisGroup .routeList .r_row .num {
+	width: 20px;
+	border: 1px solid;
+	border-radius: 18px;
+	padding: 6px;
+	margin-left: 10px;
+	margin-right: 16px;
+	text-align: center;
+}
+.analysisGroup .routeList .r_row .name {
+	line-height: 33px;
+}
+.analysisGroup .routeList .r_row.on {
+	background-color: #eee;
 }
 
 /*  CONTENTS / 좌표 */

@@ -5,7 +5,6 @@
 <meta content="IE=edge" http-equiv="X-UA-Compatible">
 <title>군 공간정보 포털시스템</title>
 <link rel="stylesheet" href="/css/style.css">
-<link rel="stylesheet" href="/css/style-analysis.css">
 <link rel="stylesheet" href="/externlib/cesium-1.44/Widgets/widgets.css">
 <link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.css">
 <link rel="stylesheet" href="/externlib/drawHelper/DrawHelper.css">
@@ -800,7 +799,7 @@
 		alert("This page is optimized for the Chrome browser for massive data processing.\n Please use the Chrome browser for seamless service.");
 	}
 
-	var drawHelper = new DrawHelper(viewer);
+	var drawHelper = null;
 	var isDrawFeature = {
 		isDraw: false,
 		type: '',
@@ -813,6 +812,7 @@
 	magoStart(null, "magoContainer", imagePath);
 	var intervalCount = 0;
 	var timerId = setInterval("startMogoUI()", 1000);
+
 	function startMogoUI() {
 		intervalCount++;
 		if(managerFactory != null && managerFactory.getMagoManagerState() === CODE.magoManagerState.READY) {
@@ -829,6 +829,8 @@
 			changeObjectMoveAPI(managerFactory, "2");
 			// 3PView Mode
 			changeFPVModeAPI(managerFactory, false);
+
+			drawHelper = new DrawHelper(viewer);
 			MouseControll(viewer);
 			MapControll(viewer);
 			AnalysisControll(viewer);
