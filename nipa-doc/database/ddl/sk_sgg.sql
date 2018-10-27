@@ -1,17 +1,17 @@
---
+﻿--
 -- Type: TABLE;
 -- Name: sk_sgg;
 --
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
+--SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
 SET client_min_messages = warning;
-SET row_security = off;
+--SET row_security = off;
 
 DROP INDEX IF EXISTS public.sidx_sk_sgg_geom;
 ALTER TABLE IF EXISTS ONLY public.sk_sgg DROP CONSTRAINT IF EXISTS sk_sgg_pkey;
