@@ -56,12 +56,29 @@ function CoordControll(viewer, option) {
     this._latitude = null;
 
     this.clear();
-
+    /*
+    $('.coordinateBtns > button.on').each(function () {
+      $(this).trigger('afterClick');
+    })
+    */  
     $('#DD').val("");
     $('#DM').val("");
     $('#DMS').val("");
     $('#MGRS').val("");
     $('#UTM').val("");
+  }
+
+  function updateCoordinate() {
+    var lon = that._longitude;
+    var lat = that._latitude;
+
+    //console.log(lon + "," + lat);
+
+    $('#DD').val(getposition(lon, lat, positionFormatterDD));
+    $('#DM').val(getposition(lon, lat, positionFormatterDM));
+    $('#DMS').val(getposition(lon, lat, positionFormatterDMS));
+    $('#MGRS').val(getposition(lon, lat, positionFormatterMGRS));
+    $('#UTM').val(getposition(lon, lat, positionFormatterUTM));
   }
 
   // 화면중심 좌표독취
@@ -199,18 +216,6 @@ function CoordControll(viewer, option) {
     }
   });
 
-  function updateCoordinate() {
-    var lon = that._longitude;
-    var lat = that._latitude;
-
-    //console.log(lon + "," + lat);
-
-    $('#DD').val(getposition(lon, lat, positionFormatterDD));
-    $('#DM').val(getposition(lon, lat, positionFormatterDM));
-    $('#DMS').val(getposition(lon, lat, positionFormatterDMS));
-    $('#MGRS').val(getposition(lon, lat, positionFormatterMGRS));
-    $('#UTM').val(getposition(lon, lat, positionFormatterUTM));
-  }
   // 좌표독취 클릭
   $('#insertCoordinate').click(function () {
     if (that._position != null) {

@@ -1,17 +1,17 @@
---
+﻿--
 -- Type: TABLE;
 -- Name: file_info;
 --
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
+--SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
 SET client_min_messages = warning;
-SET row_security = off;
+--SET row_security = off;
 
 ALTER TABLE IF EXISTS ONLY public.file_info DROP CONSTRAINT IF EXISTS file_info_pk;
 DROP TABLE IF EXISTS public.file_info;
@@ -56,8 +56,8 @@ COMMENT ON COLUMN public.file_info.file_size IS '파일 사이즈';
 COMMENT ON COLUMN public.file_info.file_ext IS '파일 확장자';
 COMMENT ON COLUMN public.file_info.thumbnail_name IS '썸네일 파일 이름';
 COMMENT ON COLUMN public.file_info.thumbnail_path IS '썸네일 파일 경로';
-comment on column file_info.file_width is '원본 파일 가로 크기';
-comment on column file_info.file_height is '원본 파일 세로 크기';
+comment on column public.file_info.file_width is '원본 파일 가로 크기';
+comment on column public.file_info.file_height is '원본 파일 세로 크기';
 COMMENT ON COLUMN public.file_info.update_date IS '수정일';
 COMMENT ON COLUMN public.file_info.insert_date IS '등록일';
 

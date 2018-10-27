@@ -20,6 +20,8 @@
  		<typeAlias type="kr.nipa.mgps.domain.SkSdo" alias="skSdo"/>
  		<typeAlias type="kr.nipa.mgps.domain.SkSgg" alias="skSgg"/>
  		<typeAlias type="kr.nipa.mgps.domain.SkEmd" alias="skEmd"/>
+		<typeAlias type="kr.nipa.mgps.domain.SatImage" alias="satImage"/>
+		<typeAlias type="kr.nipa.mgps.domain.SatImageSearch" alias="satImageSearch"/>
 	</typeAliases>
 	
 </configuration>

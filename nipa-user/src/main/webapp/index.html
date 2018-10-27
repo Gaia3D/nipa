@@ -5,7 +5,6 @@
 <meta content="IE=edge" http-equiv="X-UA-Compatible">
 <title>군 공간정보 포털시스템</title>
 <link rel="stylesheet" href="/css/style.css">
-<link rel="stylesheet" href="/css/style-analysis.css">
 <link rel="stylesheet" href="/externlib/cesium-1.44/Widgets/widgets.css">
 <link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.css">
 <link rel="stylesheet" href="/externlib/drawHelper/DrawHelper.css">
@@ -688,11 +687,21 @@
 		<!-- E: 맵 -->
 
 		<!-- S: 시계열 -->
-		<div class="timeSeries" style="height: 80px; display: none;">
-		메모-시계열
+		<div id="allSatImages" class="timeSeriesWrap" :class="{on:display}">
+			<div>
+				<button type="button" title="보임/숨김"  v-on:click="display=!display">시계열숨김/보임</button>
+			</div>
+			<div style="overflow-x:auto;">
+			<ul class="timeSeries">
+				<li v-for="(image, index) in images" :class="{on:image.show}" v-on:click.stop.prevent="showImage(image)">
+					<span>{{image.date}}</span>
+					<img :src="image.src" :alt="image.name">
+				</li>
+			</ul>
 		</div>
-
+		</div>
 		<!-- E: 시계열 -->
+
 	</div>
 	<!-- E: MAP WRAP -->
 
@@ -732,6 +741,7 @@
 <script type="text/javascript" src="/externlib/vue-2.5.16/vue.js"></script>
 <script type="text/javascript" src="/externlib/sortable-1.7.0/Sortable.js"></script>
 <script type="text/javascript" src="/externlib/vuedraggable-2.16.0/vuedraggable.min.js"></script>
+<script type="text/javascript" src="/externlib/moment-2.22.2/moment-with-locales.min.js"></script>
 
 <script type="text/javascript" src="/js/UIControll.js"></script>
 <script type="text/javascript" src="/js/Tooltip.js"></script>
@@ -746,6 +756,7 @@
 <script type="text/javascript" src="/js/DistrictControll.js"></script>
 <script type="text/javascript" src="/js/photoswipe.js"></script>
 <script type="text/javascript" src="/js/Mapnote.js"></script>
+<script type="text/javascript" src="/js/TimeseriesControll.js"></script>
 <script type="text/javascript" src="/js/message.js"></script>
 <script type="text/javascript" src="/js/progressSpin.min.js"></script>
 <script type="text/javascript" src="/js/raphael.js"></script>
@@ -758,7 +769,7 @@
 		alert("This page is optimized for the Chrome browser for massive data processing.\n Please use the Chrome browser for seamless service.");
 	}
 
-	//var drawHelper = new DrawHelper(viewer);
+	var drawHelper = null;
 	var isDrawFeature = {
 		isDraw: false,
 		type: '',
@@ -770,7 +781,8 @@
 	var dataInformationUrl = "/persistence/json/";
 	magoStart(null, "magoContainer", imagePath);
 	var intervalCount = 0;
-	//var timerId = setInterval("startMogoUI()", 1000);
+	var timerId = setInterval("startMogoUI()", 1000);
+
 	function startMogoUI() {
 		intervalCount++;
 		if(managerFactory != null && managerFactory.getMagoManagerState() === CODE.magoManagerState.READY) {
@@ -787,6 +799,8 @@
 			changeObjectMoveAPI(managerFactory, "2");
 			// 3PView Mode
 			changeFPVModeAPI(managerFactory, false);
+
+			drawHelper = new DrawHelper(viewer);
 			MouseControll(viewer);
 			MapControll(viewer);
 			AnalysisControll(viewer);
@@ -794,12 +808,15 @@
 			DistrictControll(viewer);
 			LayerControll(viewer);
 			MapnoteControll(viewer);
+			TimeseriesControll(viewer);
+
 			clearInterval(timerId);
 			console.log(" managerFactory != null, managerFactory.getMagoManagerState() = " + managerFactory.getMagoManagerState() + ", intervalCount = " + intervalCount);
 			return;
 		}
 		console.log("--------- intervalCount = " + intervalCount);
 	}
+
     // mago3d 시작, 정책 데이터 파일을 로딩
 	function magoStart(viewer, renderDivId, imagePath) {
 		$.ajax({
