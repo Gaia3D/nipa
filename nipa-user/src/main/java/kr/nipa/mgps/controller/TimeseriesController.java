@@ -109,7 +109,10 @@ public class TimeseriesController {
 	@GetMapping(value="/images/{id}")
 	public void showImg (HttpServletResponse response, @PathVariable("id")Long id) {
 
-        SatImage image = satImageService.getSatImageById(id);
+		SatImage image = new SatImage();
+		image.setId(id);
+		image = satImageService.getSatImageById(image);
+		
 		String originallFile =  image.getThumbnail();
 		String fileExt = FilenameUtils.getExtension(originallFile);
 		

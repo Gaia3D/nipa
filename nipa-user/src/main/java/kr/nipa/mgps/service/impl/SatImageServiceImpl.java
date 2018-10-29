@@ -28,7 +28,7 @@ public class SatImageServiceImpl implements SatImageService {
     }
 
     @Transactional(readOnly=true)
-    public SatImage getSatImageById(Long id) {
-        return satImageMapper.getSatImageById(id);
+    public SatImage getSatImageById(SatImage satImage) {
+        return satImageMapper.getSatImageById(satImage.getId());
     }
 }
