@@ -2436,7 +2436,7 @@ var CCTV = function(name)
 	this.camera = new Camera();
 	this.vboKeyContainer; // class: VBOVertexIdxCacheKeyContainer.***
 	this.vboKeyContainerEdges; // class: VBOVertexIdxCacheKeyContainer.***
-	this.color = new Color();
+	this.color = new Color4();
 	this.color.setRGBA(0.0, 0.5, 0.9, 0.3);
 	this.greenFactorSpeed = 1.0;
 	this.blueFactorSpeed = 2.0;
@@ -2980,11 +2980,11 @@ CCTVList.prototype.getCCTVCount = function()
 
 /**
  * 어떤 일을 하고 있습니까?
- * @class Color
+ * @class Color4
  */
-var Color = function() 
+var Color4 = function() 
 {
-	if (!(this instanceof Color)) 
+	if (!(this instanceof Color4)) 
 	{
 		throw new Error(Messages.CONSTRUCT_ERROR);
 	}
@@ -3006,7 +3006,7 @@ var Color = function()
  * @param blue 변수
  * @param alpha 변수
  */
-Color.prototype.copyFrom = function(color) 
+Color4.prototype.copyFrom = function(color) 
 {
 	this.r = color.r;
 	this.g = color.g;
@@ -3021,7 +3021,7 @@ Color.prototype.copyFrom = function(color)
  * @param blue 변수
  * @param alpha 변수
  */
-Color.prototype.deleteObjects = function() 
+Color4.prototype.deleteObjects = function() 
 {
 	this.r = undefined;
 	this.g = undefined;
@@ -3036,7 +3036,7 @@ Color.prototype.deleteObjects = function()
  * @param blue 변수
  * @param alpha 변수
  */
-Color.prototype.set = function(red, green, blue, alpha) 
+Color4.prototype.set = function(red, green, blue, alpha) 
 {
 	//this[0] = red;
 	//this[1] = green;
@@ -3051,7 +3051,7 @@ Color.prototype.set = function(red, green, blue, alpha)
  * @param green 변수
  * @param blue 변수
  */
-Color.prototype.setRGB = function(red, green, blue) 
+Color4.prototype.setRGB = function(red, green, blue) 
 {
 	//this[0] = red;
 	//this[1] = green;
@@ -3066,7 +3066,7 @@ Color.prototype.setRGB = function(red, green, blue)
  * @param blue 변수
  * @param alpha 변수
  */
-Color.prototype.setRGBA = function(red, green, blue, alpha) 
+Color4.prototype.setRGBA = function(red, green, blue, alpha) 
 {
 	//this[0] = red;
 	//this[1] = green;
@@ -3086,7 +3086,7 @@ var SelectionColor = function()
 		throw new Error(Messages.CONSTRUCT_ERROR);
 	}
 	
-	this.color = new Color();
+	this.color = new Color4();
 };
 
 /**
@@ -3106,7 +3106,7 @@ SelectionColor.prototype.init = function()
 SelectionColor.prototype.getAvailableColor = function(resultColor) 
 {
 	if (resultColor === undefined)
-	{ resultColor = new Color(); }
+	{ resultColor = new Color4(); }
 	
 	resultColor.setRGB(this.color.r, this.color.g, this.color.b);
 	
@@ -8037,7 +8037,7 @@ MagoManager.prototype.renderGeometryColorCoding = function(gl, visibleObjControl
 			
 			// LOD2.***
 			if (this.colorAux === undefined)
-			{ this.colorAux = new Color(); }
+			{ this.colorAux = new Color4(); }
 			
 			gl.uniformMatrix4fv(currentShader.refMatrix_loc, false, buildingGeoLocation.rotMatrix._floatArrays);
 			currentVisibleLowestOctCount = currentVisibleOctreesControler.currentVisibles2.length;
@@ -10239,7 +10239,7 @@ MagoManager.prototype.checkChangesHistoryColors = function(nodesArray)
 							// change color for all node.
 							neoBuilding.isColorChanged = true;
 							if (neoBuilding.aditionalColor === undefined)
-							{ neoBuilding.aditionalColor = new Color(); }
+							{ neoBuilding.aditionalColor = new Color4(); }
 							
 							neoBuilding.aditionalColor.setRGB(changeHistory.rgbColor[0], changeHistory.rgbColor[1], changeHistory.rgbColor[2]);
 						}
@@ -10260,7 +10260,7 @@ MagoManager.prototype.checkChangesHistoryColors = function(nodesArray)
 								{
 									neoBuilding.isColorChanged = true;
 									if (neoBuilding.aditionalColor === undefined)
-									{ neoBuilding.aditionalColor = new Color(); }
+									{ neoBuilding.aditionalColor = new Color4(); }
 									
 									neoBuilding.aditionalColor.setRGB(changeHistory.rgbColor[0], changeHistory.rgbColor[1], changeHistory.rgbColor[2]);
 								}
@@ -10279,7 +10279,7 @@ MagoManager.prototype.checkChangesHistoryColors = function(nodesArray)
 							{
 								var object = objectsArray[j];
 								if (object.aditionalColor === undefined)
-								{ object.aditionalColor = new Color(); }
+								{ object.aditionalColor = new Color4(); }
 								
 								object.aditionalColor.setRGB(changeHistory.rgbColor[0], changeHistory.rgbColor[1], changeHistory.rgbColor[2]);
 							}
@@ -10335,7 +10335,7 @@ MagoManager.prototype.checkChangesHistoryColors = function(nodesArray)
 											{
 												neoBuilding.isColorChanged = true;
 												if (neoBuilding.aditionalColor === undefined)
-												{ neoBuilding.aditionalColor = new Color(); }
+												{ neoBuilding.aditionalColor = new Color4(); }
 												
 												neoBuilding.aditionalColor.setRGB(changeHistory.rgbColor[0], changeHistory.rgbColor[1], changeHistory.rgbColor[2]);
 											}
@@ -10360,7 +10360,7 @@ MagoManager.prototype.checkChangesHistoryColors = function(nodesArray)
 												{
 													neoBuilding.isColorChanged = true;
 													if (neoBuilding.aditionalColor === undefined)
-													{ neoBuilding.aditionalColor = new Color(); }
+													{ neoBuilding.aditionalColor = new Color4(); }
 													
 													neoBuilding.aditionalColor.setRGB(changeHistory.rgbColor[0], changeHistory.rgbColor[1], changeHistory.rgbColor[2]);
 												}
@@ -10751,7 +10751,7 @@ MagoManager.prototype.renderGeometry = function(gl, cameraPosition, shader, rend
 			var selectedNodesArray = [];
 			selectedNodesArray.push(this.nodeSelected);
 			if (this.colorSC === undefined)
-			{ this.colorSC = new Color(); }
+			{ this.colorSC = new Color4(); }
 			this.colorSC.setRGB(0.8, 1.0, 1.0);
 			this.renderBoundingBoxesNodes(gl, selectedNodesArray, this.colorSC); // old.
 			*/
@@ -11412,7 +11412,7 @@ MagoManager.prototype.renderRenderables = function(gl, cameraPosition, shader, r
 			var selectedNodesArray = [];
 			selectedNodesArray.push(this.nodeSelected);
 			if (this.colorSC === undefined)
-			{ this.colorSC = new Color(); }
+			{ this.colorSC = new Color4(); }
 			this.colorSC.setRGB(0.8, 1.0, 1.0);
 			this.renderBoundingBoxesNodes(gl, selectedNodesArray, this.colorSC); // old.
 			*/
@@ -33125,7 +33125,7 @@ var NeoReference = function()
 	this.texture; // Texture
 
 	// 6) 1 color.***
-	this.color4; //new Color();
+	this.color4; //new Color4();
 	this.aditionalColor; // used when object color was changed.***
 
 	this.vertexCount = 0;// provisional. for checking vertexCount of the block.*** delete this.****
@@ -33213,12 +33213,12 @@ NeoReference.prototype.deleteObjects = function(gl, vboMemManager)
 	// 6) 1 color.***
 	if (this.color4)
 	{ this.color4.deleteObjects(); }
-	this.color4 = undefined; //new Color();
+	this.color4 = undefined; //new Color4();
 
 	// 7) selection color.***
 	if (this.selColor4)
 	{ this.selColor4.deleteObjects(); }
-	this.selColor4 = undefined; //new Color(); // use for selection only.***
+	this.selColor4 = undefined; //new Color4(); // use for selection only.***
 
 	this.vertexCount = undefined;// provisional. for checking vertexCount of the block.*** delete this.****
 
@@ -33659,7 +33659,7 @@ NeoReferencesMotherAndIndices.prototype.parseArrayBufferReferencesVersioned = fu
 					alfa = readWriter.readUInt8(arrayBuffer, bytes_readed, bytes_readed+daya_bytes); bytes_readed += daya_bytes;
 				}
 
-				neoRef.color4 = new Color();
+				neoRef.color4 = new Color4();
 				neoRef.color4.set(r, g, b, alfa);
 			}
 			
@@ -34033,7 +34033,7 @@ NeoReferencesMotherAndIndices.prototype.parseArrayBufferReferences = function(gl
 					alfa = readWriter.readUInt8(arrayBuffer, bytes_readed, bytes_readed+daya_bytes); bytes_readed += daya_bytes;
 				}
 
-				neoRef.color4 = new Color();
+				neoRef.color4 = new Color4();
 				neoRef.color4.set(r, g, b, alfa);
 			}
 			
@@ -45184,7 +45184,7 @@ var Vertex = function(position)
 	this.point3d;
 	this.normal; // class: Point3D.
 	this.texCoord; // class: Point2D.
-	this.color4; // class: Color.
+	this.color4; // class: Color4.
 	
 	this.outingHedge; // class: HalfEdge
 	//this.outingHalfEdgesArray; // Array [class: HalfEdge]. 
@@ -45283,7 +45283,7 @@ Vertex.prototype.copyFrom = function(vertex)
 	if (vertex.color4)
 	{
 		if (this.color4 === undefined)
-		{ this.color4 = new Color(); }
+		{ this.color4 = new Color4(); }
 		
 		this.color4.copyFrom(vertex.color4);
 	}
@@ -45310,7 +45310,7 @@ Vertex.prototype.setPosition = function(x, y, z)
  */
 Vertex.prototype.setColorRGB = function(r, g, b) 
 {
-	if (this.color4 === undefined) { this.color4 = new Color(); }
+	if (this.color4 === undefined) { this.color4 = new Color4(); }
 	
 	this.color4.setRGB(r, g, b);
 };
@@ -45324,7 +45324,7 @@ Vertex.prototype.setColorRGB = function(r, g, b)
  */
 Vertex.prototype.setColorRGBA = function(r, g, b, alpha) 
 {
-	if (this.color4 === undefined) { this.color4 = new Color(); }
+	if (this.color4 === undefined) { this.color4 = new Color4(); }
 	
 	this.color4.setRGBA(r, g, b, alpha);
 };

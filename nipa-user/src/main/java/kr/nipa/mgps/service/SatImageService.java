@@ -26,8 +26,8 @@ public interface SatImageService {
     /**
      * 위성영상 정보
      * 
-     * @param id
+     * @param satImage
      * @return
      */
-    SatImage getSatImageById(Long id);
+    SatImage getSatImageById(SatImage satImage);
 }
