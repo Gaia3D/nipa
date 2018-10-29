@@ -7,7 +7,9 @@ import lombok.ToString;
 @ToString
 @Setter
 @Getter
-public class AddrJibun extends SearchItem {
+public class AddrJibun extends SearchFilter {
+	
+	private String fullTextSearch;
 	
 	// 법정동코드
 	private String code_law;

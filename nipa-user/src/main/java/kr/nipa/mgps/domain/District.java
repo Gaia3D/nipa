@@ -7,6 +7,7 @@ import lombok.ToString;
 @ToString
 @Setter
 @Getter
-public class District extends SearchItem {
+public class District extends SearchFilter {
 
+	private String fullTextSearch;
 }
