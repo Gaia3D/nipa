@@ -11,17 +11,10 @@ var gotoPage;
 var forwardPage;
 var nextPage;
 
-// 맵노트 메뉴
-$('#mapnoteMenu').on('click', function() {
-	if($('#mapnoteMenu').hasClass('on') === true) {
-		MapnoteControll();
-//		removeAllBillboard();
-	}
-});
-
 // 맵노트 등록
 var file_up_names = new Array;
 Dropzone.autoDiscover = false;
+/*
 var mapnoteDropzone = new Dropzone('#my-dropzone', {
 	
 	url : "/insert",
@@ -82,28 +75,37 @@ var mapnoteDropzone = new Dropzone('#my-dropzone', {
 		});
 		
 		this.on('resetFiles', function() {
-	        if(this.files.length != 0){
+	        if(this.files.length !== 0){
 	            for(i=0; i<this.files.length; i++){
 	                this.files[i].previewElement.remove();
 	            }
-	            this.options.maxFiles = this.options.maxFiles + this.files.length;
-	            if (this.element.classList.contains("dropzone")) {
-	            	Dropzone.createElement("<div class=\"dz-default dz-message\"><span>" + this.options.dictDefaultMessage + "</span></div>");
-	            }
+
+            // init - dictDefaultMessage
+	        var test = $('div').find('.dz-message');
+            var message = $('div').find('.dz-message').find('span').text();
+            $('#my-dropzone').append(test);
+            
+//	            if (this.element.classList.contains("dropzone")) {
+//	            	Dropzone.createElement("<div class=\"dz-default dz-message\"><span>" + this.options.dictDefaultMessage + "</span></div>");
+//	            }
+//	            if (this.options.maxFiles === 8) {
+//	                this.element.appendChild(Dropzone.createElement("<div class=\"dz-default dz-message\"><span>" + this.options.dictDefaultMessage + "</span></div>"));
+//	            }
 	        }
 	    });
 		
+		// 전체 삭제 버튼
 		clearTask.addEventListener("click", function(files) {
-//			if (confirm("전체 파일을 삭제하겠습니까?")) {
-//				_dropzone.clearAllfiles(true);
-//			}
 			if(mapnoteDropzone.files.length > 0) {
 				mapnoteDropzone.emit("resetFiles");
+				
 				for(var i = 0; i < mapnoteDropzone.files.length; i++) {
 					if(mapnoteDropzone.files[i].fid !== undefined) {
 						mapnoteDropzone.emit("addedfile", mapnoteDropzone.files[i]);
 						mapnoteDropzone.emit("thumbnail", mapnoteDropzone.files[i], "/displayImg/"+ mapnoteDropzone.files[i].fid);
 						mapnoteDropzone.emit("complete", mapnoteDropzone.files[i]);
+					} else {
+						// init - dictDefaultMessage
 					}
 				}
 			} 
@@ -191,7 +193,23 @@ var mapnoteDropzone = new Dropzone('#my-dropzone', {
 	}
 	
 });
-
+*/
+var mapnoteDropzone = new Dropzone('#my-dropzone', {
+	
+	url : "/insert",
+	autoProcessQueue : false,
+	uploadMultiple : true,
+	method : "post",
+	parallelUploads : 8,
+	maxFiles : 8,
+	maxFilesize : 500,
+	dictDefaultMessage : "파일을 업로드하려면 드래그하거나 클릭하십시오.",
+	acceptedFiles : ".jpeg, .jpg, .gif, .png, .JPEG, .JPG, .GIF, .PNG",
+	clickable : true,
+	fallback : function() {
+		alert("죄송합니다. 최신의 브라우저로 Update 후 사용해 주십시오.");
+		return;
+	}});
 // 해당 페이지 바로가기
 $('#gotoPageBtn').click(function() {
 	pageNo = $('#gotoPage').val();
@@ -580,10 +598,10 @@ function gotoFlyMark(longitude, latitude, heigth, name)
 function Mapnote(viewer)
 {
 	this.pins = [];
-	
+	this.viewer = viewer;
 	this.addBillboard = function (longitude, latitude, name) {
 		
-	    var target = viewer.entities.add({
+	    var target = this.viewer.entities.add({
 	        position : Cesium.Cartesian3.fromDegrees(longitude, latitude),
 	        billboard :{
 	        	name : name,
@@ -598,7 +616,7 @@ function Mapnote(viewer)
 	};
 	
 	this.gotoFly = function (longitude, latitude, heigth) {
-		viewer.camera.flyTo({
+		this.viewer.camera.flyTo({
 		    destination : Cesium.Cartesian3.fromDegrees(longitude, latitude, heigth)
 		});
 	};
@@ -607,13 +625,13 @@ function Mapnote(viewer)
 	{
 		for(var i=0, len = this.pins.length; i <len; i++)
 		{
-			viewer.entities.remove(this.pins[i]);
+			this.viewer.entities.remove(this.pins[i]);
 		}
 		this.pins= [];
 	}
 	
 	this.removeById = function () {
-		viewer.entities.removeById();
+		this.viewer.entities.removeById();
 	};
 	
 	this.pickPosition = function () {
