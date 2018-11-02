@@ -23,7 +23,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,7 +43,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
-@RequestMapping("/nipa")
 public class MapnoteController {
 	
 	@Autowired
@@ -71,7 +69,6 @@ public class MapnoteController {
 	 */
 	@ResponseBody
 	@RequestMapping(value ="mapnote/{pageNo}", method = RequestMethod.GET)
-	@GetMapping(value = "mapnote/{pageNo}")
 	public Map<String, Object> ajaxListMapnote(HttpServletRequest request, @PathVariable("pageNo")Long pageNo) {
 		Map<String, Object> map = new HashMap<>();
 		String result = "success";
@@ -278,7 +275,7 @@ public class MapnoteController {
 	 * @return
 	 */
 	@ResponseBody
-	@GetMapping(value= "updateForm/{map_note_id}")
+	@RequestMapping(value= "updateForm/{map_note_id}", method = RequestMethod.GET)
 	public Map<String, Object> updateForm(@PathVariable("map_note_id") Long map_note_id) {
 		Map<String, Object> map = new HashMap<>();
 		String result = "success";
