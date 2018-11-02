@@ -21,6 +21,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -28,7 +29,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -42,13 +42,9 @@ import kr.nipa.mgps.service.PolicyService;
 import kr.nipa.mgps.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * @RestController = @Controller + ResponseBody
- * @Controller로 바꾸고 ResponseBody 를 사용하던지, RestController 와 Controller 파일을 분리 하던지....
- *
- */
 @Slf4j
-@RestController
+@Controller
+@RequestMapping("/nipa")
 public class MapnoteController {
 	
 	@Autowired
@@ -73,6 +69,7 @@ public class MapnoteController {
 	 * @param pageNo
 	 * @return
 	 */
+	@ResponseBody
 	@RequestMapping(value ="mapnote/{pageNo}", method = RequestMethod.GET)
 	@GetMapping(value = "mapnote/{pageNo}")
 	public Map<String, Object> ajaxListMapnote(HttpServletRequest request, @PathVariable("pageNo")Long pageNo) {
@@ -110,6 +107,7 @@ public class MapnoteController {
 	 * @param request
 	 * @return
 	 */
+	@ResponseBody
 	@RequestMapping(value="insert", method = RequestMethod.POST)
 	public Map<String, Object> insertMapnoteFile(@ModelAttribute Mapnote mapnote, MultipartHttpServletRequest request) {
 		Map<String, Object> map = new HashMap<>();
@@ -248,6 +246,7 @@ public class MapnoteController {
 	 * @param map_note_id
 	 * @return
 	 */
+	@ResponseBody
 	@RequestMapping(value="mapnote/{pageNo}/{map_note_id}", method = RequestMethod.GET)
 	public Map<String, Object> detailMapnote(@PathVariable("pageNo")Long pageNo, @PathVariable("map_note_id")Long map_note_id) {
 		Map<String, Object> map = new HashMap<>();
@@ -278,6 +277,7 @@ public class MapnoteController {
 	 * @param map_note_id
 	 * @return
 	 */
+	@ResponseBody
 	@GetMapping(value= "updateForm/{map_note_id}")
 	public Map<String, Object> updateForm(@PathVariable("map_note_id") Long map_note_id) {
 		Map<String, Object> map = new HashMap<>();
@@ -314,6 +314,7 @@ public class MapnoteController {
 	 * @param map_note_id
 	 * @return
 	 */
+	@ResponseBody
 	@RequestMapping(value="update/{map_note_id}", method = RequestMethod.POST)
 	public Map<String, Object> updateMapnoteFile(@ModelAttribute Mapnote mapnote, MultipartHttpServletRequest request, @PathVariable("map_note_id")Long map_note_id) {
 		log.info("############## map_note_id = {}", map_note_id);
@@ -378,6 +379,7 @@ public class MapnoteController {
 	 * @param map_note_id
 	 * @return
 	 */
+	@ResponseBody
 	@RequestMapping(value ="mapnote/{map_note_id}", method = RequestMethod.DELETE)
 	public Map<String, Object> deleteMapnote(@PathVariable("map_note_id")Long map_note_id) {
 		Map<String, Object> map = new HashMap<>();
@@ -429,6 +431,7 @@ public class MapnoteController {
 	 * @param file_info_id
 	 * @return
 	 */
+	@ResponseBody
 	@RequestMapping(value ="fileInfo/{file_info_id}", method = RequestMethod.DELETE)
 	public Map<String, Object> deleteEachFile(@PathVariable("file_info_id")Long file_info_id) {
 		Map<String, Object> map = new HashMap<>();
