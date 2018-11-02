@@ -4,14 +4,14 @@
 <meta charset="utf-8">
 <meta content="IE=edge" http-equiv="X-UA-Compatible">
 <title>군 공간정보 포털시스템</title>
-<link rel="stylesheet" href="/css/style.css">
-<link rel="stylesheet" href="/externlib/cesium-1.44/Widgets/widgets.css">
-<link rel="stylesheet" href="/externlib/jquery-ui-1.12.1/jquery-ui.css">
-<link rel="stylesheet" href="/externlib/drawHelper/DrawHelper.css">
-<link rel="stylesheet" href="/externlib/geostats/geostats.css">
-<link rel="stylesheet" href="/externlib/dropzone/dropzone.css">
-<link rel="stylesheet" href="/externlib/photoswipe/css/photoswipe.css">
-<link rel="stylesheet" href="/externlib/photoswipe/css/default-skin/default-skin.css">
+<link rel="stylesheet" href="./css/style.css">
+<link rel="stylesheet" href="./externlib/cesium-1.44/Widgets/widgets.css">
+<link rel="stylesheet" href="./externlib/jquery-ui-1.12.1/jquery-ui.css">
+<link rel="stylesheet" href="./externlib/drawHelper/DrawHelper.css">
+<link rel="stylesheet" href="./externlib/geostats/geostats.css">
+<link rel="stylesheet" href="./externlib/dropzone/dropzone.css">
+<link rel="stylesheet" href="./externlib/photoswipe/css/photoswipe.css">
+<link rel="stylesheet" href="./externlib/photoswipe/css/default-skin/default-skin.css">
 </head>
 
 <body>
@@ -584,25 +584,24 @@
 			</div>
 			<div class="layerContents">
 				<form id="uploadForm">
-				<ul class="note">
-					<li>
-						<input id="noteTitle" type="text" size="34" placeholder="지점명을 입력하세요">
-					</li>
-					<li>
-						<input id="noteLocation" type="text" size="26" placeholder="126.6075050765, 37.5820583757">
-						<button id="getPointMapnote" class="basicA" onclick="pickPosition();" >지점</button>
-					</li>
-					<li>
-						<textarea id="description" cols="36" rows="5"></textarea>
-					</li>
-				</ul>
+					<ul class="note">
+						<li>
+							<input id="noteTitle" type="text" size="34" placeholder="지점명을 입력하세요">
+						</li>
+						<li>
+							<input id="noteLocation" type="text" size="26" placeholder="126.6075050765, 37.5820583757">
+							<button id="getPointMapnote" class="basicA" onclick="pickPosition();" >지점</button>
+						</li>
+						<li>
+							<textarea id="description" cols="36" rows="5"></textarea>
+						</li>
+					</ul>
 					<div id="my-dropzone" class="dropzone yScroll" ></div>
-
-					<div class="uploadBtn">
-						<button type="submit" id="mapnoteBtn" class="focusA">등록</button>
-						<button id="allFileClear" type="button" class="focusC">전체 삭제</button>
-					</div>
 				</form>
+				<div class="uploadBtn">
+					<button type="submit" id="mapnoteBtn" class="focusA">등록</button>
+					<button id="allFileClear" type="button" class="focusC">전체 삭제</button>
+				</div>
 			</div>
 		</div>
 		<!-- E: 레이어 / 지점등록 -->
@@ -725,42 +724,42 @@
 </div>
 <!-- E: WRAP -->
 
-<script type="text/javascript" src="/externlib/cesium-1.44/Cesium.js"></script>
-<script type="text/javascript" src="/externlib/mago3d/mago3d.js"></script>
-<script type="text/javascript" src="/externlib/jquery-3.3.1/jquery-3.3.1.min.js"></script>
-<script type="text/javascript" src="/externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-<script type="text/javascript" src="/externlib/proj4js-2.4.3/proj4.min.js"></script>
-<script type="text/javascript" src="/externlib/handlebars-4.0.12/handlebars.runtime.js"></script>
-<script type="text/javascript" src="/externlib/geostats/geostats.js"></script>
-<script type="text/javascript" src="/externlib/chartjs/Chart.min.js"></script>
-<script type="text/javascript" src="/externlib/wellknown/wellknown.js"></script>
-<script type="text/javascript" src="/externlib/drawHelper/DrawHelper.js"></script>
-<script type="text/javascript" src="/externlib/dropzone/dropzone.js"></script>
-<script type="text/javascript" src="/externlib/photoswipe/js/photoswipe.min.js"></script>
-<script type="text/javascript" src="/externlib/photoswipe/js/photoswipe-ui-default.min.js"></script>
-<script type="text/javascript" src="/externlib/vue-2.5.16/vue.js"></script>
-<script type="text/javascript" src="/externlib/sortable-1.7.0/Sortable.js"></script>
-<script type="text/javascript" src="/externlib/vuedraggable-2.16.0/vuedraggable.min.js"></script>
-<script type="text/javascript" src="/externlib/moment-2.22.2/moment-with-locales.min.js"></script>
+<script type="text/javascript" src="./externlib/cesium-1.44/Cesium.js"></script>
+<script type="text/javascript" src="./externlib/mago3d/mago3d.js"></script>
+<script type="text/javascript" src="./externlib/jquery-3.3.1/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="./externlib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+<script type="text/javascript" src="./externlib/proj4js-2.4.3/proj4.min.js"></script>
+<script type="text/javascript" src="./externlib/handlebars-4.0.12/handlebars.runtime.js"></script>
+<script type="text/javascript" src="./externlib/geostats/geostats.js"></script>
+<script type="text/javascript" src="./externlib/chartjs/Chart.min.js"></script>
+<script type="text/javascript" src="./externlib/wellknown/wellknown.js"></script>
+<script type="text/javascript" src="./externlib/drawHelper/DrawHelper.js"></script>
+<script type="text/javascript" src="./externlib/dropzone/dropzone.js"></script>
+<script type="text/javascript" src="./externlib/photoswipe/js/photoswipe.min.js"></script>
+<script type="text/javascript" src="./externlib/photoswipe/js/photoswipe-ui-default.min.js"></script>
+<script type="text/javascript" src="./externlib/vue-2.5.16/vue.js"></script>
+<script type="text/javascript" src="./externlib/sortable-1.7.0/Sortable.js"></script>
+<script type="text/javascript" src="./externlib/vuedraggable-2.16.0/vuedraggable.min.js"></script>
+<script type="text/javascript" src="./externlib/moment-2.22.2/moment-with-locales.min.js"></script>
 
-<script type="text/javascript" src="/js/UIControll.js"></script>
-<script type="text/javascript" src="/js/Tooltip.js"></script>
-<script type="text/javascript" src="/js/NumberFormatter.js"></script>
-<script type="text/javascript" src="/js/CoordControll.js"></script>
-<script type="text/javascript" src="/js/LayerControll.js"></script>
-<script type="text/javascript" src="/js/MouseControll.js"></script>
-<script type="text/javascript" src="/js/MapControll.js"></script>
-<script type="text/javascript" src="/js/wpsRequest.js"></script>
-<script type="text/javascript" src="/js/AnalysisControll.js"></script>
-<script type="text/javascript" src="/js/templates.js"></script>
-<script type="text/javascript" src="/js/DistrictControll.js"></script>
-<script type="text/javascript" src="/js/photoswipe.js"></script>
-<script type="text/javascript" src="/js/Mapnote.js"></script>
-<script type="text/javascript" src="/js/TimeseriesControll.js"></script>
-<script type="text/javascript" src="/js/message.js"></script>
-<script type="text/javascript" src="/js/progressSpin.min.js"></script>
-<script type="text/javascript" src="/js/raphael.js"></script>
-<script type="text/javascript" src="/js/paging.js"></script>
+<script type="text/javascript" src="./js/UIControll.js"></script>
+<script type="text/javascript" src="./js/Tooltip.js"></script>
+<script type="text/javascript" src="./js/NumberFormatter.js"></script>
+<script type="text/javascript" src="./js/CoordControll.js"></script>
+<script type="text/javascript" src="./js/LayerControll.js"></script>
+<script type="text/javascript" src="./js/MouseControll.js"></script>
+<script type="text/javascript" src="./js/MapControll.js"></script>
+<script type="text/javascript" src="./js/wpsRequest.js"></script>
+<script type="text/javascript" src="./js/AnalysisControll.js"></script>
+<script type="text/javascript" src="./js/templates.js"></script>
+<script type="text/javascript" src="./js/DistrictControll.js"></script>
+<script type="text/javascript" src="./js/photoswipe.js"></script>
+<script type="text/javascript" src="./js/Mapnote.js"></script>
+<script type="text/javascript" src="./js/TimeseriesControll.js"></script>
+<script type="text/javascript" src="./js/message.js"></script>
+<script type="text/javascript" src="./js/progressSpin.min.js"></script>
+<script type="text/javascript" src="./js/raphael.js"></script>
+<script type="text/javascript" src="./js/paging.js"></script>
 
 <script>
 	var MAP_NOTE_ID = null;
