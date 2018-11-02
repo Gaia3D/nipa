@@ -787,6 +787,18 @@ text-align: center;
 color: #b2cde0;
 }
 
+/* 첨부파일 */
+.fileDrop {
+width: 97%;
+height: 200px;
+border: 1px dotted blue;
+}
+small {
+margin-left: 3px;
+font-weight: bold;
+color: gray; 
+}
+
 /* 지점등록 레이어 / 썸네일이미지 */
 ul.thumb {
 overflow-x: hidden;

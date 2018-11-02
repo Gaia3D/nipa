@@ -403,11 +403,6 @@ $(function() {
 			$('#mapCtrlArea').removeClass('on');
 		}
 		layerClose(mapnoteLayer);
-		
-		mapnoteDropzone.destroy();
-		mapnoteDropzone.init();
-	      
-	      
 	});
 	
 	// 지점 버튼 클릭

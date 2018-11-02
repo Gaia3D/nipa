@@ -194,22 +194,8 @@ var mapnoteDropzone = new Dropzone('#my-dropzone', {
 	
 });
 */
-var mapnoteDropzone = new Dropzone('#my-dropzone', {
-	
-	url : "/insert",
-	autoProcessQueue : false,
-	uploadMultiple : true,
-	method : "post",
-	parallelUploads : 8,
-	maxFiles : 8,
-	maxFilesize : 500,
-	dictDefaultMessage : "파일을 업로드하려면 드래그하거나 클릭하십시오.",
-	acceptedFiles : ".jpeg, .jpg, .gif, .png, .JPEG, .JPG, .GIF, .PNG",
-	clickable : true,
-	fallback : function() {
-		alert("죄송합니다. 최신의 브라우저로 Update 후 사용해 주십시오.");
-		return;
-	}});
+
+
 // 해당 페이지 바로가기
 $('#gotoPageBtn').click(function() {
 	pageNo = $('#gotoPage').val();
@@ -369,32 +355,39 @@ function ajaxMapnoteList(pageNo) {
 	});
 }
 
-// 맵노트 validation - 지점 버튼 클릭으로 바뀔 것, 문자열 체크
-function check() {
-	var noteLocation = $('#noteLocation').val().replace(/ /g, '');
-	var noteLongitude = noteLocation.substring(0, noteLocation.indexOf(","));
-	var noteLatitude = noteLocation.substring(noteLocation.indexOf(",")+1, noteLocation.length);
+// 첨부파일 수정
+$('.fileDrop').on("dragenter dragover", function(event) {
+	event.preventDefault();
+});
+
+$('.fileDrop').on("drop", function(event) {
+	event.preventDefault();
 	
-	if($('#noteTitle').val() === "") {
-		alert("지점명을 입력하여 주십시오.");
-		$('#noteTitle').focus();
-		return false;
-	}
-	if(noteLocation === "") {
-		alert("지점 위치를 선택하여 주십시오.");
-		$('#noteLocation').focus();
-		return false;
-	}
-	if(noteLongitude < (-180) || noteLongitude > 180) {
-		alert("경도의 값을 확인해 주십시오.");
-		$('#noteLocation').focus();
-		return false;
-	}
-	if(noteLatitude < (-90) || noteLatitude > 90) {
-		alert("위도의 값을 확인해 주십시오.");
-		return false;
-	}
-}
+	var files = event.originalEvent.dataTransfer.files;
+	
+	var file = files[0];
+	
+	console.log(file);
+
+	var formData = new FormData();
+	formData.append("noteTitle", $('#noteTitle').val());
+	formData.append("noteLocation", $('#noteLocation').val());
+	formData.append("description", $('#description').val());
+	formData.append("MAP_NOTE_ID", MAP_NOTE_ID);
+	formData.append("file", file);
+	
+	$.ajax({
+		url: '/uploadAjax',
+		data: formData,
+		processData: false,
+		contentType: false,
+		type: 'POST',
+		success: function(data) {
+			alert(data);
+		}
+	});
+});
+
 
 // 맵노트 상세
 // TODO 화면 중앙 배치
