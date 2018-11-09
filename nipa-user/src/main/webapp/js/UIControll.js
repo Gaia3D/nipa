@@ -117,50 +117,6 @@ function closeBtn(layer) {
 // 레이어 창 마우스 드래그
 $('#settingLayer').draggable();
 
-/*
-//dropzone
-(function($){
-	var newDropzone = document.createElement('div');
-	newDropzone.id = 'my-dropzone';
-	newDropzone.className = 'dropzone yScroll';
-	
-	function createDropzone() {
-		$('#uploadForm').append(newDropzone);
-//		$('#my-dropzone').empty();
-	}
-	
-	function removeDropzone() {
-		newDropzone.remove();
-	}
-	
-	// 지점등록
-	$('#inputMapnote.focusA').click(function() {
-		console.log("지점등록 클릭");
-		
-		$('#mapnoteLayer h2').text("지점등록");
-		$('#mapnoteBtn').text("등록");
-		$('#noteTitle').val('');
-		$('#noteLocation').val('');
-		$('#description').val('');
-		mapnoteLayer.css('display', 'block');
-		
-		removeDropzone();
-		createDropzone();
-		
-		if(mapnoteLayer.css('display') == 'block') {
-			distanceLayer.hide();
-			areaLayer.hide();
-			$('#mapCtrlDistance').removeClass('on');
-			$('#mapCtrlArea').removeClass('on');
-		}
-		layerClose(mapnoteLayer);
-	});
-	
-	createDropzone();
-	
-})(jQuery);
-*/
-
 $(function() {
 
 /***** NAV WRAP: 메뉴 *****/	
@@ -367,6 +323,12 @@ $(function() {
 		console.log("좌표 독취에서 지점등록 클릭");
 		$('#noteTitle').val('');
 		$('#description').val('');
+		
+		// 첨부 파일 리셋
+		for(var i = 0, len = 7; i < len ; i++) {
+			deleteFile(i);
+		}
+
 		mapnoteLayer.css('display', 'block');
 		
 		if(mapnoteLayer.css('display') == 'block') {
@@ -394,6 +356,14 @@ $(function() {
 		$('#noteTitle').val('');
 		$('#noteLocation').val('');
 		$('#description').val('');
+		
+		// 첨부 파일 리셋
+		for(var i = 0, len = 7; i < len ; i++) {
+			deleteFile(i);
+		}
+		
+		$('#mapnoteBtn').attr("onclick", "uploadMapnote()");
+		
 		mapnoteLayer.css('display', 'block');
 		
 		if(mapnoteLayer.css('display') == 'block') {
@@ -434,6 +404,12 @@ $(function() {
 		console.log("지점수정 클릭");
 		$('#mapnoteLayer h2').text("지점수정");
 		$('#mapnoteBtn').text("수정");
+		
+		// 첨부 파일 리셋
+		for(var i = 0, len = 7; i < len ; i++) {
+			deleteFile(i);
+		}
+		
 		mapnoteLayer.css('display', 'block');
 		
 		if(mapnoteLayer.css('display') == 'block') {

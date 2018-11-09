@@ -583,26 +583,29 @@
 				<button type="button" class="layerClose" title="닫기">닫기</button>
 			</div>
 			<div class="layerContents">
-				<form id="uploadForm" action="uploadAjax" method="post" enctype="multipart/form-data">
+				<!-- <form id="uploadForm" action="#" method="post" enctype="multipart/form-data"> -->
 					<ul class="note">
 						<li>
 							<input id="noteTitle" type="text" size="34" placeholder="지점명을 입력하세요">
 						</li>
 						<li>
 							<input id="noteLocation" type="text" size="26" placeholder="126.6075050765, 37.5820583757">
-							<button id="getPointMapnote" class="basicA" onclick="pickPosition();" >지점</button>
+							<button id="getPointMapnote" class="basicA" onclick="pickPosition();">지점</button>
 						</li>
 						<li>
 							<textarea id="description" cols="36" rows="5"></textarea>
 						</li>
 					</ul>
-					<div class="fileDrop yScroll"></div>
+					<div class="fileDrop yScroll">
+						<div id="filetext"><p>파일을 첨부하여주십시오</p></div>
+					</div>
+					<div class="uploadedList" ></div>
+					
 					<div class="uploadBtn">
-						<button type="submit" id="mapnoteBtn" class="focusA">등록</button>
+						<button type="button" id="mapnoteBtn" class="focusA">등록</button>
 						<button id="allFileClear" type="button" class="focusC">전체 삭제</button>
 					</div>
-				</form>
-				<!-- <iframe id="zeroFrame" class="yScroll" style="width:250px; height:120px; margin-top: 10px;"></iframe> -->
+				<!-- </form> -->
 			</div>
 		</div>
 		<!-- E: 레이어 / 지점등록 -->
