@@ -62,7 +62,7 @@ CREATE TABLE public.gstn_pmntn_ln (
 -- Type: COMMENT;
 --
 
-COMMENT ON TABLE public.gstn_pmntn_ln IS '탐장로';
+COMMENT ON TABLE public.gstn_pmntn_ln IS '탐방로';
 COMMENT ON COLUMN public.gstn_pmntn_ln.course_id IS '코스 ID';
 COMMENT ON COLUMN public.gstn_pmntn_ln.cos_kor_nm IS '코스명(한글)';
 COMMENT ON COLUMN public.gstn_pmntn_ln.cos_eng_nm IS '코스명(영문)';
