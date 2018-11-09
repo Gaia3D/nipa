@@ -23,8 +23,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -68,7 +70,7 @@ public class MapnoteController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value ="mapnote/{pageNo}", method = RequestMethod.GET)
+	@GetMapping(value ="mapnote/{pageNo}")
 	public Map<String, Object> ajaxListMapnote(HttpServletRequest request, @PathVariable("pageNo")Long pageNo) {
 		Map<String, Object> map = new HashMap<>();
 		String result = "success";
@@ -100,15 +102,16 @@ public class MapnoteController {
 	
 	/**
 	 * 맵노트 등록
-	 * @param mapnote
+	 * @param file
 	 * @param request
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value="insert", method = RequestMethod.POST)
-	public Map<String, Object> insertMapnoteFile(@ModelAttribute Mapnote mapnote, MultipartHttpServletRequest request) {
+	@PostMapping(value = "/insert")
+	public Map<String, Object> insert(MultipartFile file, MultipartHttpServletRequest request) {
 		Map<String, Object> map = new HashMap<>();
 		String result = "success";
+		Mapnote mapnote = new Mapnote();
 		
 		try {
 			mapnote.setUser_id("guest");
@@ -117,7 +120,7 @@ public class MapnoteController {
 			String longitude = noteLocation[0].trim();
 			String latitude = noteLocation[1].trim();
 			String description = request.getParameter("description");
-			log.info("noteTitle = {}, longitude = {}, latitude = {}", noteTitle, longitude, latitude);
+			log.info("@@@ noteTitle = {}, longitude = {}, latitude = {}, description = {}", noteTitle, longitude, latitude, description);
 			
 			mapnote.setNote_title(noteTitle);
 			mapnote.setLongitude(new BigDecimal(longitude));
@@ -125,12 +128,16 @@ public class MapnoteController {
 			mapnote.setHeight(new BigDecimal(0));
 			mapnote.setDescription(description);
 			
-			long map_note_id= mapnoteService.getMapnoteId();
+			long map_note_id= mapnoteService.getMapnoteId(); 
 			mapnote.setMap_note_id(map_note_id);
 			mapnote.setMap_note_detail_id(map_note_id);
 			mapnoteService.insertMapnote(mapnote);
 			map.put("mapnote", mapnote);
 			log.info("@@@ after mapnote = {}", mapnote);
+
+			log.info("@@ originalName = {}", file);
+			log.info("@@ size = {}", file.getSize());
+			log.info("@@ contentType = {}", file.getContentType());
 			
 			// 파일 등록
 			List<FileInfo> fileList = new ArrayList<>();
@@ -154,13 +161,16 @@ public class MapnoteController {
 			}
 			fileService.insertFiles(fileList);
 			long count = fileService.getFileCountByMapnoteId(map_note_id);
-			map.put("count", count);
+			map.put("count", count); // 등록된 파일의 건 수
 			
+			fileList = fileService.getListFileInfo(map_note_id);
+			map.put("fileList", fileList);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 			result = "db.exception";
 		}
+		
 		map.put("result", result);
 		return map;
 	}
@@ -171,7 +181,7 @@ public class MapnoteController {
 	 * @return
 	 * @throws IOException
 	 */
-	@RequestMapping(value="displayImg/{file_info_id}", method = RequestMethod.GET)
+	@GetMapping(value="displayImg/{file_info_id}")
 	public ResponseEntity<byte[]> displayImg(@PathVariable("file_info_id")Long file_info_id) throws IOException {
 		log.info("@@@@@ file_info_id = {}", file_info_id);
 		FileInfo file = fileService.getFileInfoByFileId(file_info_id);
@@ -205,7 +215,7 @@ public class MapnoteController {
 	 * @return
 	 * @throws IOException
 	 */
-	@RequestMapping(value="showImg/{file_info_id}", method = RequestMethod.GET)
+	@GetMapping(value="showImg/{file_info_id}")
 	@ResponseBody
 	public void showImg (@PathVariable("file_info_id")Long file_info_id, HttpServletResponse response) throws IOException {
 		log.info("@@@@@ file_info_id = {}", file_info_id);
@@ -244,7 +254,7 @@ public class MapnoteController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value="mapnote/{pageNo}/{map_note_id}", method = RequestMethod.GET)
+	@GetMapping(value="mapnote/{pageNo}/{map_note_id}")
 	public Map<String, Object> detailMapnote(@PathVariable("pageNo")Long pageNo, @PathVariable("map_note_id")Long map_note_id) {
 		Map<String, Object> map = new HashMap<>();
 		String result = "success";
@@ -275,7 +285,7 @@ public class MapnoteController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value= "updateForm/{map_note_id}", method = RequestMethod.GET)
+	@GetMapping(value= "updateForm/{map_note_id}")
 	public Map<String, Object> updateForm(@PathVariable("map_note_id") Long map_note_id) {
 		Map<String, Object> map = new HashMap<>();
 		String result = "success";
@@ -312,12 +322,14 @@ public class MapnoteController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value="update/{map_note_id}", method = RequestMethod.POST)
-	public Map<String, Object> updateMapnoteFile(@ModelAttribute Mapnote mapnote, MultipartHttpServletRequest request, @PathVariable("map_note_id")Long map_note_id) {
+	@PostMapping(value="update/{map_note_id}")
+	public Map<String, Object> updateMapnoteFile(MultipartHttpServletRequest request, @PathVariable("map_note_id")Long map_note_id) {
 		log.info("############## map_note_id = {}", map_note_id);
 		
 		Map<String, Object> map = new HashMap<>();
 		String result = "success";
+		
+		Mapnote mapnote = new Mapnote();
 		
 		try {
 			mapnote.setMap_note_id(map_note_id);
@@ -343,6 +355,8 @@ public class MapnoteController {
 			List<FileInfo> fileList = new ArrayList<>();
 			Map<String, MultipartFile> fileMap = request.getFileMap();
 		
+			// 기존에 있던 파일이 지워졌으면 DB에서 삭제, 디렉토리에서 삭제
+			
 			for(MultipartFile multipartFile :  fileMap.values()) {
 				if(multipartFile.equals("") || multipartFile.getSize() == 0) { // 파일 재첨부 없이 수정하는 경우
 					map.put("result", result);

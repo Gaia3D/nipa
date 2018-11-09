@@ -718,6 +718,8 @@ visibility: hidden;
 
 
 /* CONTENTS / 맵노트 */
+
+
 ul.listNote li > p {
 color: #fff;
 border-bottom: 5px solid #eaeaea;
@@ -770,6 +772,9 @@ display: block;
 }
 
 /* 지점등록 레이어 */
+#mapnoteLayer {
+max-width: 255px;	
+}
 .note li {
 margin: 10px 0;
 }
@@ -785,6 +790,40 @@ text-align: center;
 }
 .note li input::-webkit-input-placeholder {
 color: #b2cde0;
+}
+
+/* 첨부파일 */
+.fileDrop {
+position: relative;
+z-index: 2;
+width: 100%;
+height: 180px;
+margin-bottom: 20px;
+}
+#filetext {
+position: absolute;
+margin-left: 40px;
+margin-top: 80px;
+color: #b2cde0;
+}
+#tempFiles {
+display: inline-block;
+}
+#delA {
+margin-left: 10px;
+padding-right: 5px;
+padding-left: 5px;
+background-color: #b2cde0;
+border-radius: 5px;
+}
+.uploadedList {
+position: absolute;
+z-index: 1;
+top: 275px;
+width: 234px;
+height: 180px;
+border: 1px solid #a8a8a8;
+display: inline-block;
 }
 
 /* 지점등록 레이어 / 썸네일이미지 */
