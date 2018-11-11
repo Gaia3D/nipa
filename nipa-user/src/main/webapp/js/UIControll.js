@@ -143,8 +143,21 @@ $(function() {
 	});
 	
 	// 상세 메뉴 닫기
-	$('.contentsBtn > button').click(function() {
-		$('#contentsWrap').hide();
+	$('#closeLeftBtn').click(function() {
+		if($('#contentsWrap').css('display') == "none") {
+			var display = $('ul.nav li[data-nav]').eq(0).toggleClass('on').hasClass('on');
+			$('#searchContent').show();
+			$('#contentsWrap').toggle(display);
+			$('#closeLeftBtn').css('transform', 'rotate(90deg)');
+			$('#closeLeftBtn').css('border-radius', '5px 5px 0 0');
+			$('.contentsBtn').css('right', '-407px');
+		} else {
+			$('ul.nav li[data-nav]').removeClass('on');
+			$('.contentsBtn').css('right', '-37px');
+			$('#closeLeftBtn').css('transform', 'rotate(270deg)');
+			$('#closeLeftBtn').css('border-radius', '0 0 5px 5px');
+			$('#contentsWrap').toggle(display);
+		}
 	});
 
 	

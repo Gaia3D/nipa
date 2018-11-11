@@ -269,21 +269,22 @@ background-position: -387px -35px;
 /* ///// CONTENTS WRAP ///// */
 .contentsBtn {
 position: absolute;
-right: -32px;
-bottom: 0px;;
-margin-top: -25px;
+height: 55%;
+right: -37px;
+bottom: 0px;
 }
 .contentsBtn > button {
 display: inline-block;
-width: 30px;
-height: 30px;
+width: 50px;
+height: 25px;
 text-indent: -999em;
-border-radius: 15px;
+border-radius: 0 0 5px 5px;
 border: none;
 background-image: url(../images/ico.png);
+background-position: -760px -162px;
 background-repeat: no-repeat;
-background-position: -250px -299px;
-background-color: #35353d;
+background-color: #5a5254;
+transform: rotate(270deg);
 }
 .contentsBtn > button:hover {
 background-color: tomato;
