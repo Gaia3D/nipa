@@ -277,7 +277,8 @@ bottom: 0px;
 display: inline-block;
 width: 50px;
 height: 25px;
-text-indent: -999em;
+/* text-indent: -999em; */
+color: transparent;
 border-radius: 0 0 5px 5px;
 border: none;
 background-image: url(../images/ico.png);
