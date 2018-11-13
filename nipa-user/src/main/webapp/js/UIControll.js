@@ -396,7 +396,7 @@ $(function() {
 	});
 
 	// 지점 버튼 클릭
-	$('#getPointMapnote').click(function() {
+	$('#getMapnotePoint').click(function() {
 		$(this).toggleClass('on');
 		$(this).trigger('afterClick');
 	});
