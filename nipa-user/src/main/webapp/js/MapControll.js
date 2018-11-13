@@ -1,4 +1,5 @@
 var lengthInMeters = 0;
+var areaInMeters = 0;
 
 function MapControll(viewer, option) {
     this._viewer = viewer;
@@ -71,6 +72,15 @@ function MapControll(viewer, option) {
         return entity;
     }
 
+    var dynamicCenter = new Cesium.CallbackProperty(function () {
+        var bs = Cesium.BoundingSphere.fromPoints(activeShapePoints);
+        return Cesium.Ellipsoid.WGS84.scaleToGeodeticSurface(bs.center);
+    }, false);
+
+    var dynamicLabel = new Cesium.CallbackProperty(function () {
+        return getArea(activeShapePoints);
+    }, false);
+
     function drawShape(positionData) {
         var shape;
         if (drawingMode === 'line') {
@@ -96,92 +106,78 @@ function MapControll(viewer, option) {
                     outlineColor: Cesium.Color.BLACK
                 }
             });
+            activeLabel = viewer.entities.add({
+                position: dynamicCenter,
+                label: {
+                    text: dynamicLabel,
+                    font: 'bold 20px sans-serif',
+                    fillColor: Cesium.Color.BLUE,
+                    style: Cesium.LabelStyle.FILL,
+                    verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+                    disableDepthTestDistance: Number.POSITIVE_INFINITY,
+                    heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
+                }
+            });
         }
         return shape;
     }
 
     // use scratch object to avoid new allocations per frame.
+    var startCartographic = new Cesium.Cartographic();
     var endCartographic = new Cesium.Cartographic();
     var scratch = new Cesium.Cartographic();
     var geodesic = new Cesium.EllipsoidGeodesic();
 
-    // Calculate the length of the line
-    function getLength(time, result) {
-        //function getLength(startPoint, endPoint) {
-        // Get the end position from the polyLine's callback.
-        //var endPoint = redLine.polyline.positions.getValue(time, result)[1];
-        var len = activeShapePoints.length;
-        if (1 == len) {
-            startPoint = activeShapePoints[0];
-            endPoint = activeShapePoints[0];
-        }
-        else {
-            startPoint = activeShapePoints[len - 2];
-            endPoint = activeShapePoints[len - 1];
-        }
-        startCartographic = Cesium.Cartographic.fromCartesian(startPoint);
-        endCartographic = Cesium.Cartographic.fromCartesian(endPoint);
-
-        geodesic.setEndPoints(startCartographic, endCartographic);
-        var lengthInMeters = Math.round(geodesic.surfaceDistance);
-
-        //return (lengthInMeters / 1000).toFixed(1) + ' km';
-        return formatDistance(lengthInMeters);
-    }
-
-    function getMidpoint(time, result) {
-        //function getMidpoint(startPoint, endPoint) {
-        // Get the end position from the polyLine's callback.
-        //var endPoint = redLine.polyline.positions.getValue(time, result)[1];
-        var len = activeShapePoints.length;
-        if (1 == len) {
-            startPoint = activeShapePoints[0];
-            endPoint = activeShapePoints[0];
-        }
-        else {
-            startPoint = activeShapePoints[len - 2];
-            endPoint = activeShapePoints[len - 1];
-        }
-
-        startCartographic = Cesium.Cartographic.fromCartesian(startPoint);
-        endCartographic = Cesium.Cartographic.fromCartesian(endPoint);
-
-        geodesic.setEndPoints(startCartographic, endCartographic);
-        var midpointCartographic = geodesic.interpolateUsingFraction(0.5, scratch);
-        return Cesium.Cartesian3.fromRadians(midpointCartographic.longitude, midpointCartographic.latitude);
-    }
-    /*
-        function destroy() {
-            for(var i = 0, len = this._polylines.length; i < len; i++)
-            {
-                viewer.entities.remove(this._polylines[i]);
-            }
-            for(var i = 0, len = this._labels.length; i < len; i++)
-            {
-                viewer.entities.remove(this._labels[i]);
-            }
-        }
-    */
     function getLineLength(positions) {
+        lengthInMeters = 0;
         for (var i = 1, len = positions.length; i < len; i++) {
             var startPoint = positions[i - 1];
             var endPoint = positions[i];
 
-            startCartographic = Cesium.Cartographic.fromCartesian(startPoint);
-            endCartographic = Cesium.Cartographic.fromCartesian(endPoint);
-
-            geodesic.setEndPoints(startCartographic, endCartographic);
-            var length = Math.round(geodesic.surfaceDistance);
-
-            lengthInMeters += isNaN(length) ? 0 : length;
+            lengthInMeters += Cesium.Cartesian3.distance(startPoint, endPoint);
         }
         updateDistance(lengthInMeters);
         return formatDistance(lengthInMeters);
     }
 
+    function getArea(positions) {
+        areaInMeters = 0;
+        if (positions.length >= 3)
+        {
+            var points = [];
+            for(var i = 0, len = positions.length; i < len; i++)
+            {
+                //points.push(Cesium.Cartesian2.fromCartesian3(positions[i]));
+                var cartographic = Cesium.Cartographic.fromCartesian(positions[i]);
+                points.push(new Cesium.Cartesian2(cartographic.longitude, cartographic.latitude));
+            }
+            if(Cesium.PolygonPipeline.computeWindingOrder2D(points) === Cesium.WindingOrder.CLOCKWISE)
+            {
+                points.reverse();
+            }
+
+            var triangles = Cesium.PolygonPipeline.triangulate(points);
+
+            for(var i = 0, len = triangles.length; i < len; i+=3)
+            {
+                //areaInMeters += Cesium.PolygonPipeline.computeArea2D([points[triangles[i]], points[triangles[i + 1]], points[triangles[i + 2]]]);
+                areaInMeters += calArea(points[triangles[i]], points[triangles[i + 1]], points[triangles[i + 2]]);
+            }
+        }
+        updateArea(areaInMeters);
+        return formatArea(areaInMeters);
+    }
+    function calArea(t1, t2, t3, i) {
+        var r = Math.abs(t1.x * (t2.y - t3.y) + t2.x * (t3.y - t1.y) + t3.x * (t1.y - t2.y)) / 2;
+		var cartographic = new Cesium.Cartographic((t1.x + t2.x + t3.x) / 3, (t1.y + t2.y + t3.y) / 3);
+		var cartesian = viewer.scene.globe.ellipsoid.cartographicToCartesian(cartographic);
+        var magnitude = Cesium.Cartesian3.magnitude(cartesian);
+        return r * magnitude * magnitude * Math.cos(cartographic.latitude)
+    }
+
     function drawLabel(positionData) {
         var label;
-        if (drawingMode === 'line') {
+        // if (drawingMode === 'line') {
             label = viewer.entities.add({
                 position: positionData,
                 label: {
@@ -195,35 +191,29 @@ function MapControll(viewer, option) {
                     pixelOffset : new Cesium.Cartesian2(5, 20)*/
                 }
             });
-        }
-        else if (drawingMode === 'polygon') {
-            /*
-             label = viewer.entities.add({
-                polygon: {
-                    hierarchy: positionData,
-                    material: new Cesium.ColorMaterialProperty(Cesium.Color.YELLOW.withAlpha(0.3)),
-                    height       : 0.1,
-                    outline      : true,
-                    outlineColor : Cesium.Color.BLACK
-                }
-            });
-            */
-        }
+        // }
         return label;
     }
 
     // Redraw the shape so it's not dynamic and remove the dynamic shape.
     function terminateShape() {
         //activeShapePoints.pop();
+        lengthInMeters = 0;
+        areaInMeters = 0
         this._polylines.push(drawShape(activeShapePoints));
         viewer.entities.remove(floatingPoint);
         viewer.entities.remove(activeShape);
+        viewer.entities.remove(activeLabel);
+        
         floatingPoint = undefined;
         activeShape = undefined;
+        activeLabel = undefined;
         activeShapePoints = [];
     }
 
     this.clearMap = function () {
+        lengthInMeters = 0;
+        areaInMeters = 0
         if (Cesium.defined(handler)) {
             handler.destroy();
             handler = null;
@@ -236,8 +226,11 @@ function MapControll(viewer, option) {
         }
         viewer.entities.remove(floatingPoint);
         viewer.entities.remove(activeShape);
+        viewer.entities.remove(activeLabel);
+
         floatingPoint = undefined;
         activeShape = undefined;
+        activeLabel = undefined;
         activeShapePoints = [];
     }
 
@@ -287,7 +280,6 @@ function MapControll(viewer, option) {
         console.log("맵컨트롤 : 거리");
         that.clearMap();
         drawingMode = 'line';
-        //$('#distanceLayer div.measure > span').text(0);
         updateDistance(0);
         
         if ($(this).hasClass('on')) {
@@ -299,9 +291,9 @@ function MapControll(viewer, option) {
         console.log("맵컨트롤 : 면적");
         that.clearMap();
         drawingMode = 'polygon';
+        updateArea(0);
 
         if ($(this).hasClass('on')) {
-
             startDrawPolyLine();
         }
     });
@@ -332,7 +324,6 @@ function MapControll(viewer, option) {
             return activeShapePoints;
         }, false);
 
-
         handler.setInputAction(function (event) {
             var earthPosition = viewer.scene.pickPosition(event.position);
             if (Cesium.defined(earthPosition)) {
@@ -342,38 +333,14 @@ function MapControll(viewer, option) {
                 activeShapePoints.push(tempPosition);
                 if (activeShapePoints.length === 1) {
                     activeShape = drawShape(dynamicPositions);
-                    //floatingPoint = createPoint(tempPosition);
-                    //activeShapePoints.push(tempPosition);
                 }
                 else {
                     this._labels.push(drawLabel(tempPosition));
                 }
-                //activeShapePoints.push(tempPosition);
                 this._polylines.push(createPoint(tempPosition));
             }
         }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
-        /*
-        handler.setInputAction(function (event) {
-            if (Cesium.defined(floatingPoint)) {
-                var newPosition = viewer.scene.pickPosition(event.endPosition);
-                if (Cesium.defined(newPosition)) {
-                    var cartographic = Cesium.Cartographic.fromCartesian(newPosition);
-                    var tempPosition = Cesium.Cartesian3.fromDegrees(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude));
 
-                    this._tooltip.showAt(event.endPosition, "클릭하세요.");
-                    if (Cesium.defined(floatingPoint)) {
-                        floatingPoint.position.setValue(tempPosition);
-                        activeShapePoints.pop();
-                        activeShapePoints.push(tempPosition);
-                        this._tooltip.showAt(event.endPosition, "마우스 오른쪽을 클릭하면 그리기 종료를 종료합니다.");
-                    }
-                }
-                else {
-                    this._tooltip.hide();
-                }
-            }
-        }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-        */
         handler.setInputAction(function (event) {
             terminateShape();
         }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
@@ -382,23 +349,15 @@ function MapControll(viewer, option) {
 }
 
 var formatDistance = function (_length) {
-    var length = Math.round(_length * 100) / 100;
     var unitFactor = parseFloat($('#distanceFactor option:selected').val());
     var unitName = $('#distanceFactor option:selected').text();
     var output= Math.round(_length / unitFactor * 100) / 100 + " " + unitName.substring(0, unitName.indexOf('('));
     return output;
 };
 
-var formatArea = function (polygon) {
-    var area;
-    area = polygon.getArea();
-    var output;
-    if (area > 10000) {
-        output = (Math.round(area / 1000000 * 100) / 100) +
-            ' ' + 'km<sup>2</sup>';
-    } else {
-        output = (Math.round(area * 100) / 100) +
-            ' ' + 'm<sup>2</sup>';
-    }
+var formatArea = function (_area) {
+    var unitFactor = parseFloat($('#areaFactor option:selected').val());
+    var unitName = $('#areaFactor option:selected').text();
+    var output= Math.round(_area / unitFactor * 100) / 100 + " " + unitName.substring(0, unitName.indexOf('('));
     return output;
 };
