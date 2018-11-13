@@ -274,18 +274,18 @@ right: -37px;
 bottom: 0px;
 }
 .contentsBtn > button {
-display: inline-block;
+display: none;
 width: 50px;
 height: 25px;
 /* text-indent: -999em; */
 color: transparent;
-border-radius: 0 0 5px 5px;
+border-radius: 5px 5px 0 0;
 border: none;
 background-image: url(../images/ico.png);
 background-position: -760px -162px;
 background-repeat: no-repeat;
 background-color: #5a5254;
-transform: rotate(270deg);
+transform: rotate(90deg);
 }
 .contentsBtn > button:hover {
 background-color: tomato;
@@ -774,9 +774,6 @@ display: block;
 }
 
 /* 지점등록 레이어 */
-#mapnoteLayer {
-max-width: 255px;	
-}
 .note li {
 margin: 10px 0;
 }
@@ -804,7 +801,8 @@ margin-bottom: 20px;
 }
 #filetext {
 position: absolute;
-margin-left: 40px;
+width: 100%;
+text-align: center;
 margin-top: 80px;
 color: #b2cde0;
 }
@@ -822,7 +820,7 @@ border-radius: 5px;
 position: absolute;
 z-index: 1;
 top: 275px;
-width: 234px;
+width: 255px;
 height: 180px;
 border: 1px solid #a8a8a8;
 display: inline-block;
@@ -1059,6 +1057,7 @@ background-color: #f1f1f1;
 }
 .option > .layerContents {
 margin: 15px 10px;
+max-width: 255px;
 }
 .option .layerHeader .layerClose {
 position: absolute;
