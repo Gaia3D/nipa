@@ -88,6 +88,13 @@ function updateDistance(value)
     $('#distanceLayer div.measure > span').text(Math.round(value / unitFactor * 100) / 100 + " " + unitName.substring(0, unitName.indexOf('(')));
 }
 
+function updateArea(value)
+{
+    var unitFactor = parseFloat($('#areaFactor option:selected').val());
+    var unitName = $('#areaFactor option:selected').text();
+    $('#areaLayer div.measure > span').text(Math.round(value / unitFactor * 100) / 100 + " " + unitName.substring(0, unitName.indexOf('(')));
+}
+
 var settingsLayerParent;
 
 // 레이어 창
@@ -218,13 +225,16 @@ $(function() {
 	});
 	
 	$('#areaLayer button.focusA').click(function() {
-		$('#areaLayer div.measure > span').text("0");
+		updateArea(0);
 	});
 	
 	$('#distanceFactor').change(function (){
 		updateDistance(lengthInMeters);
 	});
 	
+	$('#areaFactor').change(function (){
+		updateArea(areaInMeters);
+	});
 /***** NAV WRAP: 검색 *****/
 	// 검색 메뉴 클릭 시 추가 동작
 	$('#searchMenu').on('click', function() { 
