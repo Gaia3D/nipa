@@ -414,14 +414,27 @@
 						</ul>
 					</div>
 				</li>
-				<!--
 				<li>
 					<p>화망 분석</p>
-					<div class="listContents">
-						내용없음
+					<div class="listContents" id="analysisRangeDome">
+						<ul class="analysisGroup">
+							<li>
+								<label for="">반경 (m)</label>
+								<input class="radius" type="text" placeholder="" value="1000">
+							</li>
+							<li>
+								<label for="">관측지점</label>
+								<input type="text" placeholder="" class="withBtn observerPointMGRS">
+								<input type="hidden" class="observerPoint">
+								<button type="button" class="btnText drawObserverPoint">위치선택</button>
+							</li>
+							<li class="btns">
+								<button type="button" class="btnTextF execute" title="분석">분석</button>
+								<button type="button" class="btnText reset" title="초기화">초기화</button>
+							</li>
+						</ul>
 					</div>
 				</li>
-				-->
 			</ul>
 		</div>
 		<!-- E: 분석 -->
@@ -759,6 +772,7 @@
 <script type="text/javascript" src="./js/photoswipe.js"></script>
 <script type="text/javascript" src="./js/Mapnote.js"></script>
 <script type="text/javascript" src="./js/TimeseriesControll.js"></script>
+<script type="text/javascript" src="./js/RangedomeControll.js"></script>
 <script type="text/javascript" src="./js/message.js"></script>
 <script type="text/javascript" src="./js/progressSpin.min.js"></script>
 <script type="text/javascript" src="./js/raphael.js"></script>
@@ -811,6 +825,7 @@
 			LayerControll(viewer);
 			MapnoteControll(viewer);
 			TimeseriesControll(viewer);
+			RangedomeControll(viewer);
 
 			clearInterval(timerId);
 			console.log(" managerFactory != null, managerFactory.getMagoManagerState() = " + managerFactory.getMagoManagerState() + ", intervalCount = " + intervalCount);
