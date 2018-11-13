@@ -140,8 +140,14 @@ $(function() {
 
 		$('#'+ active).toggle(display);
 		$('#contentsWrap').toggle(display);
-		$('#closeLeftBtn').toggle();
-		$('.contentsBtn').css('right', '-407px');
+		
+		if($('#contentsWrap').css('display') == 'block') {
+			$('#closeLeftBtn').show();
+			$('.contentsBtn').css('right', '-407px');
+		} else {
+			$('#contentsWrap').hide();
+			$('#closeLeftBtn').toggle();
+		}
 	});
 	
 	// 상세 메뉴 닫기
@@ -378,12 +384,11 @@ $(function() {
 		}
 		layerClose(mapnoteLayer);
 	});
-	
+
 	// 지점 버튼 클릭
-	$('#getMapnotePoint').click(function() {
-		e.preventDefault();
-		e.stopPropagation();
-		alert("!");
+	$('#getPointMapnote').click(function() {
+		$(this).toggleClass('on');
+		$(this).trigger('afterClick');
 	});
 	
 	// 맵노트 상세
