@@ -1313,7 +1313,10 @@ border: 1px solid #9898a0;
 border-radius: 3px;
 background-color: #aaaab0;
 }
-
+button.basicA.on {
+color: #fff;
+background-color: tomato;
+}
 
 button.focusB{
 padding: 5px 15px;

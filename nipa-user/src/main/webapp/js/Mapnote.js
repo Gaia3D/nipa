@@ -516,6 +516,18 @@ function Mapnote(viewer)
 {
 	this.pins = [];
 	this.viewer = viewer;
+	this.position;
+    this.longitude;
+    this.latitude;
+	this.coordPoint;
+	this.handler;
+
+	var that = this;
+
+	var dynamicPositions = new Cesium.CallbackProperty(function () {
+		return that.position;
+	}, false);
+
 	this.addBillboard = function (longitude, latitude, name) {
 		
 	    var target = this.viewer.entities.add({
@@ -551,8 +563,59 @@ function Mapnote(viewer)
 		this.viewer.entities.removeById();
 	};
 	
+	function createPoint(worldPosition) {
+        var entity = viewer.entities.add({
+            position: worldPosition,
+            point: {
+                color: Cesium.Color.YELLOW,
+                pixelSize: 5,
+                outlineColor: Cesium.Color.BLACK,
+                outlineWidth: 2,
+                disableDepthTestDistance: Number.POSITIVE_INFINITY,
+                heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
+            }
+        });
+        return entity;
+	}
+	
 	this.pickPosition = function () {
+		this.handler = new Cesium.ScreenSpaceEventHandler(this.viewer.canvas);
+		this.coordPoint = createPoint(dynamicPositions);
+		this.handler.setInputAction(function (event) {
+			var earthPosition = that.viewer.scene.pickPosition(event.position);
+			if (Cesium.defined(earthPosition)) {
+				var cartographic = Cesium.Cartographic.fromCartesian(earthPosition);
 
+				that.longitude = Cesium.Math.toDegrees(cartographic.longitude);
+				that.latitude = Cesium.Math.toDegrees(cartographic.latitude);
+				that.position = Cesium.Cartesian3.fromDegrees(that.longitude, that.latitude);
+			}
+			that.updateCoordinate();
+		}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 	};
 	
+	this.updateCoordinate = function () {
+		$('#noteLocation').val(this.longitude + ", " + this.latitude);
+	}
+
+	this.clear = function () {
+        this.clearHandler();
+        this.viewer.entities.remove(this.coordPoint);
+        this.coordPoint = null;
+	}
+
+	this.clearHandler = function () {
+        if (Cesium.defined(this.handler)) {
+            this.handler.destroy();
+            this.handler = null;
+        }
+	}
 }
+
+// 맵노트 등록을 위한 위치 지정
+$('#getMapnotePoint').bind('afterClick', function () {
+	mapnote.clear();
+	if ($(this).hasClass('on')) {
+		mapnote.pickPosition();
+	}
+});

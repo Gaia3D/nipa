@@ -391,9 +391,8 @@ $(function() {
 	
 	// 지점 버튼 클릭
 	$('#getMapnotePoint').click(function() {
-		e.preventDefault();
-		e.stopPropagation();
-		alert("!");
+		$(this).toggleClass('on');
+		$(this).trigger('afterClick');
 	});
 	
 	// 맵노트 상세

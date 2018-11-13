@@ -113,11 +113,15 @@ function TimeseriesControll(viewer, option) {
         clearCoordinate();
     });
 
-    this.clear = function () {
+    this.clearHandler = function () {
         if (Cesium.defined(handler)) {
             handler.destroy();
             handler = null;
         }
+    }
+
+    this.clear = function () {
+        this.clearHandler();
         viewer.entities.remove(this._coordPoint);
         this._coordPoint = null;
     }
@@ -143,6 +147,9 @@ function TimeseriesControll(viewer, option) {
         $('#satDMS').val(getposition(lon, lat, positionFormatterDMS));
         $('#satMGRS').val(getposition(lon, lat, positionFormatterMGRS));
         $('#satUTM').val(getposition(lon, lat, positionFormatterUTM));
+
+        that.clearHandler();
+        $('#getSatPoint').removeClass('on');
     }
 
     // 위성영상 검색을 위한 위치 지정
