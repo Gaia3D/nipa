@@ -65,6 +65,12 @@ COMMENT ON COLUMN public.file_info.insert_date IS '등록일';
 -- Type: SEQUENCE;
 --
 
+CREATE SEQUENCE public.file_info_file_info_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
 
 --
 -- Type: DEFAULT;
