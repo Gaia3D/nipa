@@ -107,7 +107,7 @@
 		<div id="layerContent" class="contentsList yScroll" style="height: 780px; display:none;">
 			<h2 class="hide">레이어</h2>
 			<ul class="listLayer">
-				<li class="imageLayer on">
+				<li class="imageLayer" :class="{on:showImgLayer}" v-on:click.stop.prevent="showImgLayer=!showImgLayer">
 					<p>영상레이어</p>
 					<ul>
 						<draggable v-model="imgLayers" @change="changeLayer($event, 0, '0')">
@@ -121,7 +121,7 @@
 						</draggable>
 					</ul>
 				</li>
-				<li class="mapLayer on">
+				<li class="mapLayer" :class="{on:showMapLayer}" v-on:click.stop.prevent="showMapLayer=!showMapLayer">
 					<p>지도레이어</p>
 					<ul>
 						<draggable v-model="mapLayers" @change="changeLayer($event, defaultImgLayers.length, '1')">
@@ -702,7 +702,7 @@
 		<!-- E: 맵 -->
 
 		<!-- S: 시계열 -->
-		<div id="allSatImages" class="timeSeriesWrap" :class="{on:display}" v-show="active">
+		<div id="allSatImages" class="timeSeriesWrap" :class="{on:display}" v-show="active" style="display:none;">
 			<div>
 				<button type="button" title="보임/숨김"  v-on:click="display=!display">시계열숨김/보임</button>
 			</div>
@@ -722,7 +722,7 @@
 
 	<!-- S: FOOTER -->
 	<div id="footer">
-		<div class="distance-legend">
+		<div class="distance-legend" style="display:none;">
 			<div class="distance-legend-label"></div>
 			<div class="distance-legend-scale-bar" style="width: 125px; left: 5px;"></div>
 		</div>

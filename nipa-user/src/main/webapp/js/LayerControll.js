@@ -95,6 +95,8 @@ function LayerControll(viewer)
             index : 0,
             selectedLayer : null,
             defaultLayer : null,
+            showImgLayer : true,
+            showMapLayer : true,
             imgLayers : JSON.parse(JSON.stringify(defaultImgLayer)),
             mapLayers : JSON.parse(JSON.stringify(defaultMapLayer)),
             defaultImgLayers : JSON.parse(JSON.stringify(defaultImgLayer)),
