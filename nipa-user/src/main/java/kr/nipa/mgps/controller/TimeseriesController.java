@@ -85,10 +85,10 @@ public class TimeseriesController {
 			map.put("pagination", pagination);
 			
 			List<SatImage> satImageList = new ArrayList<>();
-			if(totalCount > 0l) {
+			// if(totalCount > 0l) {
                 satImageList = satImageService.getListSatImage(satImageSearch);
 				map.put("imageList", satImageList);
-			}
+			// }
 			
 		} catch (Exception e) {
 			e.printStackTrace();

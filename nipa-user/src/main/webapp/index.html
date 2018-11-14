@@ -702,7 +702,7 @@
 		<!-- E: 맵 -->
 
 		<!-- S: 시계열 -->
-		<div id="allSatImages" class="timeSeriesWrap" :class="{on:display}">
+		<div id="allSatImages" class="timeSeriesWrap" :class="{on:display}" v-show="active">
 			<div>
 				<button type="button" title="보임/숨김"  v-on:click="display=!display">시계열숨김/보임</button>
 			</div>

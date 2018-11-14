@@ -111,6 +111,7 @@ function TimeseriesControll(viewer, option) {
     // 좌표 초기화
     $('#satTextReset').click(function () {
         clearCoordinate();
+        satApp.active = false;
     });
 
     this.clearHandler = function () {
@@ -196,12 +197,12 @@ function TimeseriesControll(viewer, option) {
         }
         var urlSatImageAPI = "http://localhost:8181/timeseries/";
         var form = new FormData();
-/*
+
         if (that._longitude === undefined || that._latitude === undefined) {
             alert("영상을 검색할 위치를 지정하세요!");
             return false;
         }
-*/
+
         form.set("type", $('#satType option:selected').val());
         form.set("sdate", $('#startDatepicker').val());
         form.set("edate", $('#endDatepicker').val());
@@ -210,8 +211,9 @@ function TimeseriesControll(viewer, option) {
         form.set("offset", 0);
         form.set("limit", 10);
 
+        satApp.active = true;
+        satApp.display = true;
         satApp.images = [];
-
         var queryString = new URLSearchParams(form).toString();
         if (isSearchingSatImage) {
             isSearchingSatImage = false;
@@ -253,8 +255,8 @@ function TimeseriesControll(viewer, option) {
     var satApp = new Vue({
         el : "#allSatImages",
         data: {
-            active : true,
-            display : true,
+            active : false,
+            display : false,
             images : []
         },
         beforeMount : function () {
