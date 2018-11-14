@@ -381,6 +381,7 @@ $(function() {
 		for(var i = 0, len = 7; i < len ; i++) {
 			deleteFile(i);
 		}
+		$('.uploadedList').empty();
 		
 		$('#mapnoteBtn').attr("onclick", "uploadMapnote()");
 		
@@ -428,6 +429,7 @@ $(function() {
 		for(var i = 0, len = 7; i < len ; i++) {
 			deleteFile(i);
 		}
+		$('.uploadedList').empty();
 		
 		mapnoteLayer.css('display', 'block');
 		

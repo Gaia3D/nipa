@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -108,7 +109,7 @@ public class MapnoteController {
 	 */
 	@ResponseBody
 	@PostMapping(value = "/insert")
-	public Map<String, Object> insert(MultipartFile file, MultipartHttpServletRequest request) {
+	public Map<String, Object> insert(@RequestParam("files") MultipartFile[] files, MultipartHttpServletRequest request) {
 		Map<String, Object> map = new HashMap<>();
 		String result = "success";
 		Mapnote mapnote = new Mapnote();
@@ -135,26 +136,21 @@ public class MapnoteController {
 			map.put("mapnote", mapnote);
 			log.info("@@@ after mapnote = {}", mapnote);
 
-			log.info("@@ originalName = {}", file);
-			log.info("@@ size = {}", file.getSize());
-			log.info("@@ contentType = {}", file.getContentType());
-			
 			// 파일 등록
 			List<FileInfo> fileList = new ArrayList<>();
-			Map<String, MultipartFile> fileMap = request.getFileMap();
 		
-			for(MultipartFile multipartFile :  fileMap.values()) {
+			for(MultipartFile multipartFile :  files) {
+				log.info("@@@@@@@@@@@@@@@@@@@@@@ file_name = {}", multipartFile.getOriginalFilename());
 				if(multipartFile.equals("") || multipartFile.getSize() == 0) { // 파일 첨부 없이 등록하는 경우
 					map.put("result", result);
 					return map;
 				}
-
+				// 디렉토리에 이미지 저장
 				FileInfo fileInfo = FileUtil.fileUpload(FileUtil.SUBDIRECTORY_YEAR_MONTH_DAY, multipartFile, policyService.getPolicy(), propertiesConfig.getFileUploadDir(), propertiesConfig.getThumbnailUploadDir());
 				
 				if(fileInfo.getError_code() != null && !"".equals(fileInfo.getError_code())) {
 					log.info("@@@@@ error_code = {}", fileInfo.getError_code());
 					result = fileInfo.getError_code();
-					break;
 				}
 				fileInfo.setMap_note_id(map_note_id);
 				fileList.add(fileInfo);
@@ -268,7 +264,7 @@ public class MapnoteController {
 				log.info("@@@ detail mapnote = {}", mapnote);
 				map.put("pageNo", pageNo);
 				map.put("mapnote", mapnote);
-				map.put("file", files);
+				map.put("files", files);
 			}
 			
 		} catch(Exception e) {
@@ -323,7 +319,7 @@ public class MapnoteController {
 	 */
 	@ResponseBody
 	@PostMapping(value="update/{map_note_id}")
-	public Map<String, Object> updateMapnoteFile(MultipartHttpServletRequest request, @PathVariable("map_note_id")Long map_note_id) {
+	public Map<String, Object> updateMapnoteFile(@RequestParam("files") MultipartFile[] files, MultipartHttpServletRequest request, @PathVariable("map_note_id")Long map_note_id) {
 		log.info("############## map_note_id = {}", map_note_id);
 		
 		Map<String, Object> map = new HashMap<>();
@@ -353,11 +349,8 @@ public class MapnoteController {
 			log.info("@@@ after mapnote = {}", mapnote);
 			
 			List<FileInfo> fileList = new ArrayList<>();
-			Map<String, MultipartFile> fileMap = request.getFileMap();
 		
-			// 기존에 있던 파일이 지워졌으면 DB에서 삭제, 디렉토리에서 삭제
-			
-			for(MultipartFile multipartFile :  fileMap.values()) {
+			for(MultipartFile multipartFile :  files) {
 				if(multipartFile.equals("") || multipartFile.getSize() == 0) { // 파일 재첨부 없이 수정하는 경우
 					map.put("result", result);
 					return map;
@@ -374,6 +367,8 @@ public class MapnoteController {
 				fileList.add(fileInfo);
 			}
 			fileService.insertFiles(fileList);
+			List<FileInfo> fileInfoList = fileService.getListFileInfo(map_note_id);
+			map.put("fileInfoList", fileInfoList);
 			map.put("count", fileList.size());
 			
 			

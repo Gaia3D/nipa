@@ -796,14 +796,15 @@ color: #b2cde0;
 position: relative;
 z-index: 2;
 width: 100%;
-height: 180px;
+height: 120px;
 margin-bottom: 20px;
+border: 1px solid #9898a0;
 }
 #filetext {
 position: absolute;
 width: 100%;
 text-align: center;
-margin-top: 80px;
+margin-top: 55px;
 color: #b2cde0;
 }
 #tempFiles {
@@ -816,14 +817,17 @@ padding-left: 5px;
 background-color: #b2cde0;
 border-radius: 5px;
 }
-.uploadedList {
+.uploadindList {
 position: absolute;
 z-index: 1;
 top: 275px;
 width: 255px;
-height: 180px;
+height: 120px;
 border: 1px solid #a8a8a8;
 display: inline-block;
+}
+.uploadedList {
+width: 255px;
 }
 
 /* 지점등록 레이어 / 썸네일이미지 */
