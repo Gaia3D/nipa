@@ -1,3 +1,8 @@
+function gotoFly(longitude, latitude, altitude, duration)
+{
+  gotoFlyAPI(managerFactory, longitude, latitude, altitude, duration);
+}
+
 function CoordControll(viewer, option) {
   viewer.scene.globe.depthTestAgainstTerrain = true;
   viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
@@ -13,7 +18,7 @@ function CoordControll(viewer, option) {
   // 좌표 이동
   $('#moveToLocation').click(function () {
     if (that._longitude && that._latitude)
-      gotoFly('3ds.json', '133', 'ISSUE_TYPE_MODIFY', that._longitude, that._latitude, '100', '2');
+      gotoFly(that._longitude, that._latitude, 100, 2);
   });
 
   // 좌표 복사
@@ -56,11 +61,6 @@ function CoordControll(viewer, option) {
     this._latitude = null;
 
     this.clear();
-    /*
-    $('.coordinateBtns > button.on').each(function () {
-      $(this).trigger('afterClick');
-    })
-    */  
     $('#DD').val("");
     $('#DM').val("");
     $('#DMS').val("");
@@ -71,8 +71,6 @@ function CoordControll(viewer, option) {
   function updateCoordinate() {
     var lon = that._longitude;
     var lat = that._latitude;
-
-    //console.log(lon + "," + lat);
 
     $('#DD').val(getposition(lon, lat, positionFormatterDD));
     $('#DM').val(getposition(lon, lat, positionFormatterDM));
@@ -237,13 +235,19 @@ function CoordControll(viewer, option) {
         + "UTM : " + $('#UTM').val() + "\n";
 
       content.find('.move').click(function () {
-        gotoFly('3ds.json', '133', 'ISSUE_TYPE_MODIFY', lon, lat, '100', '2');
+        gotoFly(lon, lat, 100, 2);
       });
       content.find('.copy').click(function () {
         coordinateCopy(copyText);
       });
       content.find('.note').click(function () {
+    	  $('#addMapnote').trigger('click');
 
+		if(lon != undefined && lon !== null && lat != undefined && lat !==null) {
+          $('#noteLocation').val(lon + ", " +  lat);
+        } else {
+          $('#noteLocation').val('');
+        }
       });
       content.find('.delete').click(function (e) {
         e.preventDefault();

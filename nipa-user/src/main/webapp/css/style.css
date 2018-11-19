@@ -790,6 +790,16 @@ text-align: center;
 .note li input::-webkit-input-placeholder {
 color: #b2cde0;
 }
+#noteTitle{
+width: 235px;
+}
+#noteLocation{
+width: 180px;
+}
+#getMapnotePoint{
+margin-left: 5px;
+margin-top: 1px;
+}
 
 /* 첨부파일 */
 .fileDrop {

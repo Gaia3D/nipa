@@ -254,15 +254,15 @@ $(function() {
 	$('#placeName p').click(function() {
 		$('#placeName').toggleClass('on');
 	});
-	$('#aLotNumber p').click(function() {
-		$('#aLotNumber').toggleClass('on');
-		$('#aLotNumber div.pagerB').toggle('on');
+	$('#jibun p').click(function() {
+		$('#jibun').toggleClass('on');
+		$('#jibun div.pagerB').toggle('on');
 	});
 	$('#newAddress p').click(function() {
 		$('#newAddress').toggleClass('on');
 	});
-	$('#nationPointNumber p').click(function() {
-		$('#nationPointNumber').toggleClass('on');
+	$('#countryPlaceNumber p').click(function() {
+		$('#countryPlaceNumber').toggleClass('on');
 	});
 	
 	
@@ -341,6 +341,9 @@ $(function() {
 	// 지점 등록
 	$('#addMapnote').click(function() {
 		console.log("좌표 독취에서 지점등록 클릭");
+		
+		$('#mapnoteLayer h2').text("지점등록");
+		$('#mapnoteBtn').text("등록");
 		$('#noteTitle').val('');
 		$('#description').val('');
 		
@@ -348,7 +351,10 @@ $(function() {
 		for(var i = 0, len = 7; i < len ; i++) {
 			deleteFile(i);
 		}
-
+		$('.uploadedList').empty();
+		
+		$('#mapnoteBtn').attr("onclick", "uploadMapnote()");
+		
 		mapnoteLayer.css('display', 'block');
 		
 		if(mapnoteLayer.css('display') == 'block') {
