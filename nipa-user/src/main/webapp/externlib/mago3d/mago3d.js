@@ -448,15 +448,11 @@ function gotoIssueAPI(managerFactoryInstance, projectId, projectData, projectDat
  * @param {string} height 데이터 고유키
  * @param {string} duration 이동하는 시간
  */
-function gotoFlyAPI(managerFactoryInstance, projectId, projectData, projectDataFolder, issueId, issueType, longitude, latitude, height, duration)
+function gotoFlyAPI(managerFactoryInstance, longitude, latitude, height, duration)
 {
 	if (managerFactoryInstance === null) { return; } 
 
 	var api = new API("gotoFly");
-	api.setProjectId(projectId);
-	api.setProjectDataFolder(projectDataFolder);
-	api.setIssueId(issueId);
-	api.setIssueType(issueType);
 	api.setLatitude(latitude);
 	api.setLongitude(longitude);
 	api.setElevation(height);
