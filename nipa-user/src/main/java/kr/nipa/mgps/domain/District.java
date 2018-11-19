@@ -11,6 +11,8 @@ public class District extends SearchFilter {
 
 	private String fullTextSearch;
 	
+	private String name;
+	
 	/******** 시도 **********/
 	private Integer sido_id;
 	private String sido_geom;

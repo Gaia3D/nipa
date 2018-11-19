@@ -1,5 +1,7 @@
 package kr.nipa.mgps.domain;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -11,6 +13,11 @@ public class NewAddress extends SearchFilter {
 
 	private String fullTextSearch;
 	
+	private String new_addr;
+    // 경도
+    private BigDecimal longitude;
+	// 위도
+    private BigDecimal latitude;
 	// 주소관할 읍면동 코드
 	private String code_emd;
 	// 시도명
