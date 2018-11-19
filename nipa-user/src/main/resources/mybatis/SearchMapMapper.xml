@@ -127,11 +127,12 @@
 	<select id="getNewAddressTotalCount" parameterType="newAddress" resultType="long">
 		/* getNewAddressTotalCount */
 		SELECT COUNT(*) 
-		FROM addr_jibun
-		WHERE kname_sido LIKE '%' || #{search_value} || '%'
+		FROM addr_new
+		WHERE 
+			name_sgg_building  LIKE '%' || #{search_value} || '%'
+			OR name_addr LIKE '%' || #{search_value} || '%'		
 			OR kname_sgg LIKE '%' || #{search_value} || '%'
-			OR kname_emd LIKE '%' || #{search_value} || '%'
-			OR kname_li LIKE '%' || #{search_value} || '%'		
+			OR kname_sido LIKE '%' || #{search_value} || '%'
 	</select>
 	
 	<!-- 국가 지점번호 검색 총 건수 -->
@@ -219,13 +220,18 @@
 	<!-- 새주소 목록 -->
 	<select id="getListNewAddress" parameterType="newAddress" resultType="newAddress">
 		/* getListNewAddress */
-		SELECT *
-		FROM addr_jibun 
-		WHERE kname_sido LIKE '%' || #{search_value} || '%'
+		SELECT concat_ws(' '::text, a.kname_sido, a.kname_sgg, a.name_addr, a.building_no1 ||
+				CASE
+					WHEN a.building_no2 = 0 OR a.building_no2 IS NULL THEN ''::text
+					ELSE '-'::text || a.building_no2
+				END, a.name_sgg_building, a.detail_bname) AS new_addr, ST_X(geom) as longitude, ST_Y(geom) as latitude, ST_AsGeoJSON(geom)
+		FROM public.addr_new a
+		WHERE 
+			name_sgg_building LIKE '%' || #{search_value} || '%'
+			OR name_addr LIKE '%' || #{search_value} || '%'		
 			OR kname_sgg LIKE '%' || #{search_value} || '%'
-			OR kname_emd LIKE '%' || #{search_value} || '%'
-			OR kname_li LIKE '%' || #{search_value} || '%'
-		ORDER BY kname_sido ASC, kname_sgg ASC, kname_emd ASC, kname_li ASC 
+			OR kname_sido LIKE '%' || #{search_value} || '%'
+		ORDER BY kname_sido ASC, kname_sgg ASC, name_addr ASC, name_sgg_building ASC
 		OFFSET #{offset} LIMIT #{limit}
 	</select>
 	

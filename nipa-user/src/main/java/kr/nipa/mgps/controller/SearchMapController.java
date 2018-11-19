@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequestMapping("/searchmap/")
+@CrossOrigin(origins = "*")
 @RestController
 public class SearchMapController {
 	
@@ -185,6 +187,7 @@ public class SearchMapController {
 		String result = "success";
 		log.info("@@ district = {}", district);
 		district.setSearch_value(district.getFullTextSearch());
+		district.setSearch_word(district.getFullTextSearch());
 		
 		try {
 			if(district.getSearch_value() == null || "".equals(district.getSearch_value())) {
@@ -320,7 +323,7 @@ public class SearchMapController {
 		String result = "success";
 		log.info("@@ newAddress = {}", newAddress);
 		newAddress.setSearch_value(newAddress.getFullTextSearch());
-		
+		map.put("searchWord", newAddress.getFullTextSearch());
 		try {
 			if(newAddress.getSearch_value() == null || "".equals(newAddress.getSearch_value())) {
 				map.put("result", "search.word.invalid");
