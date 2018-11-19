@@ -41,7 +41,7 @@
 				</ul>
 			</div>
 			<div class="districtBtn">
-				<button type="button" class="focusB">이동</button>
+				<button type="button" class="focusB" id="districtFlyButton">이동</button>
 				<button type="button" class="basicB">취소</button>
 			</div>
 		</div>
@@ -108,10 +108,10 @@
 			<h2 class="hide">레이어</h2>
 			<ul class="listLayer">
 				<li class="imageLayer" :class="{on:showImgLayer}" v-on:click.stop.prevent="showImgLayer=!showImgLayer">
-					<p>영상레이어</p>
+					<p>군사지도 레이어</p>
 					<ul>
 						<draggable v-model="imgLayers" @change="changeLayer($event, 0, '0')">
-						<li v-for="(layer, index) in imgLayers" :class="{on : layer.show}" v-on:click="toggleLayer(index, layer)">
+						<li v-for="(layer, index) in imgLayers" :class="{on : layer.show}" v-on:click.stop.prevent="toggleLayer(index, layer)">
 							<span>{{layer.name}}</span>
 							<div>
 								<span v-if="layer.color" class="color" title="색상" :style="{backgroundColor: '#'+layer.color}" v-on:click.stop.prevent="settingLayer(index, layer, defaultImgLayers[index])">색상</span>
@@ -122,10 +122,10 @@
 					</ul>
 				</li>
 				<li class="mapLayer" :class="{on:showMapLayer}" v-on:click.stop.prevent="showMapLayer=!showMapLayer">
-					<p>지도레이어</p>
+					<p>지형정보 레이어</p>
 					<ul>
 						<draggable v-model="mapLayers" @change="changeLayer($event, defaultImgLayers.length, '1')">
-						<li v-for="(layer, index) in mapLayers" :class="{on : layer.show}" v-on:click="toggleLayer(index+defaultImgLayers.length, layer)">
+						<li v-for="(layer, index) in mapLayers" :class="{on : layer.show}" v-on:click.stop.prevent="toggleLayer(index+defaultImgLayers.length, layer)">
 							<span>{{layer.name}}</span>
 							<div>
 								<span v-if="layer.color" class="color" title="색상" :style="{backgroundColor: '#'+layer.color}" v-on:click.stop.prevent="settingLayer(index+defaultImgLayers.length, layer, defaultMapLayers[index])">색상</span>
@@ -211,7 +211,7 @@
 					<li>
 						<label for="">위성유형</label>
 						<select id="satType">
-							<option value="K3" selected="selected">KOMPSAT3A</option>
+							<option value="WV3" selected="selected">WorldView-3</option>
 						</select>
 					</li>
 				</ul>
@@ -598,14 +598,14 @@
 				<!-- <form id="uploadForm" action="#" method="post" enctype="multipart/form-data"> -->
 					<ul class="note">
 						<li>
-							<input id="noteTitle" type="text" size="34" placeholder="지점명을 입력하세요">
+							<input id="noteTitle" type="text" placeholder="지점명을 입력하세요">
 						</li>
 						<li>
-							<input id="noteLocation" type="text" size="26" placeholder="126.6075050765, 37.5820583757">
+							<input id="noteLocation" type="text" placeholder="126.6075050765, 37.5820583757">
 							<button id="getMapnotePoint" class="basicA">지점</button>
 						</li>
 						<li>
-							<textarea id="description" cols="36" rows="5"></textarea>
+							<textarea id="description" cols="40" rows="5"></textarea>
 						</li>
 					</ul>
 					<div class="fileDrop yScroll">
@@ -1225,7 +1225,7 @@
 			dataType: "json",
 			success: function(msg){
 				if(msg.result == "success") {
-					drawListNewAddressSearch(msg.pagination, msg.totalCount, msg.newAddressList);
+					drawListNewAddressSearch(msg.pagination, msg.totalCount, msg.newAddressList, msg.searchWord);
 				} else {
 					alert(JS_MESSAGE[msg.result]);
 				}
@@ -1250,18 +1250,18 @@
 		});
 	}
 	// 새주소 검색 목록
-	function drawListNewAddressSearch(pagination, totalCount, newAddressList) {
+	function drawListNewAddressSearch(pagination, totalCount, newAddressList, searchWord) {
 		var newAddressList = newAddressList;
 		var content = "";
+		var page = "";
 		if (newAddressList != null && newAddressList.length > 0) {
 			for(i=0; i<newAddressList.length; i++ ) {
 				var newAddress = null;
 				newAddress = newAddressList[i];
 
-				content			+= 	"<li>"
-								+		"<span class=\"col-checkbox\">gotoFly('" + newAddress.kname_sido + "', '" + newAddress.kname_sgg + "')</span>"
-								+ 		"<span class=\"title\">" + newAddress.kname_sido + newAddress.kname_sgg + newAddress.kname_emd + "</span>"
-								+ 	"</li>";
+				content	+=	"<li onclick=\"gotoFly("+newAddress.longitude+", "+newAddress.latitude+", 300, 2)\">"
+						+	"<span><button type='button' class='btnText' style='margin-right:10px;'>바로가기</button>"+ newAddress.new_addr +"</span>"
+						+	"</li>";
 			}
 		} else {
 			content += 	"<li style=\"vertical-align:middle; text-align:center; height: 50px;\">검색 결과가 존재하지 않습니다.</li>";
@@ -1272,7 +1272,7 @@
 		$("#newAddressSearchCount").html(totalCount);
 		$("#newAddressSearchList").empty();
 		$("#newAddressSearchList").html(content);
-		drawPage("newAddressSearch", pagination, "newAddressSearchPaging");
+		drawPage("newAddressSearch", pagination, "newAddressSearchPaging", searchWord);
 	}
 		
 	// 국가지점번호 검색

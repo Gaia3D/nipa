@@ -155,3 +155,8 @@ function changeEmd(_this, sdo_code, sgg_code, emd_code)
 
     updateViewDistrictName();
 }
+
+$("#districtFlyButton").click(function () {
+    //drawDistrict();
+    gotoFly(127.349068, 36.406209, 700, 2);
+});
