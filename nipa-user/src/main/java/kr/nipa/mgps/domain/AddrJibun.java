@@ -11,6 +11,7 @@ public class AddrJibun extends SearchFilter {
 	
 	private String fullTextSearch;
 	
+	private String jibun_addr;
 	// 법정동코드
 	private String code_law;
 	// 시도명

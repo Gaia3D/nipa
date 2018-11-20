@@ -207,20 +207,27 @@
 	<!-- 지번 목록 -->
 	<select id="getListJibun" parameterType="addrJibun" resultType="addrJibun">
 		/* getListJibun */
-		SELECT *
-		FROM addr_jibun 
-		WHERE kname_sido LIKE '%' || #{search_value} || '%'
+		SELECT DISTINCT ON (kname_sido, kname_sgg , kname_emd, building_no1, building_no2) 
+		       concat_ws(' '::text, kname_sido, kname_sgg, kname_emd, building_no1 ||
+		     	CASE 
+		        	WHEN building_no2 = 0 OR building_no2 IS NULL THEN ''::text
+			 		ELSE '-'::text || building_no2
+		     	END) AS jibun_addr
+		FROM public.addr_jibun
+		WHERE 
+			kname_sido LIKE '%' || #{search_value} || '%'
 			OR kname_sgg LIKE '%' || #{search_value} || '%'
 			OR kname_emd LIKE '%' || #{search_value} || '%'
 			OR kname_li LIKE '%' || #{search_value} || '%'
-		ORDER BY kname_sido ASC, kname_sgg ASC, kname_emd ASC, kname_li ASC 
+		ORDER BY kname_sido ASC, kname_sgg ASC, kname_emd ASC, building_no1 ASC, building_no2 ASC
 		OFFSET #{offset} LIMIT #{limit}
 	</select>
 	
 	<!-- 새주소 목록 -->
 	<select id="getListNewAddress" parameterType="newAddress" resultType="newAddress">
 		/* getListNewAddress */
-		SELECT concat_ws(' '::text, a.kname_sido, a.kname_sgg, a.name_addr, a.building_no1 ||
+		SELECT DISTINCT ON (kname_sido, kname_sgg , kname_emd, name_addr, name_sgg_building) 
+			   concat_ws(' '::text, a.kname_sido, a.kname_sgg, a.name_addr, a.building_no1 ||
 				CASE
 					WHEN a.building_no2 = 0 OR a.building_no2 IS NULL THEN ''::text
 					ELSE '-'::text || a.building_no2

@@ -178,7 +178,7 @@ public class SearchMapController {
 	 * @param district
 	 * @return
 	 */
-	@GetMapping("districts")
+	@GetMapping("district")
 	public Map<String, Object> districts(HttpServletRequest request, District district, @RequestParam(defaultValue="1") String pageNo) {
 		
 		// TODO 아직 정리가 안되서.... fullTextSearch라는 변수를 임시로 추가해 두었음. 다음에 고쳐야 함
@@ -224,7 +224,7 @@ public class SearchMapController {
 	 * @param placeName
 	 * @return
 	 */
-	@GetMapping("place-names")
+	@GetMapping("placeName")
 	public Map<String, Object> placeNames(HttpServletRequest request, PlaceName placeName, @RequestParam(defaultValue="1") String pageNo) {
 		
 		// TODO 아직 정리가 안되서.... fullTextSearch라는 변수를 임시로 추가해 두었음. 다음에 고쳐야 함
@@ -269,7 +269,7 @@ public class SearchMapController {
 	 * @param addrJibun
 	 * @return
 	 */
-	@GetMapping("jibuns")
+	@GetMapping("jibun")
 	public Map<String, Object> jibuns(HttpServletRequest request, AddrJibun addrJibun, @RequestParam(defaultValue="1") String pageNo) {
 		
 		// TODO 아직 정리가 안되서.... fullTextSearch라는 변수를 임시로 추가해 두었음. 다음에 고쳐야 함
@@ -278,6 +278,10 @@ public class SearchMapController {
 		String result = "success";
 		log.info("@@ addrJibun = {}", addrJibun);
 		addrJibun.setSearch_value(addrJibun.getFullTextSearch());
+		map.put("searchWord", addrJibun.getFullTextSearch());
+		String[] uri = request.getRequestURI().split("/");
+		String searchKey = uri[2].trim();
+		map.put("searchKey", searchKey);
 		
 		try {
 			if(addrJibun.getSearch_value() == null || "".equals(addrJibun.getSearch_value())) {
@@ -314,7 +318,7 @@ public class SearchMapController {
 	 * @param newAddress
 	 * @return
 	 */
-	@GetMapping("new-addresses")
+	@GetMapping("newAddress")
 	public Map<String, Object> newAddresses(HttpServletRequest request, NewAddress newAddress, @RequestParam(defaultValue="1") String pageNo) {
 		
 		// TODO 아직 정리가 안되서.... fullTextSearch라는 변수를 임시로 추가해 두었음. 다음에 고쳐야 함
@@ -324,6 +328,10 @@ public class SearchMapController {
 		log.info("@@ newAddress = {}", newAddress);
 		newAddress.setSearch_value(newAddress.getFullTextSearch());
 		map.put("searchWord", newAddress.getFullTextSearch());
+		String[] uri = request.getRequestURI().split("/");
+		String searchKey = uri[2].trim();
+		map.put("searchKey", searchKey);
+		
 		try {
 			if(newAddress.getSearch_value() == null || "".equals(newAddress.getSearch_value())) {
 				map.put("result", "search.word.invalid");
@@ -359,7 +367,7 @@ public class SearchMapController {
 	 * @param countryPlaceNumber
 	 * @return
 	 */
-	@GetMapping("country-place-numbers")
+	@GetMapping("countryPlaceNumber")
 	public Map<String, Object> countryPlaceNumbers(HttpServletRequest request, CountryPlaceNumber countryPlaceNumber, @RequestParam(defaultValue="1") String pageNo) {
 		
 		// TODO 아직 정리가 안되서.... fullTextSearch라는 변수를 임시로 추가해 두었음. 다음에 고쳐야 함

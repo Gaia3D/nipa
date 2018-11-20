@@ -955,11 +955,11 @@
 			showSearchMenu();
 			showSearchSubMenu();
 			
-			districtSearch(null, searchWord);
-			placeNameSearch(null, searchWord);
+			//districtSearch(null, searchWord);
+			//placeNameSearch(null, searchWord);
 			jibunSearch(null, searchWord);
 			newAddressSearch(null, searchWord);
-			countryPlaceNumberSearch(null, searchWord);
+			//countryPlaceNumberSearch(null, searchWord);
 		} else {
 			alert("검색 중 입니다.");
 			return;
@@ -974,17 +974,17 @@
 	}
 	// 검색창 클릭시 메뉴 서브 제어
 	function showSearchSubMenu() {
-		$("#distrirct").addClass("on");
-		$("#placeName").addClass("on");
+		//$("#distrirct").addClass("on");
+		//$("#placeName").addClass("on");
 		$("#jibun").addClass("on");
 		$("#newAddress").addClass("on");
-		$("#countryPlaceNumber").addClass("on");
+		//$("#countryPlaceNumber").addClass("on");
 		
-		$("#districtSearchList").height(200);
-		$("#placeNameSearchList").height(200);
+		//$("#districtSearchList").height(200);
+		//$("#placeNameSearchList").height(200);
 		$("#jibunSearchList").height(200);
 		$("#newAddressSearchList").height(200);
-		$("#countryPlaceNumberSearchList").height(200);
+		//$("#countryPlaceNumberSearchList").height(200);
 	}
 
 	// 행정구역 검색
@@ -1003,7 +1003,7 @@
 			info = info + "&pageNo=" + pageNo;
 		}
 		$.ajax({
-			url: "/searchmap/districts",
+			url: "/searchmap/district",
 			type: "GET",
 			data: info,
 			dataType: "json",
@@ -1043,7 +1043,7 @@
 				district = districtList[i];
 
 				content			+= 	"<li>"
-								+		"<span class=\"col-checkbox\">gotoFly('" + district.kname_sido + "', '" + district.kname_sgg + "')</span>"
+								+		"<span class=\"col-checkbox\">gotoFly('" + district.sido_kor_nm + "', '" + district.sgg_kor_nm + "', '" + district.emd_kor_nm + "')</span>"
 								+ 		"<span class=\"title\">" + district.kname_sido + district.kname_sgg + district.kname_emd + "</span>"
 								+ 	"</li>";
 			}
@@ -1075,7 +1075,7 @@
 			info = info + "&pageNo=" + pageNo;
 		}
 		$.ajax({
-			url: "/searchmap/place-names",
+			url: "/searchmap/placeName",
 			type: "GET",
 			data: info,
 			dataType: "json",
@@ -1115,8 +1115,8 @@
 				placeName = placeNameList[i];
 
 				content			+= 	"<li>"
-								+		"<span class=\"col-checkbox\">gotoFly('" + placeName.kname_sido + "', '" + placeName.kname_sgg + "')</span>"
-								+ 		"<span class=\"title\">" + placeName.kname_sido + placeName.kname_sgg + placeName.kname_emd + "</span>"
+								+		"<span class=\"col-checkbox\">gotoFly('" + placeName.lon + "', '" + placeName.lat + "')</span>"
+								+ 		"<span class=\"title\">" + placeName.name_ko + "</span>"
 								+ 	"</li>";
 			}
 		} else {
@@ -1147,13 +1147,13 @@
 			info = info + "&pageNo=" + pageNo;
 		}
 		$.ajax({
-			url: "/searchmap/jibuns",
+			url: "/searchmap/jibun",
 			type: "GET",
 			data: info,
 			dataType: "json",
 			success: function(msg){
 				if(msg.result == "success") {
-					drawListJibunSearch(msg.pagination, msg.totalCount, msg.addrJibunList);
+					drawListJibunSearch(msg.pagination, msg.totalCount, msg.addrJibunList, msg.searchWord, msg.searchKey);
 				} else {
 					alert(JS_MESSAGE[msg.result]);
 				}
@@ -1177,18 +1177,19 @@
 			}
 		});
 	}
+	
 	// 지번 검색 목록
-	function drawListJibunSearch(pagination, totalCount, addrJibunList) {
+	function drawListJibunSearch(pagination, totalCount, addrJibunList, searchWord, searchKey) {
 		var addrJibunList = addrJibunList;
 		var content = "";
+		var page = "";
 		if (addrJibunList != null && addrJibunList.length > 0) {
 			for(i=0; i<addrJibunList.length; i++ ) {
 				var addrJibun = null;
 				addrJibun = addrJibunList[i];
 
 				content			+= 	"<li>"
-								+		"<span class=\"col-checkbox\">gotoFly('" + addrJibun.kname_sido + "', '" + addrJibun.kname_sgg + "')</span>"
-								+ 		"<span class=\"title\">" + addrJibun.kname_sido + addrJibun.kname_sgg + addrJibun.kname_emd + "</span>"
+								+	addrJibun.jibun_addr
 								+ 	"</li>";
 			}
 		} else {
@@ -1200,7 +1201,7 @@
 		$("#jibunSearchCount").html(totalCount);
 		$("#jibunSearchList").empty();
 		$("#jibunSearchList").html(content);
-		drawPage("jibunSearch", pagination, "jibunSearchPaging");
+		drawPage("jibunSearch", pagination, "jibunSearchPaging", searchWord, searchKey);
 	}
 	
 	// 새주소 검색
@@ -1219,13 +1220,13 @@
 			info = info + "&pageNo=" + pageNo;
 		}
 		$.ajax({
-			url: "/searchmap/new-addresses",
+			url: "/searchmap/newAddress",
 			type: "GET",
 			data: info,
 			dataType: "json",
 			success: function(msg){
 				if(msg.result == "success") {
-					drawListNewAddressSearch(msg.pagination, msg.totalCount, msg.newAddressList, msg.searchWord);
+					drawListNewAddressSearch(msg.pagination, msg.totalCount, msg.newAddressList, msg.searchWord, msg.searchKey);
 				} else {
 					alert(JS_MESSAGE[msg.result]);
 				}
@@ -1250,7 +1251,7 @@
 		});
 	}
 	// 새주소 검색 목록
-	function drawListNewAddressSearch(pagination, totalCount, newAddressList, searchWord) {
+	function drawListNewAddressSearch(pagination, totalCount, newAddressList, searchWord, searchKey) {
 		var newAddressList = newAddressList;
 		var content = "";
 		var page = "";
@@ -1272,7 +1273,7 @@
 		$("#newAddressSearchCount").html(totalCount);
 		$("#newAddressSearchList").empty();
 		$("#newAddressSearchList").html(content);
-		drawPage("newAddressSearch", pagination, "newAddressSearchPaging", searchWord);
+		drawPage("newAddressSearch", pagination, "newAddressSearchPaging", searchWord, searchKey);
 	}
 		
 	// 국가지점번호 검색
@@ -1291,7 +1292,7 @@
 			info = info + "&pageNo=" + pageNo;
 		}
 		$.ajax({
-			url: "/searchmap/country-place-numbers",
+			url: "/searchmap/countryPlaceNumber",
 			type: "GET",
 			data: info,
 			dataType: "json",

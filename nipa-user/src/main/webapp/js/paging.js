@@ -1,8 +1,10 @@
 var searchWord;
-function drawPage(searchType, pagination, areaId, searchWord) {
+var searchKey;
+function drawPage(searchType, pagination, areaId, searchWord, searchKey) {
 	var pagecontent = "";
 	var pageIndex = null;
 	searchWord = searchWord;
+	searchKey = searchKey;
 	
 	pagecontent	= pagecontent 
 		+	"<div class='pagerB'>"
@@ -29,26 +31,44 @@ function drawPage(searchType, pagination, areaId, searchWord) {
 				nextPage = pagination.lastPage;
 			}
 		}
-			pagecontent +=		"<button type='button' class=\"first\" onclick=\"newAddressSearch(" + pagination.startPage + ", '" + searchWord + "');\">처음</button>"
-			pagecontent +=		"<button type='button' class=\"forward\" onclick=\"newAddressSearch(" + prePage + ", '" + searchWord + "');\">이전</button>"
+			pagecontent +=		"<button type='button' class=\"first\" onclick=\"" + searchKey + "Search(" + pagination.startPage + ", '" + searchWord + "');\">처음</button>"
+			pagecontent +=		"<button type='button' class=\"forward\" onclick=\"" + searchKey + "Search(" + prePage + ", '" + searchWord + "');\">이전</button>"
 			pagecontent += 		"<input type='text' id='pageNum' value='1' size='1'> / <span style='padding-right:5px;'>" + pagination.lastPage + "</span>" 
-			pagecontent +=		"<button type='button' class=\"next\" onclick=\"newAddressSearch(" + nextPage + ", '" + searchWord + "');\">다음</button>"
-			pagecontent +=		"<button type='button' class=\"last\" onclick=\"newAddressSearch(" + pagination.lastPage + ", '" + searchWord + "');\">마지막</button>"
-			pagecontent +=		"<button type='button' id='pageBtn' onclick=\"newAddressSearch(" + pageNum + ", '" + searchWord + "');\" class='btnText' style='margin-left:5px;'>이동</button>"
+			pagecontent +=		"<button type='button' class=\"next\" onclick=\"" + searchKey + "Search(" + nextPage + ", '" + searchWord + "');\">다음</button>"
+			pagecontent +=		"<button type='button' class=\"last\" onclick=\"" + searchKey + "Search(" + pagination.lastPage + ", '" + searchWord + "');\">마지막</button>"
+			pagecontent +=		"<button type='button' id='pageBtn' onclick=\"gotoPage('" + searchWord + "', '" + searchKey + "'); return false;\" class='btnText' style='margin-left:5px;'>이동</button>"
 			pagecontent +=		"</div></div>";
 			
 			$("#" + areaId).empty();
 			$("#" + areaId).html(pagecontent);
-			pageNum = $('#pageNum').val();
-			$('span.countPage').text($('#pageNum').val());
+			pageNum = pagination.pageNo;
+			$('#pageNum').val(pageNum);
+			$('span.countPage').text(pageNum);
 
 	}
 	
 }
 
-//function gotoPage(searchWord) {
-//	var pageNo = $('#pageNo').val();
-//	newAddressSearch(pageNo, "'" + searchWord + "'");
-//	$('span.countPage').text(pageNo);
-//}
+function gotoPage(searchWord, searchKey) {
+	var pageNum = $('#pageNum').val();
+	// swich 문
+	switch(searchKey) {
+		case 'distrirct' :
+			districtSearch(pageNum, searchWord)
+			break;
+		case 'placeName' :
+			placeNameSearch(pageNum, searchWord)
+			break;
+		case 'jibun' :
+			jibunSearch(pageNum, searchWord)
+			break;
+		case 'newAddress' :
+			newAddressSearch(pageNum, searchWord)
+			break;
+		case 'countryPlaceNumber' :
+			countryPlaceNumberSearch(pageNum, searchWord)
+			break;
+	}
+	$('span.countPage').text(pageNum);
+}
 
