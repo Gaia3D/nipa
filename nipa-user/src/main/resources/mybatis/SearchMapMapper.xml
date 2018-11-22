@@ -93,23 +93,28 @@
 	<!-- 행정구역 검색 총 건수 -->
 	<select id="getDistrictTotalCount" parameterType="district" resultType="long">
 		/* getDistrictTotalCount */
-		SELECT COUNT(*) 
-		FROM addr_jibun
-		WHERE kname_sido LIKE '%' || #{search_value} || '%'
-			OR kname_sgg LIKE '%' || #{search_value} || '%'
-			OR kname_emd LIKE '%' || #{search_value} || '%'
-			OR kname_li LIKE '%' || #{search_value} || '%'		
+		SELECT count(*)
+		FROM (
+			SELECT name
+			FROM sk_sdo
+			WHERE name like '%' || '금천' || '%'
+			UNION ALL
+			SELECT name
+			FROM sk_sgg 
+			WHERE name like '%' || '금천' || '%'
+			UNION ALL
+			SELECT name
+			FROM sk_emd 
+			WHERE name like '%' || '금천' || '%'
+		) A 		
 	</select>
 	
 	<!-- 지명 검색 총 건수 -->
 	<select id="getPlaceNameTotalCount" parameterType="placeName" resultType="long">
 		/* getPlaceNameTotalCount */
-		SELECT COUNT(*) 
-		FROM addr_jibun
-		WHERE kname_sido LIKE '%' || #{search_value} || '%'
-			OR kname_sgg LIKE '%' || #{search_value} || '%'
-			OR kname_emd LIKE '%' || #{search_value} || '%'
-			OR kname_li LIKE '%' || #{search_value} || '%'		
+		SELECT count(*)
+		FROM place_name
+		WHERE name_ko LIKE '%' || #{search_value} || '%'		
 	</select>
 	
 	<!-- 지번 검색 총 건수 -->
@@ -138,88 +143,51 @@
 	<!-- 국가 지점번호 검색 총 건수 -->
 	<select id="getCountryPlaceNumberTotalCount" parameterType="countryPlaceNumber" resultType="long">
 		/* getCountryPlaceNumberTotalCount */
-		SELECT COUNT(*) 
-		FROM addr_jibun
-		WHERE kname_sido LIKE '%' || #{search_value} || '%'
-			OR kname_sgg LIKE '%' || #{search_value} || '%'
-			OR kname_emd LIKE '%' || #{search_value} || '%'
-			OR kname_li LIKE '%' || #{search_value} || '%'		
+		SELECT count(*)
+		FROM place_num
+		WHERE spo_no_cd LIKE '%' || #{search_value} || '%'		
 	</select>
 
 	<!-- 행정 구역 목록 -->
 	<select id="getListDistrict" parameterType="district" resultType="district">
 		/* getListDistrict */
-		SELECT 1 AS layer_type, X.name, SUBSTR(X.bjcd, 1, 2) AS sdo_code, '' AS sgg_code, '' AS emd_code
-		FROM sk_sdo X, ( 
-			SELECT MIN(A.gid) AS gid, A.name 
-			FROM (
-				SELECT gid, name, bjcd
-				FROM sk_sdo
-				WHERE name like #{search_word} || '%'
-			) A
-			GROUP BY A.name
-		) Y
-		WHERE X.gid = Y.gid
+		SELECT sido_cd AS id, sido_kor_nm AS name, ST_X(ST_Centroid(geom)) AS longitude, ST_Y(ST_Centroid(geom)) AS latitude, ST_AsGeoJSON(ST_Centroid(geom))
+		FROM adm_sido
+		WHERE sido_kor_nm LIKE '%' || #{search_value} || '%'
 		UNION ALL
-		SELECT 2 AS layer_type, X.name, SUBSTR(X.bjcd, 1, 2) AS sdo_code, 
-			SUBSTR(X.bjcd, 3, 3) AS sgg_code,
-			'' AS emd_code
-		FROM sk_sgg X, (
-			SELECT MIN(A.gid) AS gid, SUBSTR(A.bjcd, 1, 5) AS bjcd, A.name 
-			FROM (
-				SELECT gid, bjcd, name 
-				FROM sk_sgg 
-				WHERE name like #{search_word} || '%'
-			) A
-			GROUP BY SUBSTR(A.bjcd, 1, 5), A.name
-		) Y
-		WHERE X.gid = Y.gid
+		SELECT sgg_cd AS id, sgg_kor_nm AS name, ST_X(ST_Centroid(geom)) AS longitude, ST_Y(ST_Centroid(geom)) AS latitude, ST_AsGeoJSON(ST_Centroid(geom))
+		FROM adm_sgg
+		WHERE sgg_kor_nm LIKE '%' || #{search_value} || '%'
 		UNION ALL
-		SELECT 3  AS layer_type, X.name, SUBSTR(X.bjcd, 1, 2) AS sdo_code, 
-			SUBSTR(X.bjcd, 3, 3) AS sgg_code,
-			SUBSTR(X.bjcd, 1, 8) AS emd_code
-		FROM sk_emd X, (
-			SELECT MIN(A.gid) AS gid, SUBSTR(A.bjcd, 4, 4) AS bjcd, A.name 
-			FROM (
-				SELECT gid, bjcd, name 
-				FROM sk_emd 
-				WHERE name like #{search_word} || '%'
-			) A
-			GROUP BY SUBSTR(A.bjcd, 4, 4), A.name
-		) Y
-		WHERE X.gid = Y.gid
-		ORDER BY name
+		SELECT emd_cd AS id, emd_kor_nm AS name, ST_X(ST_Centroid(geom)) AS longitude, ST_Y(ST_Centroid(geom)) AS latitude, ST_AsGeoJSON(ST_Centroid(geom))
+		FROM adm_emd
+		WHERE emd_kor_nm LIKE '%' || #{search_value} || '%'
+		OFFSET #{offset} LIMIT #{limit}
 	</select>
 	
 	<!-- 지명 목록 -->
 	<select id="getListPlaceName" parameterType="placeName" resultType="placeName">
 		/* getListPlaceName */
-		SELECT *
-		FROM addr_jibun 
-		WHERE kname_sido LIKE '%' || #{search_value} || '%'
-			OR kname_sgg LIKE '%' || #{search_value} || '%'
-			OR kname_emd LIKE '%' || #{search_value} || '%'
-			OR kname_li LIKE '%' || #{search_value} || '%'
-		ORDER BY kname_sido ASC, kname_sgg ASC, kname_emd ASC, kname_li ASC 
+		SELECT gid, name_ko, ST_X(geom) as longitude, ST_Y(geom) as latitude, ST_AsGeoJSON(geom)
+		FROM place_name
+		WHERE name_ko LIKE '%' || #{search_value} || '%'
+		ORDER BY name_ko ASC 
 		OFFSET #{offset} LIMIT #{limit}
 	</select>
 	
 	<!-- 지번 목록 -->
 	<select id="getListJibun" parameterType="addrJibun" resultType="addrJibun">
 		/* getListJibun */
-		SELECT DISTINCT ON (kname_sido, kname_sgg , kname_emd, building_no1, building_no2) 
-		       concat_ws(' '::text, kname_sido, kname_sgg, kname_emd, building_no1 ||
-		     	CASE 
-		        	WHEN building_no2 = 0 OR building_no2 IS NULL THEN ''::text
-			 		ELSE '-'::text || building_no2
-		     	END) AS jibun_addr
-		FROM public.addr_jibun
+		SELECT DISTINCT ON (kname_sido, kname_sgg , kname_emd, jibun_no1, jibun_no2) 
+		       concat_ws(' '::text, kname_sido, kname_sgg, kname_emd, jibun_no1, jibun_no2)
+		       AS jibun_addr, ST_X(geom) as longitude, ST_Y(geom) as latitude, ST_AsGeoJSON(geom)
+		FROM public.jibun_search
 		WHERE 
 			kname_sido LIKE '%' || #{search_value} || '%'
 			OR kname_sgg LIKE '%' || #{search_value} || '%'
 			OR kname_emd LIKE '%' || #{search_value} || '%'
 			OR kname_li LIKE '%' || #{search_value} || '%'
-		ORDER BY kname_sido ASC, kname_sgg ASC, kname_emd ASC, building_no1 ASC, building_no2 ASC
+		ORDER BY kname_sido ASC, kname_sgg ASC, kname_emd ASC, jibun_no1 ASC, jibun_no2 ASC
 		OFFSET #{offset} LIMIT #{limit}
 	</select>
 	
@@ -245,13 +213,10 @@
 	<!-- 국가 지점 번호 목록 -->
 	<select id="getListCountryPlaceNumber" parameterType="countryPlaceNumber" resultType="countryPlaceNumber">
 		/* getListCountryPlaceNumber */
-		SELECT *
-		FROM addr_jibun 
-		WHERE kname_sido LIKE '%' || #{search_value} || '%'
-			OR kname_sgg LIKE '%' || #{search_value} || '%'
-			OR kname_emd LIKE '%' || #{search_value} || '%'
-			OR kname_li LIKE '%' || #{search_value} || '%'
-		ORDER BY kname_sido ASC, kname_sgg ASC, kname_emd ASC, kname_li ASC 
-		OFFSET #{offset} LIMIT #{limit}
+		SELECT gid, spo_no_cd, ST_X(geom) as longitude, ST_Y(geom) as latitude, ST_AsGeoJSON(geom)
+		FROM place_num
+		WHERE spo_no_cd LIKE '%' || #{search_value} || '%
+		ORDER BY spo_no_cd ASC
+		OFFSET #{offset} LIMIT #{limit}'
 	</select>
 </mapper>

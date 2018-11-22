@@ -36,22 +36,20 @@ function drawPage(searchType, pagination, areaId, searchWord, searchKey) {
 			pagecontent += 		"<input type='text' id='pageNum' value='1' size='1'> / <span style='padding-right:5px;'>" + pagination.lastPage + "</span>" 
 			pagecontent +=		"<button type='button' class=\"next\" onclick=\"" + searchKey + "Search(" + nextPage + ", '" + searchWord + "');\">다음</button>"
 			pagecontent +=		"<button type='button' class=\"last\" onclick=\"" + searchKey + "Search(" + pagination.lastPage + ", '" + searchWord + "');\">마지막</button>"
-			pagecontent +=		"<button type='button' id='pageBtn' onclick=\"gotoPage('" + searchWord + "', '" + searchKey + "'); return false;\" class='btnText' style='margin-left:5px;'>이동</button>"
+			pagecontent +=		"<button type='button' id='pageBtn' onclick=\"gotoPage('" + areaId + "', '" + searchWord + "', '" + searchKey + "'); return false;\" class='btnText' style='margin-left:5px;'>이동</button>"
 			pagecontent +=		"</div></div>";
 			
 			$("#" + areaId).empty();
 			$("#" + areaId).html(pagecontent);
 			pageNum = pagination.pageNo;
-			$('#pageNum').val(pageNum);
-			$('span.countPage').text(pageNum);
-
+			$('#'+ areaId +' #pageNum').val(pageNum);
+			$('#'+ areaId +' span.countPage').text(pageNum);
 	}
-	
 }
 
-function gotoPage(searchWord, searchKey) {
-	var pageNum = $('#pageNum').val();
-	// swich 문
+function gotoPage(areaId, searchWord, searchKey) {
+	var pageNum = $('#'+ areaId +' #pageNum').val();
+	
 	switch(searchKey) {
 		case 'distrirct' :
 			districtSearch(pageNum, searchWord)
@@ -69,6 +67,6 @@ function gotoPage(searchWord, searchKey) {
 			countryPlaceNumberSearch(pageNum, searchWord)
 			break;
 	}
-	$('span.countPage').text(pageNum);
+	$('#'+ areaId +' span.countPage').text(pageNum);
 }
 

@@ -189,6 +189,10 @@ public class SearchMapController {
 		district.setSearch_value(district.getFullTextSearch());
 		district.setSearch_word(district.getFullTextSearch());
 		
+		String[] uri = request.getRequestURI().split("/");
+		String searchKey = uri[2].trim();
+		map.put("searchKey", searchKey);
+		
 		try {
 			if(district.getSearch_value() == null || "".equals(district.getSearch_value())) {
 				map.put("result", "search.word.invalid");
@@ -233,6 +237,11 @@ public class SearchMapController {
 		String result = "success";
 		log.info("@@ placeName = {}", placeName);
 		placeName.setSearch_value(placeName.getFullTextSearch());
+		placeName.setSearch_word(placeName.getFullTextSearch());
+		
+		String[] uri = request.getRequestURI().split("/");
+		String searchKey = uri[2].trim();
+		map.put("searchKey", searchKey);
 		
 		try {
 			if(placeName.getSearch_value() == null || "".equals(placeName.getSearch_value())) {
@@ -376,6 +385,11 @@ public class SearchMapController {
 		String result = "success";
 		log.info("@@ countryPlaceNumber = {}", countryPlaceNumber);
 		countryPlaceNumber.setSearch_value(countryPlaceNumber.getFullTextSearch());
+		countryPlaceNumber.setSearch_word(countryPlaceNumber.getFullTextSearch());
+		
+		String[] uri = request.getRequestURI().split("/");
+		String searchKey = uri[2].trim();
+		map.put("searchKey", searchKey);
 		
 		try {
 			if(countryPlaceNumber.getSearch_value() == null || "".equals(countryPlaceNumber.getSearch_value())) {

@@ -955,11 +955,11 @@
 			showSearchMenu();
 			showSearchSubMenu();
 			
-			//districtSearch(null, searchWord);
-			//placeNameSearch(null, searchWord);
+			districtSearch(null, searchWord);
+			placeNameSearch(null, searchWord);
 			jibunSearch(null, searchWord);
 			newAddressSearch(null, searchWord);
-			//countryPlaceNumberSearch(null, searchWord);
+			countryPlaceNumberSearch(null, searchWord);
 		} else {
 			alert("검색 중 입니다.");
 			return;
@@ -974,17 +974,17 @@
 	}
 	// 검색창 클릭시 메뉴 서브 제어
 	function showSearchSubMenu() {
-		//$("#distrirct").addClass("on");
-		//$("#placeName").addClass("on");
+		$("#distrirct").addClass("on");
+		$("#placeName").addClass("on");
 		$("#jibun").addClass("on");
 		$("#newAddress").addClass("on");
-		//$("#countryPlaceNumber").addClass("on");
+		$("#countryPlaceNumber").addClass("on");
 		
-		//$("#districtSearchList").height(200);
-		//$("#placeNameSearchList").height(200);
+		$("#districtSearchList").height(200);
+		$("#placeNameSearchList").height(200);
 		$("#jibunSearchList").height(200);
 		$("#newAddressSearchList").height(200);
-		//$("#countryPlaceNumberSearchList").height(200);
+		$("#countryPlaceNumberSearchList").height(200);
 	}
 
 	// 행정구역 검색
@@ -1009,7 +1009,7 @@
 			dataType: "json",
 			success: function(msg){
 				if(msg.result == "success") {
-					drawListDistrictSearch(msg.pagination, msg.totalCount, msg.districtList);
+					drawListDistrictSearch(msg.pagination, msg.totalCount, msg.districtList, msg.searchWord, msg.searchKey);
 				} else {
 					alert(JS_MESSAGE[msg.result]);
 				}
@@ -1019,7 +1019,6 @@
 					searchTypeCount = 0;
 					fullTextSearchFlag = true;
 				}
-
 			},
 			error:function(request,status,error) {
 				//console.log(" code : " + request.status + "\n" + ", message : " + request.responseText + "\n" + ", error : " + error);
@@ -1034,7 +1033,7 @@
 		});
 	}
 	// 행정구역 검색 목록
-	function drawListDistrictSearch(pagination, totalCount, districtList) {
+	function drawListDistrictSearch(pagination, totalCount, districtList, searchWord, searchKey) {
 		var districtList = districtList;
 		var content = "";
 		if (districtList != null && districtList.length > 0) {
@@ -1042,10 +1041,10 @@
 				var district = null;
 				district = districtList[i];
 
-				content			+= 	"<li>"
-								+		"<span class=\"col-checkbox\">gotoFly('" + district.sido_kor_nm + "', '" + district.sgg_kor_nm + "', '" + district.emd_kor_nm + "')</span>"
-								+ 		"<span class=\"title\">" + district.kname_sido + district.kname_sgg + district.kname_emd + "</span>"
-								+ 	"</li>";
+				content	+=	"<li>"
+					+	"<span><button type='button' class='btnText' onclick=\"gotoFly("+district.longitude+", "+district.latitude+", 300, 2)\" style='margin-right:10px;'>바로가기</button>"
+					+ 	 district.name +"</span>"
+					+	"</li>";
 			}
 		} else {
 			content += 	"<li style=\"vertical-align:middle; text-align:center; height: 50px;\">검색 결과가 존재하지 않습니다.</li>";
@@ -1081,7 +1080,7 @@
 			dataType: "json",
 			success: function(msg){
 				if(msg.result == "success") {
-					drawListPlaceNameSearch(msg.pagination, msg.totalCount, msg.placeNameList);
+					drawListPlaceNameSearch(msg.pagination, msg.totalCount, msg.placeNameList, msg.searchWord, msg.searchKey);
 				} else {
 					alert(JS_MESSAGE[msg.result]);
 				}
@@ -1091,7 +1090,6 @@
 					searchTypeCount = 0;
 					fullTextSearchFlag = true;
 				}
-
 			},
 			error:function(request,status,error) {
 				//console.log(" code : " + request.status + "\n" + ", message : " + request.responseText + "\n" + ", error : " + error);
@@ -1106,7 +1104,7 @@
 		});
 	}
 	// 지명 검색 목록
-	function drawListPlaceNameSearch(pagination, totalCount, placeNameList) {
+	function drawListPlaceNameSearch(pagination, totalCount, placeNameList, searchWord, searchKey) {
 		var placeNameList = placeNameList;
 		var content = "";
 		if (placeNameList != null && placeNameList.length > 0) {
@@ -1114,10 +1112,10 @@
 				var placeName = null;
 				placeName = placeNameList[i];
 
-				content			+= 	"<li>"
-								+		"<span class=\"col-checkbox\">gotoFly('" + placeName.lon + "', '" + placeName.lat + "')</span>"
-								+ 		"<span class=\"title\">" + placeName.name_ko + "</span>"
-								+ 	"</li>";
+				content	+=	"<li>"
+						+	"<span><button type='button' class='btnText' onclick=\"gotoFly("+placeName.longitude+", "+placeName.latitude+", 300, 2)\" style='margin-right:10px;'>바로가기</button>"
+						+ 	 placeName.place_name +"</span>"
+						+	"</li>";
 			}
 		} else {
 			content += 	"<li style=\"vertical-align:middle; text-align:center; height: 50px;\">검색 결과가 존재하지 않습니다.</li>";
@@ -1163,7 +1161,6 @@
 					searchTypeCount = 0;
 					fullTextSearchFlag = true;
 				}
-
 			},
 			error:function(request,status,error) {
 				//console.log(" code : " + request.status + "\n" + ", message : " + request.responseText + "\n" + ", error : " + error);
@@ -1182,15 +1179,15 @@
 	function drawListJibunSearch(pagination, totalCount, addrJibunList, searchWord, searchKey) {
 		var addrJibunList = addrJibunList;
 		var content = "";
-		var page = "";
 		if (addrJibunList != null && addrJibunList.length > 0) {
 			for(i=0; i<addrJibunList.length; i++ ) {
 				var addrJibun = null;
 				addrJibun = addrJibunList[i];
 
-				content			+= 	"<li>"
-								+	addrJibun.jibun_addr
-								+ 	"</li>";
+				content	+=	"<li>"
+						+	"<span><button type='button' class='btnText' onclick=\"gotoFly("+addrJibun.longitude+", "+addrJibun.latitude+", 300, 2)\" style='margin-right:10px;'>바로가기</button>"
+						+ 	 addrJibun.jibun_addr +"</span>"
+						+	"</li>";
 			}
 		} else {
 			content += 	"<li style=\"vertical-align:middle; text-align:center; height: 50px;\">검색 결과가 존재하지 않습니다.</li>";
@@ -1236,7 +1233,6 @@
 					searchTypeCount = 0;
 					fullTextSearchFlag = true;
 				}
-
 			},
 			error:function(request,status,error) {
 				//console.log(" code : " + request.status + "\n" + ", message : " + request.responseText + "\n" + ", error : " + error);
@@ -1250,18 +1246,19 @@
 			}
 		});
 	}
+	
 	// 새주소 검색 목록
 	function drawListNewAddressSearch(pagination, totalCount, newAddressList, searchWord, searchKey) {
 		var newAddressList = newAddressList;
 		var content = "";
-		var page = "";
 		if (newAddressList != null && newAddressList.length > 0) {
 			for(i=0; i<newAddressList.length; i++ ) {
 				var newAddress = null;
 				newAddress = newAddressList[i];
 
-				content	+=	"<li onclick=\"gotoFly("+newAddress.longitude+", "+newAddress.latitude+", 300, 2)\">"
-						+	"<span><button type='button' class='btnText' style='margin-right:10px;'>바로가기</button>"+ newAddress.new_addr +"</span>"
+				content	+=	"<li>"
+						+	"<span><button type='button' class='btnText' onclick=\"gotoFly("+newAddress.longitude+", "+newAddress.latitude+", 300, 2)\" style='margin-right:10px;'>바로가기</button>"
+						+	 newAddress.new_addr +"</span>"
 						+	"</li>";
 			}
 		} else {
@@ -1298,7 +1295,7 @@
 			dataType: "json",
 			success: function(msg){
 				if(msg.result == "success") {
-					drawListCountryPlaceNumberSearch(msg.pagination, msg.totalCount, msg.countryPlaceNumberList);
+					drawListCountryPlaceNumberSearch(msg.pagination, msg.totalCount, msg.countryPlaceNumberList, msg.searchWord, msg.searchKey);
 				} else {
 					alert(JS_MESSAGE[msg.result]);
 				}
@@ -1308,7 +1305,6 @@
 					searchTypeCount = 0;
 					fullTextSearchFlag = true;
 				}
-
 			},
 			error:function(request,status,error) {
 				//console.log(" code : " + request.status + "\n" + ", message : " + request.responseText + "\n" + ", error : " + error);
@@ -1324,7 +1320,7 @@
 	}
 	
 	// 국가지점번호 목록
-	function drawListCountryPlaceNumberSearch(pagination, totalCount, countryPlaceNumberList) {
+	function drawListCountryPlaceNumberSearch(pagination, totalCount, countryPlaceNumberList, searchWord, searchKey) {
 		var countryPlaceNumberList = countryPlaceNumberList;
 		var content = "";
 		if (countryPlaceNumberList != null && countryPlaceNumberList.length > 0) {
@@ -1332,10 +1328,10 @@
 				var countryPlaceNumber = null;
 				countryPlaceNumber = countryPlaceNumberList[i];
 
-				content			+= 	"<li>"
-								+		"<span class=\"col-checkbox\">gotoFly('" + countryPlaceNumber.kname_sido + "', '" + countryPlaceNumber.kname_sgg + "')</span>"
-								+ 		"<span class=\"title\">" + countryPlaceNumber.kname_sido + countryPlaceNumber.kname_sgg + countryPlaceNumber.kname_emd + "</span>"
-								+ 	"</li>";
+				content	+=	"<li>"
+						+	"<span><button type='button' class='btnText' onclick=\"gotoFly("+countryPlaceNumber.longitude+", "+countryPlaceNumber.latitude+", 300, 2)\" style='margin-right:10px;'>바로가기</button>"
+						+ 	 countryPlaceNumber.country_place_number +"</span>"
+						+	"</li>";
 			}
 		} else {
 			content += 	"<li style=\"vertical-align:middle; text-align:center; height: 50px;\">검색 결과가 존재하지 않습니다.</li>";
