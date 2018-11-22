@@ -1,5 +1,7 @@
 package kr.nipa.mgps.domain;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -11,6 +13,12 @@ public class PlaceName extends SearchFilter {
 
 	private String fullTextSearch;
 	
+	// 지명(화면 표시)
+	private String place_name;
+	// 경도
+    private BigDecimal longitude;
+	// 위도
+    private BigDecimal latitude;
 	// 고유번호
 	private Long gid;
 	// 지명 위치

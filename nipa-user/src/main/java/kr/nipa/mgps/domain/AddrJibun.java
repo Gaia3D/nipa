@@ -1,5 +1,7 @@
 package kr.nipa.mgps.domain;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -11,7 +13,12 @@ public class AddrJibun extends SearchFilter {
 	
 	private String fullTextSearch;
 	
+	// 지번 주소(화면 표시)
 	private String jibun_addr;
+	// 경도
+    private BigDecimal longitude;
+	// 위도
+    private BigDecimal latitude;
 	// 법정동코드
 	private String code_law;
 	// 시도명

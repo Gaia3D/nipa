@@ -1,5 +1,7 @@
 package kr.nipa.mgps.domain;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -11,7 +13,14 @@ public class District extends SearchFilter {
 
 	private String fullTextSearch;
 	
+	// 행정구역 코드
+	private Integer id;
+	// 행정구역명(화면 표시)
 	private String name;
+	// 경도
+    private BigDecimal longitude;
+	// 위도
+    private BigDecimal latitude;
 	
 	/******** 시도 **********/
 	private Integer sido_id;
