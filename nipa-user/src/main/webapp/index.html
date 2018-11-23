@@ -158,10 +158,10 @@
 							<label for="">투명도</label>
 							<input id="range-value" type="text" size="3" placeholder="100%" class="underline" :value="selectedLayer.alpha | toPercentString"><input id="range-slider" type="range" min="0" max="100" :value="selectedLayer.alpha | toPercent">
 						</li>
-						<li>
+						<li v-if="selectedLayer.line && selectedLayer.color">
 							<label for="">스타일</label>
-							<input type="number" value="1" min="1" max="5" size="3" class="underline">
-							<input v-if="selectedLayer.color" type="color" class="picker" :value="selectedLayer.color | toHexColor">
+							<input id="styleLine" v-if="selectedLayer.line" type="number" :value="selectedLayer.line" min="0.1" max="5.0" size="3" step="0.1" class="underline">
+							<input id="styleColor" v-if="selectedLayer.color" type="color" class="picker" :value="selectedLayer.color | toHexColor">
 						</li>
 					</ul>
 					<div>

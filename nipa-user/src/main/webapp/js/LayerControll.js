@@ -33,6 +33,7 @@ var defaultMapLayer = [{
     id: "1",
     name : "행정구역(시도)",
     color : "ff0000",
+    line : 1.0,
     provider : new Cesium.WebMapServiceImageryProvider({
                     url        : "http://localhost:9999/geoserver/mago3d/wms",
                     layers     : "mago3d:sk_sdo",
@@ -52,6 +53,7 @@ var defaultMapLayer = [{
     id: "2",
     name : "행정구역(시군구)",
     color : "00ff00",
+    line : 1.0,
     provider : new Cesium.WebMapServiceImageryProvider({
                     url        : "http://localhost:9999/geoserver/mago3d/wms",
                     layers     : "mago3d:sk_sgg",
@@ -71,6 +73,7 @@ var defaultMapLayer = [{
     id: "3",
     name : "행정구역(읍면동)",
     color : "0000ff",
+    line : 1.0,
     provider : new Cesium.WebMapServiceImageryProvider({
                     url        : "http://localhost:9999/geoserver/mago3d/wms",
                     layers     : "mago3d:sk_emd",
@@ -151,16 +154,18 @@ function LayerControll(viewer)
             initLayer : function() {
                 //this.selectedLayer.show = this.defaultLayer.show;
                 this.selectedLayer.alpha = this.defaultLayer.alpha;
+                this.selectedLayer.color = this.defaultLayer.color;
+                this.selectedLayer.line = this.defaultLayer.line;
 
                 var layer = imageryLayers.get(this.index + 1);
                 layer.alpha = this.selectedLayer.alpha;
                 layer.show = this.selectedLayer.show;
 
-                if(this.defaultLayer.color !== undefined && this.selectedLayer.color !== undefined)
+                var query = makeQueryString(this.selectedLayer);
+                if(query !== "")
                 {
-                    this.selectedLayer.color = this.defaultLayer.color;
-                    layer._imageryProvider._resource._queryParameters.env = "color:" + this.selectedLayer.color;
-                    layer._imageryProvider._tileProvider._resource._queryParameters.env = "color:" + this.selectedLayer.color;
+                    layer._imageryProvider._resource._queryParameters.env = query;
+                    layer._imageryProvider._tileProvider._resource._queryParameters.env = query;
                 }
 
                 imageryLayers.remove(layer, false);
@@ -183,19 +188,33 @@ function LayerControll(viewer)
             {
                 var obj = $('#settingLayer');
                 var opacity = $('#range-slider').val();
-                var color = $('input[type="color"]').val();
+                var color = $('#styleColor').val();
+                var line = $('#styleLine').val();
                 
-                this.selectedLayer.alpha = parseInt(opacity)/100;
+                if(opacity!== undefined)
+                {
+                    this.selectedLayer.alpha = parseInt(opacity)/100;                    
+                }
 
+                if(color!== undefined)
+                {
+                    this.selectedLayer.color = color.substr(1,6);
+                }
+
+                if(line!== undefined)
+                {
+                    this.selectedLayer.line = line;
+                }
+            
                 var layer = imageryLayers.get(this.index + 1);
                 layer.alpha = this.selectedLayer.alpha;
                 layer.show = this.selectedLayer.show;
 
-                if(color!== undefined && this.selectedLayer.color !== undefined)
+                var query = makeQueryString(this.selectedLayer);
+                if(query !== "")
                 {
-                    this.selectedLayer.color = color.substr(1,6);
-                    layer._imageryProvider._resource._queryParameters.env = "color:" + this.selectedLayer.color;
-                    layer._imageryProvider._tileProvider._resource._queryParameters.env = "color:" + this.selectedLayer.color;
+                    layer._imageryProvider._resource._queryParameters.env = query;
+                    layer._imageryProvider._tileProvider._resource._queryParameters.env = query;
                 }
 
                 imageryLayers.remove(layer, false);
@@ -251,11 +270,27 @@ function LayerControll(viewer)
             layer.show = Cesium.defaultValue(layers[i].show, true);
             layer.name = layers[i].name;
 
-            if(layers[i].color !== undefined)
+            var query = makeQueryString(layers[i]);
+            if(query !== "")
             {
-                layer._imageryProvider._resource._queryParameters.env = "color:" + layers[i].color;
-                layer._imageryProvider._tileProvider._resource._queryParameters.env = "color:" + layers[i].color;
+                layer._imageryProvider._resource._queryParameters.env = query;
+                layer._imageryProvider._tileProvider._resource._queryParameters.env = query;
             }
         }
+    }
+
+    function makeQueryString(style)
+    {
+        var result = "";
+        if(style.color !== undefined && style.color !== null)
+        {
+            result += "color:" + style.color +";";
+        }
+        if(style.line !== undefined && style.line !== null)
+        {
+            result += "size:" + style.line +";";
+        }
+
+        return result;
     }
 }
