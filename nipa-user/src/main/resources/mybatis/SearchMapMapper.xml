@@ -178,7 +178,7 @@
 	<!-- 지번 목록 -->
 	<select id="getListJibun" parameterType="addrJibun" resultType="addrJibun">
 		/* getListJibun */
-		SELECT DISTINCT ON (kname_sido, kname_sgg , kname_emd, jibun_no1, jibun_no2) 
+		SELECT DISTINCT ON (kname_sido, kname_sgg , kname_emd, jibun_no1, jibun_no2, building_mno) 
 		       concat_ws(' '::text, kname_sido, kname_sgg, kname_emd, jibun_no1, jibun_no2)
 		       AS jibun_addr, ST_X(geom) as longitude, ST_Y(geom) as latitude, ST_AsGeoJSON(geom)
 		FROM public.jibun_search
@@ -187,7 +187,7 @@
 			OR kname_sgg LIKE '%' || #{search_value} || '%'
 			OR kname_emd LIKE '%' || #{search_value} || '%'
 			OR kname_li LIKE '%' || #{search_value} || '%'
-		ORDER BY kname_sido ASC, kname_sgg ASC, kname_emd ASC, jibun_no1 ASC, jibun_no2 ASC
+		ORDER BY kname_sido ASC, kname_sgg ASC, kname_emd ASC, jibun_no1 ASC, jibun_no2 ASC, building_mno ASC
 		OFFSET #{offset} LIMIT #{limit}
 	</select>
 	
