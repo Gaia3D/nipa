@@ -8,7 +8,6 @@ DROP SEQUENCE IF EXISTS public.ecl_pole_gid_seq;
 DROP SEQUENCE IF EXISTS public.gstn_pmntn_ln_gid_seq;
 DROP SEQUENCE IF EXISTS public.lp_pa_cbnd_gid_seq;
 DROP SEQUENCE IF EXISTS public.map_note_map_note_id_seq;
-DROP SEQUENCE IF EXISTS public.map_note_detail_map_note_detail_id_seq;
 DROP SEQUENCE IF EXISTS public.file_info_file_info_id_seq;
 DROP SEQUENCE IF EXISTS public.place_name_gid_seq;
 DROP SEQUENCE IF EXISTS public.place_num_gid_seq;
@@ -28,7 +27,6 @@ CREATE SEQUENCE public.ecl_pole_gid_seq START WITH 1 INCREMENT BY 1 NO MINVALUE 
 CREATE SEQUENCE public.gstn_pmntn_ln_gid_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1;
 CREATE SEQUENCE public.lp_pa_cbnd_gid_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1;
 CREATE SEQUENCE public.map_note_map_note_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1;
-CREATE SEQUENCE public.map_note_detail_map_note_detail_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1;
 CREATE SEQUENCE public.file_info_file_info_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1;
 CREATE SEQUENCE public.place_name_gid_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1;
 CREATE SEQUENCE public.place_num_gid_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1;
