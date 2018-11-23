@@ -8,6 +8,11 @@ Vue.filter('toHexColor', function (value) {
     return "#" + value.toString().substr(0,6);
 });
 
+var default3DLayer = [{
+    name : "3차원 객체",
+    show : true
+}];
+
 var defaultImgLayer = [{
     id: "1",
     name : "OpenStreetMaps",
@@ -95,8 +100,10 @@ function LayerControll(viewer)
             index : 0,
             selectedLayer : null,
             defaultLayer : null,
+            show3DLayer : true,
             showImgLayer : true,
             showMapLayer : true,
+            mago3DLayers : default3DLayer,
             imgLayers : JSON.parse(JSON.stringify(defaultImgLayer)),
             mapLayers : JSON.parse(JSON.stringify(defaultMapLayer)),
             defaultImgLayers : JSON.parse(JSON.stringify(defaultImgLayer)),
@@ -226,6 +233,11 @@ function LayerControll(viewer)
                 layer.show = !layer.show;
                 var imageryLayer = imageryLayers.get(index + 1);
                 imageryLayer.show = layer.show;
+            },
+            toggle3DLayer : function (index, layer)
+            {
+                layer.show = !layer.show;
+                changeMagoStateAPI(managerFactory, layer.show);
             }
         }
     });

@@ -107,6 +107,14 @@
 		<div id="layerContent" class="contentsList yScroll" style="height: 780px; display:none;">
 			<h2 class="hide">레이어</h2>
 			<ul class="listLayer">
+				<li class="imageLayer" :class="{on:show3DLayer}" v-on:click.stop.prevent="show3DLayer=!show3DLayer">
+					<p>3차원 레이어</p>
+					<ul>
+						<li v-for="(layer, index) in mago3DLayers" :class="{on : layer.show}" v-on:click.stop.prevent="toggle3DLayer(index, layer)">
+							<span>{{layer.name}}</span>
+						</li>
+					</ul>
+				</li>
 				<li class="imageLayer" :class="{on:showImgLayer}" v-on:click.stop.prevent="showImgLayer=!showImgLayer">
 					<p>군사지도 레이어</p>
 					<ul>
