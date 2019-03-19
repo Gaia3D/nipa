@@ -20,7 +20,7 @@
 	<div id="gnbWrap" style="left:40px;"><!-- 메뉴 on 시 확장됨, left:110px 조정 -->
 		<!-- S: 통합검색 -->
 		<div class="totalSearch">
-			<input type="text" id="fullTextSearch" name="fullTextSearch" placeholder="지명, 좌표, 검색어를 입력하세요.">
+			<input type="text" id="fullTextSearch" name="fullTextSearch" placeholder="검색어를 입력하세요.">
 			<button type="button" id="fullTextSearchButton" title="검색" class="btnTotalSearch">검색</button>
 		</div>
 		<!-- S: 화면행정구역 -->
@@ -42,7 +42,7 @@
 			</div>
 			<div class="districtBtn">
 				<button type="button" class="focusB" id="districtFlyButton">이동</button>
-				<button type="button" class="basicB">취소</button>
+				<button type="button" class="basicB" id="districtCancleButton">취소</button>
 			</div>
 		</div>
 		<!-- E: 행정구역 레이어 -->
@@ -60,7 +60,7 @@
 			<li id="timeseriesMenu" class="timeseries" data-nav="timeseriesContent" title="시계열"><span>시계열</span></li>
 			<li id="analysisMenu" class="analysis" data-nav="analysisContent" title="분석"><span>분석</span></li>
 			<li id="coordinateMenu" class="coordinate" data-nav="coordinateContent" title="좌표"><span>좌표</span></li>
-			<li id="mapnoteMenu" class="mapnote" data-nav="mapnoteContent" title="맵노트" onclick="ajaxMapnoteList(1)"><span>맵노트</span></li>
+			<li id="mapnoteMenu" class="mapnote" data-nav="mapnoteContent" title="맵노트"><span>맵노트</span></li>
 		</ul>
 	<div class="contentsBtn">
 		<button type="button" id="closeLeftBtn">레이어 닫기</button>
@@ -73,30 +73,15 @@
 		<div id="searchContent" class="contentsList yScroll" style="height: 780px; display:none;">
 			<h2 class="hide">검색</h2>
 			<ul class="listDrop">
-				<li id="distrirct">
-					<p>행정구역<span id="districtSearchCount">0 건</span></p>
-					<ul id="districtSearchList"></ul>
-					<div id="districtSearchPaging"></div>
-				</li>
-				<li id="placeName">
-					<p>지명<span id="placeNameSearchCount">0 건</span></p>
-					<ul id="placeNameSearchList"></ul>
-					<div id="placeNameSearchPaging"></div>
-				</li>
-				<li id="jibun">
+				<!-- <li id="jibun">
 					<p>지번주소<span id="jibunSearchCount">0 건</span></p>
 					<ul id="jibunSearchList"></ul>
 					<div id="jibunSearchPaging"></div>
-				</li>
+				</li> -->
 				<li id="newAddress">
 					<p>새주소<span id="newAddressSearchCount">0 건</span></p>
 					<ul id="newAddressSearchList"></ul>
 					<div id="newAddressSearchPaging"></div>
-				</li>
-				<li id="countryPlaceNumber">
-					<p>국가지점번호<span id="countryPlaceNumberSearchCount">0 건</span></p>
-					<ul id="countryPlaceNumberSearchList"></ul>
-					<div id="countryPlaceNumberSearchPaging"></div>
 				</li>
 			</ul>
 		</div>
@@ -119,11 +104,11 @@
 					<p>군사지도 레이어</p>
 					<ul>
 						<draggable v-model="imgLayers" @change="changeLayer($event, 0, '0')">
-						<li v-for="(layer, index) in imgLayers" :class="{on : layer.show}" v-on:click.stop.prevent="toggleLayer(index, layer)">
+						<li v-for="(layer, index) in imgLayers" :class="{on : layer.show}" v-on:click.stop.prevent="toggleLayer(defaultImgLayers.length - index - 1, layer)">
 							<span>{{layer.name}}</span>
 							<div>
-								<span v-if="layer.color" class="color" title="색상" :style="{backgroundColor: '#'+layer.color}" v-on:click.stop.prevent="settingLayer(index, layer, defaultImgLayers[index])">색상</span>
-								<span class="opacity" title="투명도" v-on:click.stop.prevent="settingLayer(index, layer, defaultImgLayers[index])">{{layer.alpha | toPercentString}}</span>
+								<span v-if="layer.color" class="color" title="색상" :style="{backgroundColor: '#'+layer.color}" v-on:click.stop.prevent="settingLayer(defaultImgLayers.length - index - 1, layer, defaultImgLayers[index])">색상</span>
+								<span class="opacity" title="투명도" v-on:click.stop.prevent="settingLayer(defaultImgLayers.length - index - 1, layer, defaultImgLayers[index])">{{layer.alpha | toPercentString}}</span>
 							</div>
 						</li>
 						</draggable>
@@ -133,11 +118,11 @@
 					<p>지형정보 레이어</p>
 					<ul>
 						<draggable v-model="mapLayers" @change="changeLayer($event, defaultImgLayers.length, '1')">
-						<li v-for="(layer, index) in mapLayers" :class="{on : layer.show}" v-on:click.stop.prevent="toggleLayer(index+defaultImgLayers.length, layer)">
+						<li v-for="(layer, index) in mapLayers" :class="{on : layer.show}" v-on:click.stop.prevent="toggleLayer(defaultMapLayers.length - index - 1 + defaultImgLayers.length, layer)">
 							<span>{{layer.name}}</span>
 							<div>
-								<span v-if="layer.color" class="color" title="색상" :style="{backgroundColor: '#'+layer.color}" v-on:click.stop.prevent="settingLayer(index+defaultImgLayers.length, layer, defaultMapLayers[index])">색상</span>
-								<span class="opacity" title="투명도" v-on:click.stop.prevent="settingLayer(index+defaultImgLayers.length, layer, defaultMapLayers[index])">{{layer.alpha | toPercentString}}</span>
+								<span v-if="layer.color" class="color" title="색상" :style="{backgroundColor: '#'+layer.color}" v-on:click.stop.prevent="settingLayer(defaultMapLayers.length - index - 1 + defaultImgLayers.length, layer, defaultMapLayers[index])">색상</span>
+								<span class="opacity" title="투명도" v-on:click.stop.prevent="settingLayer(defaultMapLayers.length - index - 1 + defaultImgLayers.length, layer, defaultMapLayers[index])">{{layer.alpha | toPercentString}}</span>
 							</div>
 						</li>
 						</draggable>
@@ -219,7 +204,7 @@
 					<li>
 						<label for="">위성유형</label>
 						<select id="satType">
-							<option value="WV3" selected="selected">WorldView-3</option>
+							<option value="K3" selected="selected">KOMPSAT-3</option>
 						</select>
 					</li>
 				</ul>
@@ -240,21 +225,21 @@
 							<li>
 								<label for="">분석데이터</label>
 								<select class="dataType">
-									<option value="DEM">지형 (DEM)</option>
-									<option value="DSM" selected>지형+건물 (DSM)</option>
+									<option value="DEM" selected>지형 (DEM)</option>
+									<option value="DSM" >지형+건물 (DSM)</option>
 								</select>
 							</li>
 							<li>
 								<label for="">관찰자높이 (m)</label>
-								<input class="observerOffset" type="text" placeholder="" value="1.73">
+								<input class="observerOffset" type="text" placeholder="" value="1.7">
 							</li>
 							<li>
 								<label for="">반경 (m)</label>
-								<input class="radius" type="text" placeholder="" value="1000">
+								<input class="radius" type="text" placeholder="" value="100">
 							</li>
 							<li>
 								<label for="">방위수 (개)</label>
-								<input class="sides" type="text" placeholder="" value="180">
+								<input class="sides" type="text" placeholder="" value="90">
 							</li>
 							<li>
 								<label for="">관측지점</label>
@@ -276,13 +261,13 @@
 							<li>
 								<label for="">분석데이터</label>
 								<select class="dataType">
-									<option value="DEM">지형 (DEM)</option>
-									<option value="DSM" selected>지형+건물 (DSM)</option>
+									<option value="DEM" selected>지형 (DEM)</option>
+									<option value="DSM">지형+건물 (DSM)</option>
 								</select>
 							</li>
 							<li>
 								<label for="">관찰자높이 (m)</label>
-								<input class="observerOffset" type="text" placeholder="" value="1.73">
+								<input class="observerOffset" type="text" placeholder="" value="1.7">
 							</li>
 							<li>
 								<label for="">관측지점</label>
@@ -349,11 +334,11 @@
 							<li>
 								<label for="">분석영역</label>
 								<select class="areaType">
-									<option value="extent">현재 지도 범위</option>
 									<option value="useArea">사용자 선택 범위</option>
+									<option value="extent">현재 지도 범위</option>
 								</select>
 							</li>
-							<li class="wrapCropShape" style="display: none;">
+							<li class="wrapCropShape">
 								<label for=""></label>
 								<input type="hidden" class="cropShape" />
 								<button type="button" class="btnText drawCropShape">영역선택</button>
@@ -381,7 +366,6 @@
 								<label for="">분석위치</label>
 								<select class="locationType">
 									<option value="south">남한</option>
-									<option value="north">북한</option>
 								</select>
 							</li>
 							<li>
@@ -606,14 +590,14 @@
 				<!-- <form id="uploadForm" action="#" method="post" enctype="multipart/form-data"> -->
 					<ul class="note">
 						<li>
-							<input id="noteTitle" type="text" placeholder="지점명을 입력하세요">
+							<input id="noteTitle" type="text" size="34" placeholder="지점명을 입력하세요">
 						</li>
 						<li>
-							<input id="noteLocation" type="text" placeholder="126.6075050765, 37.5820583757">
+							<input id="noteLocation" type="text" size="26" placeholder="126.6075050765, 37.5820583757">
 							<button id="getMapnotePoint" class="basicA">지점</button>
 						</li>
 						<li>
-							<textarea id="description" cols="40" rows="5"></textarea>
+							<textarea id="description" cols="36" rows="5"></textarea>
 						</li>
 					</ul>
 					<div class="fileDrop yScroll">
@@ -802,8 +786,8 @@
 	}
 
 	var managerFactory = null;
-	var imagePath = "/images";
-	var dataInformationUrl = "/persistence/json/";
+	var imagePath = "./images";
+	var dataInformationUrl = "./persistence/json/";
 	magoStart(null, "magoContainer", imagePath);
 	var intervalCount = 0;
 	var timerId = setInterval("startMogoUI()", 1000);

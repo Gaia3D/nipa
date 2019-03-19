@@ -582,10 +582,12 @@ border: 1px solid #477cdb;
 	border-bottom: 1px solid #e0e0e0;
 }
 .analysisGroup .routeResult .time {
-	font-size: 20px;
+	font-size: 24px;
+	color: #2196F3;
 }
 .analysisGroup .routeResult .length {
-	font-size: 10px;
+	font-size: 20px;
+	color: #fe6c59;
 }
 .analysisGroup .routeList .r_row {
 	display: flex;
