@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import kr.nipa.mgps.config.PropertiesConfig;
 import kr.nipa.mgps.domain.Pagination;
 import kr.nipa.mgps.domain.SatImage;
 import kr.nipa.mgps.domain.SatImageSearch;
@@ -38,7 +39,10 @@ import lombok.extern.slf4j.Slf4j;
 public class TimeseriesController {
 
     @Autowired
-    private SatImageService satImageService;
+	private SatImageService satImageService;
+	
+	@Autowired
+	PropertiesConfig propertiesConfig;
 
     /**
 	 * 위성영상 조회
@@ -110,7 +114,7 @@ public class TimeseriesController {
 	public void showImg (HttpServletResponse response, @PathVariable("id")Long id) {
 
 		SatImage image = new SatImage();
-		image.setId(id);
+		image.setFid(id);
 		image = satImageService.getSatImageById(image);
 		
 		String originallFile =  image.getThumbnail();
@@ -121,7 +125,7 @@ public class TimeseriesController {
 		BufferedInputStream in = null;
 		BufferedOutputStream out = null;
 		try {
-			File file = new File(originallFile);
+			File file = new File(propertiesConfig.getTimeseriesDir() + File.separator + originallFile);
 			in = new BufferedInputStream(new FileInputStream(file));
 			out = new BufferedOutputStream(response.getOutputStream());
 

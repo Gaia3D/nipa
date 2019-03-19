@@ -8,7 +8,7 @@ public class SatImage
     /**
      * 고유번호
      */
-    private Long id;
+    private Long fid;
 
     /**
      * 위성영상 구분
