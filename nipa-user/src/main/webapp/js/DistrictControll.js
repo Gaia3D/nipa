@@ -1,5 +1,49 @@
+var district = null;
+var DISTRICT_PROVIDER = null;
 function DistrictControll(viewer, option)
 {
+    district = new District(viewer);
+}
+
+function District(viewer)
+{
+    this.drawDistrict = function (name, sdo_code, sgg_code, emd_code) {
+        var now = new Date();
+        var rand = ( now - now % 5000) / 5000;
+    
+        this.deleteDistrict();
+        
+        // 시도(2) + 시군구(3) + 읍면동(3) + 리(2)
+        var queryString = "bjcd = " + sdo_code.toString().padStart(2, '0') + sgg_code.toString().padStart(3, '0') + emd_code.toString().padStart(3, '0') + '00';
+     
+        var provider = new Cesium.WebMapServiceImageryProvider({
+            url : "/geoserver/wms",
+            layers : 'mago3d:district',
+            parameters : {
+                service : 'WMS'
+                ,version : '1.1.1'
+                ,request : 'GetMap'
+                ,transparent : 'true'
+                ,format : 'image/png'
+                ,time : 'P2Y/PRESENT'
+                ,rand:rand
+                ,maxZoom : 25
+                ,maxNativeZoom : 23
+                ,CQL_FILTER: queryString
+                //bjcd LIKE '47820253%' AND name='청도읍'
+            },
+            enablePickFeatures : false
+        });
+        
+        DISTRICT_PROVIDER = viewer.imageryLayers.addImageryProvider(provider);
+    }
+
+    this.deleteDistrict = function () {
+        if(DISTRICT_PROVIDER !== null && DISTRICT_PROVIDER !== undefined) {
+            viewer.imageryLayers.remove(DISTRICT_PROVIDER, true);
+        }
+        DISTRICT_PROVIDER = null;
+    }
 }
 loadDistrict();
 
@@ -48,7 +92,7 @@ function updateViewDistrictName()
  */
 function loadDistrict()
 {
-    var url = "/searchmap/sdos";
+    var url = "./searchmap/sdos";
     $.ajax({
         url: url,
         type: "GET",
@@ -74,8 +118,13 @@ function loadDistrict()
 }
 
 // 시도가 변경되면 하위 시군구, 읍면동이 변경됨
-function changeSdo(_this, sdo_code) {
-    var url = "/searchmap/sdos/" + sdo_code + "/sggs";
+function changeSdo(_this, _sdo_code) {
+    sdo_code = _sdo_code;
+    sgg_code = "";
+    emd_code = "";
+    district_map_type = 1;
+
+    var url = "./searchmap/sdos/" + sdo_code + "/sggs";
     $.ajax({
         url: url,
         type: "GET",
@@ -111,8 +160,13 @@ function changeSdo(_this, sdo_code) {
 }
 
 // 시군구가 변경되면 하위 읍면동이 변경됨
-function changeSgg(_this, sdo_code, sgg_code) {
-    var url = "/searchmap/sdos/" + sdo_code + "/sggs/" + sgg_code + "/emds" ; 
+function changeSgg(_this, _sdo_code, _sgg_code) {
+    sdo_code = _sdo_code;
+    sgg_code = _sgg_code;
+    emd_code = "";
+    district_map_type = 2;
+
+    var url = "./searchmap/sdos/" + sdo_code + "/sggs/" + sgg_code + "/emds" ; 
     $.ajax({
         url: url,
         type: "GET",
@@ -146,8 +200,13 @@ function changeSgg(_this, sdo_code, sgg_code) {
 }
 
 // 읍면동을 선택
-function changeEmd(_this, sdo_code, sgg_code, emd_code)
+function changeEmd(_this, _sdo_code, _sgg_code, _emd_code)
 {
+    sdo_code = _sdo_code;
+    sgg_code = _sgg_code;
+    emd_code = _emd_code;
+    district_map_type = 3;
+
     emd_name = $(_this).text();
 
     $("#emdList li").removeClass("on");
@@ -157,6 +216,43 @@ function changeEmd(_this, sdo_code, sgg_code, emd_code)
 }
 
 $("#districtFlyButton").click(function () {
-    //drawDistrict();
-    gotoFly(127.349068, 36.406209, 700, 2);
+    var name = [sdo_name, sgg_name, emd_name].join(" ").trim();
+    district.drawDistrict(name, sdo_code, sgg_code, emd_code);
+    getCentroid(name, sdo_code, sgg_code, emd_code);
 });
+
+$("#districtCancleButton").click(function () {
+    district.deleteDistrict();
+});
+
+
+function getCentroid(name, sdo_code, sgg_code, emd_code) {
+    var layerType = district_map_type;
+    var bjcd = sdo_code.toString().padStart(2, '0') + sgg_code.toString().padStart(3, '0') + emd_code.toString().padStart(3, '0') + '00';
+    var time = 3;
+
+    var info = "layer_type=" + layerType + "&name=" + name  + "&bjcd=" + bjcd;
+    $.ajax({
+        url: "./searchmap/centroids",
+        type: "GET",
+        data: info,
+        dataType: "json",
+        success : function(msg) {
+            if(msg.result === "success") {
+                var altitude = 50000;
+                if(layerType === 2) {
+                    altitude = 15000;
+                } else if(layerType === 3) {
+                    altitude = 1500;
+                }
+                gotoFly(msg.longitude, msg.latitude, altitude, time);
+            } else {
+                alert(msg.result);
+            }
+        },
+        error : function(request, status, error) {
+            //alert(JS_MESSAGE["ajax.error.message"]);
+            console.log("code : " + request.status + "\n message : " + request.responseText + "\n error : " + error);
+        }
+    });		
+}

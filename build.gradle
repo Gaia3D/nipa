@@ -31,7 +31,9 @@ subprojects {
 
 	group = 'kr.nipa.mgps'
 	version = '0.1.0'
+
 	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
 
 	//
 	// jacoco
@@ -45,7 +47,10 @@ subprojects {
 	dependencies {
 		compile('org.springframework.boot:spring-boot-starter-thymeleaf')
 		compile('org.springframework.boot:spring-boot-starter-web')
+
 		compileOnly('org.projectlombok:lombok:1.18.2')
+		annotationProcessor('org.projectlombok:lombok:1.18.2')
+
 		testCompile('org.springframework.boot:spring-boot-starter-test')
 	}
 }

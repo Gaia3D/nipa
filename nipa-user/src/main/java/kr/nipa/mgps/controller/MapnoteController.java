@@ -24,7 +24,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -184,7 +183,7 @@ public class MapnoteController {
 		
 		String thumbnailPath = file.getThumbnail_path();
 		String thumbnailName = file.getThumbnail_name();
-		String thumbnailFile =  thumbnailPath + "\\" + thumbnailName;
+		String thumbnailFile =  thumbnailPath + File.separator + thumbnailName;
 		
 		InputStream in = null;
 		ResponseEntity<byte[]> entity = null;
@@ -221,7 +220,7 @@ public class MapnoteController {
 		
 		String originalFilePath = fileInfo.getFile_path();
 		String originalName = fileInfo.getFile_real_name();
-		String originallFile =  originalFilePath + "\\" + originalName;
+		String originallFile =  originalFilePath + File.separator + originalName;
 		String fileExt = fileInfo.getFile_ext();
 		
 		response.setContentType("image/" + fileExt);

@@ -14,4 +14,6 @@ public class PropertiesConfig {
 	private String fileUploadDir;
 	
 	private String thumbnailUploadDir;
+
+	private String timeseriesDir;
 }

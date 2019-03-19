@@ -205,7 +205,7 @@ function CoordControll(viewer, option) {
 
           updateCoordinate();
         }
-      }, Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
+      }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
     }
     else {
       viewer.entities.remove(rectEntity);

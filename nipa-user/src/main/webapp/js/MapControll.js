@@ -19,7 +19,6 @@ function MapControll(viewer, option) {
     var activeShapePoints = [];
     var activeShape;
     var activeLabel;
-    var floatingPoint;
 
     /**
      * 나침반 동작
@@ -40,22 +39,6 @@ function MapControll(viewer, option) {
             });
         }
     });
-    /*
-        var material = new Cesium.ColorMaterialProperty(Cesium.Color.YELLOW.withAlpha(0.3));
-    
-        // A polyline with two connected line segments
-        var polyline = new Cesium.PolylineGeometry({
-        positions : positionData,
-        width: 3,
-        geodesic: true,
-        granularity: 10000,
-        appearance: new Cesium.PolylineMaterialAppearance({
-            aboveGround : false
-        }),
-        material : material
-      });
-      var geometry = Cesium.PolylineGeometry.createGeometry(polyline);
-    */
 
     function createPoint(worldPosition) {
         var entity = viewer.entities.add({
@@ -98,23 +81,13 @@ function MapControll(viewer, option) {
         }
         else if (drawingMode === 'polygon') {
             shape = viewer.entities.add({
+                name     : "Polygon for area measurement",
                 polygon: {
                     hierarchy: positionData,
                     material: new Cesium.ColorMaterialProperty(Cesium.Color.YELLOW.withAlpha(0.3)),
-                    height: 0.1,
+                    /*height: 0.1,*/
                     outline: true,
-                    outlineColor: Cesium.Color.BLACK
-                }
-            });
-            activeLabel = viewer.entities.add({
-                position: dynamicCenter,
-                label: {
-                    text: dynamicLabel,
-                    font: 'bold 20px sans-serif',
-                    fillColor: Cesium.Color.BLUE,
-                    style: Cesium.LabelStyle.FILL,
-                    verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-                    disableDepthTestDistance: Number.POSITIVE_INFINITY,
+                    outlineColor: Cesium.Color.BLACK,
                     heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
                 }
             });
@@ -195,17 +168,40 @@ function MapControll(viewer, option) {
         return label;
     }
 
+    function drawAreaLabel() {
+        var label;
+        var bs = Cesium.BoundingSphere.fromPoints(activeShapePoints);
+        var position = Cesium.Ellipsoid.WGS84.scaleToGeodeticSurface(bs.center);
+        var text = getArea(activeShapePoints);
+
+        label = viewer.entities.add({
+            name     : "Label for area measurement",
+            position: position,
+            label: {
+                text: text,
+                font: 'bold 20px sans-serif',
+                fillColor: Cesium.Color.BLUE,
+                style: Cesium.LabelStyle.FILL,
+                verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+                disableDepthTestDistance: Number.POSITIVE_INFINITY,
+                heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
+            }
+        });
+
+        return label;
+    }
+
     // Redraw the shape so it's not dynamic and remove the dynamic shape.
     function terminateShape() {
         //activeShapePoints.pop();
         lengthInMeters = 0;
         areaInMeters = 0
         this._polylines.push(drawShape(activeShapePoints));
-        viewer.entities.remove(floatingPoint);
+        if (drawingMode === 'polygon')  this._labels.push(drawAreaLabel());
+
         viewer.entities.remove(activeShape);
         viewer.entities.remove(activeLabel);
         
-        floatingPoint = undefined;
         activeShape = undefined;
         activeLabel = undefined;
         activeShapePoints = [];
@@ -224,16 +220,17 @@ function MapControll(viewer, option) {
         for (var i = 0, len = this._labels.length; i < len; i++) {
             viewer.entities.remove(this._labels[i]);
         }
-        viewer.entities.remove(floatingPoint);
+
         viewer.entities.remove(activeShape);
         viewer.entities.remove(activeLabel);
 
-        floatingPoint = undefined;
         activeShape = undefined;
         activeLabel = undefined;
         activeShapePoints = [];
-    }
 
+        this._polylines = [];
+        this._labels = [];
+    }
 
     $('#mapCtrlCompass').click(function () {
         console.log("맵컨트롤 : 나침반");
@@ -333,6 +330,21 @@ function MapControll(viewer, option) {
                 activeShapePoints.push(tempPosition);
                 if (activeShapePoints.length === 1) {
                     activeShape = drawShape(dynamicPositions);
+                    if (drawingMode === 'polygon') {
+                    activeLabel = viewer.entities.add({
+                        name     : "TempLabel for area measurement",
+                        position: dynamicCenter,
+                        label: {
+                            text: dynamicLabel,
+                            font: 'bold 20px sans-serif',
+                            fillColor: Cesium.Color.BLUE,
+                            style: Cesium.LabelStyle.FILL,
+                            verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+                            disableDepthTestDistance: Number.POSITIVE_INFINITY,
+                            heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
+                        }
+                    });
+                    }
                 }
                 else {
                     this._labels.push(drawLabel(tempPosition));

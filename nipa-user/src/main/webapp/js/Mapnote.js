@@ -67,9 +67,10 @@ function check() {
 	}
 }
 
+
 // 맵노트 목록
 function ajaxMapnoteList(pageNo) {
-	var url = "/mapnote/" + pageNo;
+	var url = "./mapnote/" + pageNo;
 	$.ajax({
 		url: url,
 		type: "GET",
@@ -278,7 +279,7 @@ function deleteFile(fIndex){
 // 맵노트 등록
 var isUploadMapnote = true;
 function uploadMapnote() {
-	var url = '/insert';
+	var url = './insert';
 	
 	if (check() === false) return false;
 
@@ -329,7 +330,7 @@ function uploadMapnote() {
 // 맵노트 상세
 // TODO 화면 중앙 배치
 function detailMapnote(pageNo, map_note_id) {
-	var url = "/mapnote/" + pageNo + "/" + map_note_id;
+	var url = "./mapnote/" + pageNo + "/" + map_note_id;
 
 	$.ajax({
 		url: url,
@@ -352,13 +353,13 @@ function detailMapnote(pageNo, map_note_id) {
 					if(files.length === 1) $('#thumbnail').attr('style', 'display: block; text-align: center; margin: 10px;'); 
 					
 					var img = $('<img style="margin: 10px;">');
-					img.attr('src', '../displayImg/' + files[i].file_info_id);
+					img.attr('src', './displayImg/' + files[i].file_info_id);
 
 					var content = 	"";
 					content 	= 	content
 								+ 	"<figure itemprop=\"associatedMedia\" itemscope itemtype=\"http://schema.org/ImageObject\" style=\"display: inline-block; margin: 10px;\">"
-								+		"<a href=\"../showImg/" + files[i].file_info_id + "\" itemprop=\"contentUrl\" data-size=\"" + files[i].file_width + "x" + files[i].file_height +"\">"
-								+			"<img src=\"../displayImg/" + files[i].file_info_id + "\" itemprop=\"thumbnail\" alt=\"Image description\"/>";
+								+		"<a href=\"./showImg/" + files[i].file_info_id + "\" itemprop=\"contentUrl\" data-size=\"" + files[i].file_width + "x" + files[i].file_height +"\">"
+								+			"<img src=\"./displayImg/" + files[i].file_info_id + "\" itemprop=\"thumbnail\" alt=\"Image description\"/>";
 								+		"</a>"
 								+ 	"</figure>";
 					$('#thumbnail').append($(content));
@@ -375,12 +376,13 @@ function detailMapnote(pageNo, map_note_id) {
 	});
 } 
 
+
 // 맵노트 수정 화면
 function updateForm (map_note_id) {
-	var url = "/updateForm/" + map_note_id;
+	var url = "./updateForm/" + map_note_id;
 	
 	$.ajax({
-			url: "/updateForm/" + map_note_id,
+			url: "./updateForm/" + map_note_id,
 			type: 'GET',
 	        success: function(msg) {
 				if(msg.result === "success") {
@@ -419,7 +421,7 @@ function updateForm (map_note_id) {
 var isUpdatetMapnote = true;
 function updateMapnote(map_note_id) {
 	
-	var url = "/update/" + map_note_id;
+	var url = "./update/" + map_note_id;
 	
 	if(check() == false) return false;
 	
@@ -471,7 +473,7 @@ function updateMapnote(map_note_id) {
 
 // 맵노트 삭제
 function deleteMapnote(map_note_id) {
-	var url = "/mapnote/" + map_note_id;
+	var url = "./mapnote/" + map_note_id;
 
 	if (confirm("맵노트를 삭제하시겠습니까??") == true){    
 		$.ajax({
@@ -491,7 +493,7 @@ function deleteMapnote(map_note_id) {
 
 // 개별 파일 삭제 
 function deleteUploadedFile(fIndex, file_info_id) {
-	var url = "/fileInfo/" + file_info_id;
+	var url = "./fileInfo/" + file_info_id;
 	
 	if(confirm("파일을 삭제하시겠습니까?") == true) {
 		$.ajax({
@@ -515,7 +517,7 @@ function deleteUploadedFile(fIndex, file_info_id) {
 
 // 원본 이미지 보기
 function showDetailImg(file_info_id) {
-	url = "/showImg/" + file_info_id;
+	url = "./showImg/" + file_info_id;
 	
 	$.ajax({
 		url: url,
@@ -554,7 +556,7 @@ function removeAllBillboard()
 function gotoFlyMark(longitude, latitude, heigth, name) 
 {
 	mapnote.gotoFly(longitude, latitude, heigth);
-	mapnote.addBillboard(longitude, latitude, name);
+	//mapnote.addBillboard(longitude, latitude, name);
 }
 
 function Mapnote(viewer)
@@ -576,12 +578,12 @@ function Mapnote(viewer)
 	this.addBillboard = function (longitude, latitude, name) {
 		
 	    var target = this.viewer.entities.add({
+			name : name,
 	        position : Cesium.Cartesian3.fromDegrees(longitude, latitude),
 	        billboard :{
-	        	name : name,
 	        	disableDepthTestDistance : Number.POSITIVE_INFINITY,
-	        	//translucencyByDistance : new Cesium.NearFarScalar(1.5e2, 1.0, 1.5e7, 0.0),
-	            image : '../images/kdg_logo.png',
+				heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+	            image : './images/kdg_logo.png',
 	            width : 32,
 	            height : 32
 	        }

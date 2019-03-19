@@ -53,24 +53,6 @@ function getDate(element) {
 }
 
 var timeserieslayer;
-var defaultSatLayer = {
-    name : "위성영상 시계열",
-    provider : new Cesium.WebMapServiceImageryProvider({
-                    url        : "http://localhost:9999/geoserver/SatTimeseries/wms",
-                    layers     : "SatTimeseries:SatTimeseries",
-                    parameters : {
-                        service     : "WMS",
-                        version     : "1.1.1",
-                        request     : "GetMap",
-                        transparent : "true",
-                        format      : "image/png",
-                        tiled : 'true'
-                    },
-                    enablePickFeatures: false
-                }),
-    alpha : 1.0,
-    show : true
-};
 
 function showSatImage(queryString) {
     timeserieslayer._imageryProvider._resource._queryParameters.cql_filter = queryString;
@@ -121,9 +103,13 @@ function TimeseriesControll(viewer, option) {
         }
     }
 
-    this.clear = function () {
+    this.clearTimeseries = function () {
         this.clearHandler();
         viewer.entities.remove(this._coordPoint);
+        if (timeserieslayer !== null && timeserieslayer !== undefined) {
+            viewer.imageryLayers.remove(timeserieslayer, true);
+        }
+        timeserieslayer = null;
         this._coordPoint = null;
     }
 
@@ -155,7 +141,7 @@ function TimeseriesControll(viewer, option) {
 
     // 위성영상 검색을 위한 위치 지정
     $('#getSatPoint').bind('afterClick', function () {
-        that.clear();
+        that.clearTimeseries();
         if ($(this).hasClass('on')) {
             handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
             var dynamicPositions = new Cesium.CallbackProperty(function () {
@@ -195,10 +181,11 @@ function TimeseriesControll(viewer, option) {
         if (timeserieslayer !== null && timeserieslayer !== undefined) {
             viewer.imageryLayers.remove(timeserieslayer, true);
         }
-        var urlSatImageAPI = "http://localhost:8181/timeseries/";
+        var urlSatImageAPI = "./timeseries/";
         var form = new FormData();
 
-        if (that._longitude === undefined || that._latitude === undefined) {
+        if (that._longitude === undefined || that._longitude === null ||
+            that._latitude === undefined || that._latitude === null) {
             alert("영상을 검색할 위치를 지정하세요!");
             return false;
         }
@@ -214,6 +201,7 @@ function TimeseriesControll(viewer, option) {
         satApp.active = true;
         satApp.display = true;
         satApp.images = [];
+
         var queryString = new URLSearchParams(form).toString();
         if (isSearchingSatImage) {
             isSearchingSatImage = false;
@@ -224,18 +212,19 @@ function TimeseriesControll(viewer, option) {
                 success: function (msg) {
                     if (msg.result === "success") {
                         var images = msg.imageList;
-                        var len = images.length;
-                        if (len == 0) {
+                        
+                        if (msg.imageList === undefined || images.length == 0) {
                             alert("검색된 결과가 없습니다.");
                         }
                         else {
+                            var len = images.length;
                             for (var i = 0; i < len; i++) {
                                 var date = moment(images[i].acquisition, "YYYYMMDDHHmmss");
                                 if (date.isValid()) {
                                     images[i].date = date.format("YYYY-MM-DD");
                                 }
                                 images[i].show = false;
-                            images[i].src = "http://localhost:8181/timeseries/images/" + images[i].id;
+                            images[i].src = "./timeseries/images/" + images[i].fid;
                             satApp.images.push(images[i]);
                         }
                         }
@@ -281,15 +270,15 @@ function TimeseriesControll(viewer, option) {
                     viewer.imageryLayers.remove(timeserieslayer, true);
                 }
                 timeserieslayer = viewer.imageryLayers.addImageryProvider(new Cesium.WebMapServiceImageryProvider({
-                    url: "http://localhost:9999/geoserver/SatTimeseries/wms",
-                    layers: "SatTimeseries:SatTimeseries",
+                    url: "/geoserver/mago3d/wms",
+                    layers: "mago3d:timeseries",
                     parameters: {
                         service: "WMS",
                         version: "1.1.1",
                         request: "GetMap",
                         transparent: "true",
                         format: "image/png",
-                        cql_filter: queryString,
+                        featureid: image.fid,
                         tiled: 'true'
                     },
                     enablePickFeatures: false

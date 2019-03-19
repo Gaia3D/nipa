@@ -154,10 +154,11 @@ var DrawHelper = (function() {
     var defaultShapeOptions = {
         ellipsoid: Cesium.Ellipsoid.WGS84,
         textureRotationAngle: 0.0,
-        height: 0.0,
+        // height: 0.0,
         asynchronous: true,
         show: true,
-        debugShowBoundingVolume: false
+        debugShowBoundingVolume: false,
+        heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
     }
 
     var defaultSurfaceOptions = copyOptions(defaultShapeOptions, {
@@ -620,21 +621,21 @@ var DrawHelper = (function() {
     })();
 
     var defaultBillboard = {
-		iconUrl: "/externlib/drawHelper/img/dragIcon.png",
+		iconUrl: "./externlib/drawHelper/img/dragIcon.png",
         // iconUrl: "./img/dragIcon.png",
         shiftX: 0,
         shiftY: 0
     }
 
     var dragBillboard = {
-		iconUrl: "/externlib/drawHelper/img/dragIcon.png",
+		iconUrl: "./externlib/drawHelper/img/dragIcon.png",
         // iconUrl: "./img/dragIcon.png",
         shiftX: 0,
         shiftY: 0
     }
 
     var dragHalfBillboard = {
-		iconUrl: "/externlib/drawHelper/img/dragIconLight.png",
+		iconUrl: "./externlib/drawHelper/img/dragIconLight.png",
         // iconUrl: "./img/dragIconLight.png",
         shiftX: 0,
         shiftY: 0
@@ -914,7 +915,7 @@ var DrawHelper = (function() {
 
 						var mgrs = getposition(coordinates[0], coordinates[1], positionFormatterMGRS);
 						isDrawFeature.target.append(
-							'<span class="coordText">'+mgrs+'<button type="button" class="btnText coordBtn" onclick=viewMGRSFlyTo("' + mgrs + '")>보기</button></span>'
+                            '<span class="coordText">' + mgrs + '<button type="button" class="btnText coordBtn" data-value="' + mgrs + '")>보기</button></span>'
 						);
 					}
                 }

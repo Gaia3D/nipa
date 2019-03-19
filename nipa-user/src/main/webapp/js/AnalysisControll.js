@@ -1,20 +1,20 @@
 
 function AnalysisControll(viewer) {
 
-	const WPS_URL = 'http://localhost:8090/geoserver/wps';
-	const WMS_URL = 'http://localhost:8090/geoserver/wms';
-	const WFS_URL = 'http://localhost:8090/geoserver/wfs';
+	const WPS_URL = '/geoserver/wps';
+	const WMS_URL = '/geoserver/wms';
+	const WFS_URL = '/geoserver/wfs';
 
-	const layerDEM = 'mnd:dem';
-	const layerDSM = 'mnd:dsm';
+	const layerDEM = 'mago3d:dem';
+	const layerDSM = 'mago3d:dsm';
 
-	const layerRoute = 'mnd:pgr_fromAtoB';
+	const layerRoute = 'mago3d:pgr_fromAtoB';
 	const layerRouteLink = 'link';
 	const layerRouteNode = 'node';
 	const layerRouteLink_nk = 'link_nk';
 	const layerRouteNode_nk = 'node_nk';
 
-	const sourceProjection = 'EPSG:3857';
+	const sourceProjection = 'EPSG:4326';
 	const targetProjection = 'EPSG:4326';
 
 	const layerRadialLineOfSightId 	 = 'rlos';
@@ -93,6 +93,8 @@ function AnalysisControll(viewer) {
 	            var entities = ds.entities.values;
 	            for (var i = 0; i < entities.length; i++) {
 	                var entity = entities[i];
+					
+					entity.corridor = entity.polyline
 					entity.corridor.material = Cesium.Color.fromCssColorString('rgb(255, 0, 0, .8)');
 					entity.corridor.width = 1;
 					if (entity.properties.Visible == 1) {
@@ -102,7 +104,7 @@ function AnalysisControll(viewer) {
 	            // viewer.flyTo(entities);
 	        });
 	    }).otherwise(function (error) {
-	        window.alert(error);
+	        window.alert('분석영역 선택이 잘못 선택되었습니다.');
 	    });
 	});
 
@@ -204,6 +206,8 @@ function AnalysisControll(viewer) {
 				var entities = ds.entities.values;
 	            for (var i = 0; i < entities.length; i++) {
 	                var entity = entities[i];
+					
+					entity.corridor = entity.polyline
 					entity.corridor.material = Cesium.Color.fromCssColorString('rgb(255, 0, 0, .8)');
 					entity.corridor.width = 5;
 					if (entity.properties.Visible == 1) {
@@ -213,7 +217,7 @@ function AnalysisControll(viewer) {
 	            // viewer.flyTo(entities);
 	        });
 	    }).otherwise(function (error) {
-	        window.alert(error);
+	        window.alert('분석영역 선택이 잘못 선택되었습니다.');
 	    });
 	});
 
@@ -335,7 +339,7 @@ function AnalysisControll(viewer) {
 	            // viewer.flyTo(layerRasterProfile.entities);
 	        });
 	    }).otherwise(function (error) {
-	        window.alert(error);
+	        window.alert('분석영역 선택이 잘못 선택되었습니다.');
 	    });
 	});
 
@@ -364,7 +368,30 @@ function AnalysisControll(viewer) {
 	$('#analysisRasterHighLowPoints .areaType').change(function(e) {
 		if (e.target.value == 'useArea') {
 			$('#analysisRasterHighLowPoints .wrapCropShape').css('display', 'block');
+
 		} else {
+			var viewType3d = $('#mapCtrlModeling').hasClass('on');
+
+			if (viewType3d) {
+				if ( confirm("분석영역으로 현재 지도 범위로 선택하기 위해서는 카메라 뷰의 기울어짐을 꺼야합니다.") ) {
+					viewer.scene.screenSpaceCameraController.enableTilt = false;
+		            viewer.scene.screenSpaceCameraController.enableLook = false;
+		            viewer.scene.camera.flyTo({
+		                destination: viewer.scene.camera.position,
+		                orientation: {
+		                    heading: 0,
+		                    pitch: Cesium.Math.toRadians(-90),
+		                    roll: 0
+		                }
+		            });
+					$('#mapCtrlModeling').removeClass('on');
+
+		} else {
+					viewer.scene.screenSpaceCameraController.enableTilt = true;
+					viewer.scene.screenSpaceCameraController.enableLook = true;
+				}
+			}
+
 			$('#analysisRasterHighLowPoints .wrapCropShape').css('display', 'none');
 		}
 	});
@@ -411,7 +438,29 @@ function AnalysisControll(viewer) {
 		}
 
 		if (areaType == 'extent') {
+
+			$('#analysisRasterHighLowPoints .reset').click();
+
+
+			//줌레벨에 따라 분석가능영역 확인
+			var zDistance = $('.distance-legend-label').text()
+			if (zDistance.match('km') != null) {
+				zDistance = Number.parseInt(zDistance.replace(' km', '')) * 1000;
+				if (zDistance > 3000) {
+					alert('분석 영역이 너무 큽니다.');
+					return false;
+				}
+
+			} else {
+				zDistance = Number.parseInt(zDistance.replace(' m', ''));
+				if (zDistance > 3000) {
+					alert('분석 영역이 너무 큽니다.');
+					return false;
+				}
+			}
+
 			var coordsLonLatList = getViewExtentPositions();
+			//console.log(coordsLonLatList);
 
 			var json = makePolygonTypeJson(coordsLonLatList);
 			var promise = Cesium.GeoJsonDataSource.load(json);
@@ -466,7 +515,7 @@ function AnalysisControll(viewer) {
 	            // viewer.flyTo(ds.entities);
 	        });
 	    }).otherwise(function (error) {
-	        window.alert(error);
+			window.alert('분석영역 선택이 잘못 선택되었습니다.');
 	    });
 	});
 
@@ -554,8 +603,8 @@ function AnalysisControll(viewer) {
 			link = layerRouteLink;
 		}
 
-		var viewParams = 'link:' + layerRouteLink;
-		viewParams += ';node:' + layerRouteNode;
+		var viewParams = 'link:' + link;
+		viewParams += ';node:' + node;
 		viewParams += ';x1:' + startPointX;
 		viewParams += ';y1:' + startPointY;
 		viewParams += ';x2:' + endPointX;
@@ -592,16 +641,24 @@ function AnalysisControll(viewer) {
 					for (var i=0; i<entities.length; i++) {
 						var entity = entities[i];
 
+						entity.corridor = entity.polyline;
 						entity.corridor.material.color = Cesium.Color.fromCssColorString(hex2rgb('#2c82ff'));
 						entity.corridor.width = 30;
 						entity.corridor.heightReference = Cesium.HeightReference.CLAMP_TO_GROUND;
 
+						var overlap = false;
+						if (i > 0) {
+							overlap = entity.properties.seq.getValue() == entities[i-1].properties.seq.getValue() ? true : false;
+						}
+
+						if (!overlap) {
 						length += entity.properties.length.getValue();
 
 						if ( entity.properties.speed.getValue() == undefined || entity.properties.speed.getValue() > 1) {
 							times += (entity.properties.length.getValue() / 40 ) * 3600;
 						} else {
 							times += (entity.properties.length.getValue() / entity.properties.speed.getValue() ) * 3600;
+						}
 						}
 
 						var eName = entity.properties.name.getValue();
@@ -953,16 +1010,19 @@ function AnalysisControll(viewer) {
 			}
 
 		} else if (type == 'polygon') {
-			// var entities = dataSource.entities.values;
-			// for (var i = 0; i < entities.length; i++) {
-			// 	var entity = entities[i];
-			// 	entity.billboard = undefined;
-			// 	entity.polygon = new Cesium.PolygonGraphics({
-			// 		material : Cesium.Color.GREEN,
-			// 		outline: true,
-			// 		outlineColor: Cesium.Color.BLACK
-			// 	});
-			// }
+			var entities = dataSource.entities.values;
+			for (var i = 0; i < entities.length; i++) {
+				var entity = entities[i];
+				var pg = new Cesium.PolygonGraphics({
+					hierarchy: entity.polygon.hierarchy,
+					material: entity.polygon.material,
+					outline: entity.polygon.outline,
+					outlineColor: entity.polygon.outlineColor,
+					outlineWidth: entity.polygon.outlineWidth,
+					heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
+				});
+				entity.polygon = pg;
+			}
 		}
 	}
 
