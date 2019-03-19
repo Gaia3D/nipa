@@ -14781,7 +14781,8 @@ var ManagerFactory = function(viewer, containerId, serverPolicy, projectIdArray,
 				request     : MagoConfig.getPolicy().geo_server_add_parameters_request,
 				transparent : MagoConfig.getPolicy().geo_server_add_parameters_transparent,
 				//tiled : MagoConfig.getPolicy().backgroundProvider.parameters.tiled,
-				format      : MagoConfig.getPolicy().geo_server_add_parameters_format
+				format      : MagoConfig.getPolicy().geo_server_add_parameters_format,
+				tiled		: true
 				//				time : MagoConfig.getPolicy().backgroundProvider.parameters.time,
 				//		    	rand : MagoConfig.getPolicy().backgroundProvider.parameters.rand,
 				//		    	asdf : MagoConfig.getPolicy().backgroundProvider.parameters.asdf
@@ -14920,13 +14921,15 @@ var ManagerFactory = function(viewer, containerId, serverPolicy, projectIdArray,
 					version     : serverPolicy.geo_server_parameters_version,
 					request     : serverPolicy.geo_server_parameters_request,
 					transparent : serverPolicy.geo_server_parameters_transparent,
-					format      : serverPolicy.geo_server_parameters_format
-				}//,
-				//proxy: new Cesium.DefaultProxy('/proxy/')
+					format      : serverPolicy.geo_server_parameters_format,
+					tiled		: true
+
+				},
+				enablePickFeatures : false
 			});
 
 			var terrainProvider = new Cesium.CesiumTerrainProvider({
-				url: 'http://localhost:9000/tilesets/terrain/mago3d'
+				url: '/tilesets/korea'
 			});
 
 			var options = {imageryProvider : imageryProvider, terrainProvider: terrainProvider, baseLayerPicker : false, animation:false, timeline:false, fullscreenButton:false};
@@ -14946,7 +14949,11 @@ var ManagerFactory = function(viewer, containerId, serverPolicy, projectIdArray,
 				requestVertexNormals: true
 			})
 */
-			var options = {imageryProvider : imageryProvider, /*terrainProvider: terrainProvider,*/ baseLayerPicker : false, animation:false, timeline:false, fullscreenButton:false};
+			var terrainProvider = new Cesium.CesiumTerrainProvider({
+				url: '/tilesets/korea'
+			});
+			
+			var options = {imageryProvider : imageryProvider, terrainProvider: terrainProvider, baseLayerPicker : false, animation:false, timeline:false, fullscreenButton:false};
 			Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(115.0, -20.0, 140.0, 90.0);
 			if (viewer === null) { viewer = new Cesium.Viewer(containerId, options); }
 			// 기본 지도 설정
