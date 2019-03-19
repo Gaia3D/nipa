@@ -250,9 +250,11 @@ $(function() {
 	// 검색 테이블 클릭 시 기본 동작 클릭
 	$('#distrirct p').click(function() {
 		$('#distrirct').toggleClass('on');
+		$('#distrirct div.pagerB').toggle('on');
 	});
 	$('#placeName p').click(function() {
 		$('#placeName').toggleClass('on');
+		$('#placeName div.pagerB').toggle('on');
 	});
 	$('#jibun p').click(function() {
 		$('#jibun').toggleClass('on');
@@ -260,9 +262,11 @@ $(function() {
 	});
 	$('#newAddress p').click(function() {
 		$('#newAddress').toggleClass('on');
+		$('#newAddress div.pagerB').toggle('on');
 	});
 	$('#countryPlaceNumber p').click(function() {
 		$('#countryPlaceNumber').toggleClass('on');
+		$('#countryPlaceNumber div.pagerB').toggle('on');
 	});
 	
 	
@@ -370,6 +374,13 @@ $(function() {
 	// 맵노트 메뉴 클릭 시 추가 동작
 	$('#mapnoteMenu').on('click', function() {
 		console.log("맵노트 메뉴 클릭");
+		if($(this).hasClass('on'))
+		{
+			ajaxMapnoteList(1);
+		}
+		else{
+			removeAllBillboard();
+		}
 		noteContentsResize();
 	});
 	

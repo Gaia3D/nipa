@@ -6,6 +6,7 @@ function RangedomeControll (viewer, option) {
     viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
 
     this._shape;
+	this._position;
     this._longitude;
     this._latitude;
 
@@ -20,6 +21,7 @@ function RangedomeControll (viewer, option) {
 				var coordsLonLat = positionToLonLat(position);
 				var json = makePointTypeJson(coordsLonLat);
 
+				that._position = position;
                 that._longitude = coordsLonLat[0];
                 that._latitude = coordsLonLat[1];
 
@@ -50,7 +52,7 @@ function RangedomeControll (viewer, option) {
 	    }
         if(that._shape !== undefined)
         {
-            that.clear();
+            that.clearDome();
         }
         that._shape = viewer.entities.add({
             name : '화망('+radius+'m)',
@@ -64,7 +66,7 @@ function RangedomeControll (viewer, option) {
         });
     });
     
-    this.clear = function () {
+    this.clearDome = function () {
         viewer.entities.remove(this._shape);
         this._shape = null;
     }
@@ -72,7 +74,7 @@ function RangedomeControll (viewer, option) {
 	// 화망 분석 - 초기화
 	$('#analysisRangeDome .reset').click(function(e) {
         removeAnalysisDataSource(layerDrawStrId);
-        that.clear();
+        that.clearDome();
     });
     
     function promiseDrawtoolCallback(type, dataSource, layerId, positions) {
