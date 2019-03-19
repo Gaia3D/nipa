@@ -12,7 +12,7 @@
 			FROM sk_sdo GROUP BY name
 		) B
 		WHERE A.gid = B.gid
-		ORDER BY A.bjcd
+		ORDER BY A.name
 	</select>
 	
 	<!-- Sgg 목록(geom 은 제외) -->
@@ -29,7 +29,7 @@
 			GROUP BY A.code, A.name
 		) C
 		WHERE B.gid = C.gid
-		ORDER BY C.bjcd
+		ORDER BY C.name
 	</select>
 	
 	<!-- emd 목록(geom 은 제외) -->
@@ -37,7 +37,7 @@
 		/* getListEmdBySdoAndSggExceptGeom */
 		SELECT B.bjcd, SUBSTR(B.bjcd, 1, 2) AS sdo_code, 
 			SUBSTR(B.bjcd, 3, 3) AS sgg_code,
-			SUBSTR(B.bjcd, 1, 8) AS emd_code,
+			SUBSTR(B.bjcd, 6, 3) AS emd_code,
 			B.name	
 		FROM sk_emd B, (
 			SELECT MIN(A.gid) AS gid, A.code AS bjcd, A.name 
@@ -49,7 +49,7 @@
 			GROUP BY A.code, A.name
 		) C
 		WHERE B.gid = C.gid
-		ORDER BY C.bjcd
+		ORDER BY C.name
 	</select>
 	
 	<!-- 선택한 시도의 center point를 구함 -->
@@ -59,7 +59,7 @@
 		FROM (
 			SELECT geom 
 			FROM sk_sdo 
-			WHERE name = #{name}
+			WHERE bjcd = #{bjcd}
 			ORDER BY bjcd LIMIT 1
 		) A
 	</select>
@@ -71,8 +71,7 @@
 		FROM (
 			SELECT geom 
 			FROM sk_sgg 
-			WHERE bjcd LIKE #{bjcd} ||'%'
-				AND name = #{name}
+			WHERE bjcd = #{bjcd}
 			ORDER BY bjcd LIMIT 1
 		) A
 	</select>
@@ -84,8 +83,7 @@
 		FROM (
 			SELECT geom 
 			FROM sk_emd 
-			WHERE bjcd LIKE #{bjcd} ||'%'
-				AND name = #{name}
+			WHERE bjcd = #{bjcd}
 			ORDER BY bjcd LIMIT 1
 		) A
 	</select>
@@ -97,15 +95,15 @@
 		FROM (
 			SELECT name
 			FROM sk_sdo
-			WHERE name like '%' || '금천' || '%'
+			WHERE name like '%' || #{search_value} || '%'
 			UNION ALL
 			SELECT name
 			FROM sk_sgg 
-			WHERE name like '%' || '금천' || '%'
+			WHERE name like '%' || #{search_value} || '%'
 			UNION ALL
 			SELECT name
 			FROM sk_emd 
-			WHERE name like '%' || '금천' || '%'
+			WHERE name like '%' || #{search_value} || '%'
 		) A 		
 	</select>
 	
@@ -121,23 +119,29 @@
 	<select id="getJibunTotalCount" parameterType="addrJibun" resultType="long">
 		/* getJibunTotalCount */
 		SELECT COUNT(*) 
-		FROM addr_jibun
+		FROM (
+			SELECT DISTINCT ON (kname_sido, kname_sgg , kname_emd, jibun_no1, jibun_no2, building_mno)
+			kname_sido, kname_sgg , kname_emd, jibun_no1, jibun_no2, building_mno
+		FROM jibun_search
 		WHERE kname_sido LIKE '%' || #{search_value} || '%'
 			OR kname_sgg LIKE '%' || #{search_value} || '%'
 			OR kname_emd LIKE '%' || #{search_value} || '%'
-			OR kname_li LIKE '%' || #{search_value} || '%'		
+			OR kname_li LIKE '%' || #{search_value} || '%' ) a	
 	</select>
 	
 	<!-- 새주소 검색 총 건수 -->
 	<select id="getNewAddressTotalCount" parameterType="newAddress" resultType="long">
 		/* getNewAddressTotalCount */
 		SELECT COUNT(*) 
+		FROM (
+			SELECT DISTINCT ON (kname_sido, kname_sgg , kname_emd, name_addr, name_sgg_building)
+			kname_sido, kname_sgg , kname_emd, name_addr, name_sgg_building
 		FROM addr_new
 		WHERE 
 			name_sgg_building  LIKE '%' || #{search_value} || '%'
 			OR name_addr LIKE '%' || #{search_value} || '%'		
 			OR kname_sgg LIKE '%' || #{search_value} || '%'
-			OR kname_sido LIKE '%' || #{search_value} || '%'
+				OR kname_sido LIKE '%' || #{search_value} || '%' ) a
 	</select>
 	
 	<!-- 국가 지점번호 검색 총 건수 -->
@@ -168,7 +172,7 @@
 	<!-- 지명 목록 -->
 	<select id="getListPlaceName" parameterType="placeName" resultType="placeName">
 		/* getListPlaceName */
-		SELECT gid, name_ko, ST_X(geom) as longitude, ST_Y(geom) as latitude, ST_AsGeoJSON(geom)
+		SELECT gid, name_ko, ST_X(ST_Centroid(geom)) as longitude, ST_Y(ST_Centroid(geom)) as latitude, ST_AsGeoJSON(geom)
 		FROM place_name
 		WHERE name_ko LIKE '%' || #{search_value} || '%'
 		ORDER BY name_ko ASC 
@@ -179,7 +183,7 @@
 	<select id="getListJibun" parameterType="addrJibun" resultType="addrJibun">
 		/* getListJibun */
 		SELECT DISTINCT ON (kname_sido, kname_sgg , kname_emd, jibun_no1, jibun_no2, building_mno) 
-		       concat_ws(' '::text, kname_sido, kname_sgg, kname_emd, jibun_no1, jibun_no2)
+		       concat_ws(' '::text, kname_sido, kname_sgg, kname_emd, kname_li, jibun_no1, jibun_no2)
 		       AS jibun_addr, ST_X(geom) as longitude, ST_Y(geom) as latitude, ST_AsGeoJSON(geom)
 		FROM public.jibun_search
 		WHERE 
@@ -213,10 +217,10 @@
 	<!-- 국가 지점 번호 목록 -->
 	<select id="getListCountryPlaceNumber" parameterType="countryPlaceNumber" resultType="countryPlaceNumber">
 		/* getListCountryPlaceNumber */
-		SELECT gid, spo_no_cd, ST_X(geom) as longitude, ST_Y(geom) as latitude, ST_AsGeoJSON(geom)
+		SELECT gid, spo_no_cd, ST_X(ST_Centroid(geom)) as longitude, ST_Y(ST_Centroid(geom)) as latitude, ST_AsGeoJSON(geom)
 		FROM place_num
-		WHERE spo_no_cd LIKE '%' || #{search_value} || '%
+		WHERE spo_no_cd LIKE '%' || #{search_value} || '%'
 		ORDER BY spo_no_cd ASC
-		OFFSET #{offset} LIMIT #{limit}'
+		OFFSET #{offset} LIMIT #{limit}
 	</select>
 </mapper>

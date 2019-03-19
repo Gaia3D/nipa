@@ -144,19 +144,18 @@ public class SearchMapController {
 				// 시도
 				SkSdo skSdo = new SkSdo();
 				skSdo.setName(skEmd.getName());
-				skSdo.setBjcd(skEmd.getSdo_code());
+				skSdo.setBjcd(skEmd.getBjcd());
 				centerPoint = searchMapService.getCentroidSdo(skSdo);
 				log.info("@@@@ sdo center point {}", centerPoint);
 			} else if(skEmd.getLayer_type() == 2) {
 				// 시군구
 				SkSgg skSgg = new SkSgg();
 				skSgg.setName(skEmd.getName());
-				skSgg.setBjcd(skEmd.getSdo_code() + skEmd.getSgg_code());
+				skSgg.setBjcd(skEmd.getBjcd());
 				centerPoint = searchMapService.getCentroidSgg(skSgg);
 				log.info("@@@@ sgg center point {}", centerPoint);
 			} else if(skEmd.getLayer_type() == 3) {
 				// 읍면동
-				skEmd.setBjcd(skEmd.getEmd_code());
 				centerPoint = searchMapService.getCentroidEmd(skEmd);
 				log.info("@@@@ emd center point {}", centerPoint);
 			}
@@ -188,9 +187,9 @@ public class SearchMapController {
 		log.info("@@ district = {}", district);
 		district.setSearch_value(district.getFullTextSearch());
 		district.setSearch_word(district.getFullTextSearch());
+		String searchKey = request.getParameter("searchKey");
 		
-		String[] uri = request.getRequestURI().split("/");
-		String searchKey = uri[2].trim();
+		map.put("searchWord", district.getFullTextSearch());
 		map.put("searchKey", searchKey);
 		
 		try {
@@ -238,9 +237,9 @@ public class SearchMapController {
 		log.info("@@ placeName = {}", placeName);
 		placeName.setSearch_value(placeName.getFullTextSearch());
 		placeName.setSearch_word(placeName.getFullTextSearch());
+		String searchKey = request.getParameter("searchKey");
 		
-		String[] uri = request.getRequestURI().split("/");
-		String searchKey = uri[2].trim();
+		map.put("searchWord", placeName.getFullTextSearch());
 		map.put("searchKey", searchKey);
 		
 		try {
@@ -287,9 +286,9 @@ public class SearchMapController {
 		String result = "success";
 		log.info("@@ addrJibun = {}", addrJibun);
 		addrJibun.setSearch_value(addrJibun.getFullTextSearch());
+		String searchKey = request.getParameter("searchKey");
+
 		map.put("searchWord", addrJibun.getFullTextSearch());
-		String[] uri = request.getRequestURI().split("/");
-		String searchKey = uri[2].trim();
 		map.put("searchKey", searchKey);
 		
 		try {
@@ -336,9 +335,9 @@ public class SearchMapController {
 		String result = "success";
 		log.info("@@ newAddress = {}", newAddress);
 		newAddress.setSearch_value(newAddress.getFullTextSearch());
+		String searchKey = request.getParameter("searchKey");
+
 		map.put("searchWord", newAddress.getFullTextSearch());
-		String[] uri = request.getRequestURI().split("/");
-		String searchKey = uri[2].trim();
 		map.put("searchKey", searchKey);
 		
 		try {
@@ -386,9 +385,9 @@ public class SearchMapController {
 		log.info("@@ countryPlaceNumber = {}", countryPlaceNumber);
 		countryPlaceNumber.setSearch_value(countryPlaceNumber.getFullTextSearch());
 		countryPlaceNumber.setSearch_word(countryPlaceNumber.getFullTextSearch());
+		String searchKey = request.getParameter("searchKey");
 		
-		String[] uri = request.getRequestURI().split("/");
-		String searchKey = uri[2].trim();
+		map.put("searchWord", countryPlaceNumber.getFullTextSearch());
 		map.put("searchKey", searchKey);
 		
 		try {
