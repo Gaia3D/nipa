@@ -55,7 +55,7 @@ var sgg_code = "";
 var emd_code = "";
 var district_map_type = 1;
 
-var defaultDistrictObject = '<li class="on">전체</li>';
+var defaultDistrictObject = '<li class="on">All</li>';
 
 function updateViewDistrictName()
 {

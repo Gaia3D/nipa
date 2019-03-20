@@ -65,7 +65,7 @@ function AnalysisControll(viewer) {
 		var observerPoint = $("#analysisRadialLineOfSight .observerPoint").val();
 
 	    if (observerPoint == "") {
-	        alert("관측지점을 선택하세요!");
+	        alert("Please select an observer point!!");
 	        return;
 	    }
 
@@ -104,7 +104,7 @@ function AnalysisControll(viewer) {
 	            // viewer.flyTo(entities);
 	        });
 	    }).otherwise(function (error) {
-	        window.alert('분석영역 선택이 잘못 선택되었습니다.');
+	        window.alert('Invalid selection');
 	    });
 	});
 
@@ -174,12 +174,12 @@ function AnalysisControll(viewer) {
 	    var targetPoint = $('#analysisLinearLineOfSight .targetPoint').val();
 
 	    if (observerPoint == "") {
-	        alert("관측지점을 선택하세요!");
+	        alert("Please select an observer point!!");
 	        return;
 	    }
 
 		if (targetPoint == "") {
-			alert("대상지점을 선택하세요!");
+			alert("Please select a target point!!");
 			return;
 		}
 
@@ -217,7 +217,7 @@ function AnalysisControll(viewer) {
 	            // viewer.flyTo(entities);
 	        });
 	    }).otherwise(function (error) {
-	        window.alert('분석영역 선택이 잘못 선택되었습니다.');
+	        window.alert('Invalid selection');
 	    });
 	});
 
@@ -279,7 +279,7 @@ function AnalysisControll(viewer) {
 		var userLine = $('#analysisRasterProfile .userLine').val();
 
 		if (userLine == "") {
-			alert("측정경로를 선택하세요!");
+			alert("Please select an user line!!");
 			return;
 		}
 
@@ -339,7 +339,7 @@ function AnalysisControll(viewer) {
 	            // viewer.flyTo(layerRasterProfile.entities);
 	        });
 	    }).otherwise(function (error) {
-	        window.alert('분석영역 선택이 잘못 선택되었습니다.');
+	        window.alert('Invalid selection');
 	    });
 	});
 
@@ -373,7 +373,7 @@ function AnalysisControll(viewer) {
 			var viewType3d = $('#mapCtrlModeling').hasClass('on');
 
 			if (viewType3d) {
-				if ( confirm("분석영역으로 현재 지도 범위로 선택하기 위해서는 카메라 뷰의 기울어짐을 꺼야합니다.") ) {
+				if ( confirm("Change the view of the camera.") ) {
 					viewer.scene.screenSpaceCameraController.enableTilt = false;
 		            viewer.scene.screenSpaceCameraController.enableLook = false;
 		            viewer.scene.camera.flyTo({
@@ -447,14 +447,14 @@ function AnalysisControll(viewer) {
 			if (zDistance.match('km') != null) {
 				zDistance = Number.parseInt(zDistance.replace(' km', '')) * 1000;
 				if (zDistance > 3000) {
-					alert('분석 영역이 너무 큽니다.');
+					alert('The area is too large.');
 					return false;
 				}
 
 			} else {
 				zDistance = Number.parseInt(zDistance.replace(' m', ''));
 				if (zDistance > 3000) {
-					alert('분석 영역이 너무 큽니다.');
+					alert('The area is too large.');
 					return false;
 				}
 			}
@@ -476,7 +476,7 @@ function AnalysisControll(viewer) {
 		} else if (areaType == 'useArea') {
 
 			if ($('#analysisRasterHighLowPoints .cropShape').val() == "") {
-				alert("분석영역을 선택하세요!");
+				alert("Please select a crop shape!!");
 				return;
 			}
 		} else {
@@ -515,7 +515,7 @@ function AnalysisControll(viewer) {
 	            // viewer.flyTo(ds.entities);
 	        });
 	    }).otherwise(function (error) {
-			window.alert('분석영역 선택이 잘못 선택되었습니다.');
+			window.alert('Invalid selection');
 	    });
 	});
 
@@ -677,8 +677,8 @@ function AnalysisControll(viewer) {
 					var r_hour = parseInt(times / 3600);
 					var r_min = parseInt((times - (parseInt(times / 3600) * 3600)) / 60);
 					// var r_sec = Math.round(times - (parseInt((times - (parseInt(times / 3600)*3600)) / 60)*60) - (parseInt(times / 3600)*3600), 2);
-					var r_leadTime = r_hour < 1 ? '' : r_hour + '시간 ';
-					r_leadTime += r_min + '분';
+					var r_leadTime = r_hour < 1 ? '' : r_hour + 'hour ';
+					r_leadTime += r_min + 'min.';
 
 					$('.routeResult .time').text(r_leadTime);
 					$('.routeResult .length').text(Math.round(length, 2) + 'km');
@@ -688,7 +688,7 @@ function AnalysisControll(viewer) {
 						if(roadNames[i][0] != null) {
 							roadName = roadNames[i][0];
 						} else {
-							roadName = '이름없는 길';
+							roadName = 'An unnamed road';
 						}
 
 						r_row = $('<div class="r_row" />').attr('data-id', roadNames[i][1].toString());
@@ -832,7 +832,7 @@ function AnalysisControll(viewer) {
 	    breaks[breaks.length - 1] = maxValue + 0.1;
 
 		$('.analysisGroup .profileInfo .legend').html(
-			stat.getHtmlLegend(colors, "범례", true)
+			stat.getHtmlLegend(colors, "Legend", true)
 		);
 
 	    return breaks;
@@ -942,7 +942,7 @@ function AnalysisControll(viewer) {
 						display: true,
 						scaleLabel: {
 							display: true,
-							labelString: '거리(km)'
+							labelString: 'distance(km)'
 						},
 						ticks: {
 							autoSkip: true,
@@ -954,7 +954,7 @@ function AnalysisControll(viewer) {
 						stacked: true,
 						scaleLabel: {
 							display: true,
-							labelString: '높이'
+							labelString: 'height'
 						},
 						ticks: {
 							autoSkip: true,

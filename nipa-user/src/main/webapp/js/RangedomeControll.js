@@ -47,7 +47,7 @@ function RangedomeControll (viewer, option) {
 		var observerPoint = $("#analysisRangeDome .observerPoint").val();
 
 	    if (observerPoint == "") {
-	        alert("관측지점을 선택하세요!");
+	        alert("Please select the observer point!!");
 	        return;
 	    }
         if(that._shape !== undefined)
@@ -55,7 +55,7 @@ function RangedomeControll (viewer, option) {
             that.clearDome();
         }
         that._shape = viewer.entities.add({
-            name : '화망('+radius+'m)',
+            name : 'Threat Dome('+radius+'m)',
             position: Cesium.Cartesian3.fromDegrees(that._longitude, that._latitude, 0.0),
             ellipsoid : {
                 radii : new Cesium.Cartesian3(radius, radius, radius),

@@ -27,13 +27,13 @@ function LayerControll(viewer) {
     }
 
     var default3DLayer = [{
-        name: "3차원 객체",
+        name: "3D Model",
         show: true
     }];
 
     var defaultImgLayer = [{
         id: "1",
-        name: "세종",
+        name: "Sejong City",
         provider: new Cesium.WebMapServiceImageryProvider({
             url: geo_server_url,
             layers: "mago3d:sejong",
@@ -61,7 +61,7 @@ function LayerControll(viewer) {
     }];
     var defaultMapLayer = [{
         id: "1", name:
-            '행정경계(시도)',
+            'Boundary(SiDo)',
         provider: new Cesium.WebMapServiceImageryProvider({
             url: geo_server_url,
             layers: "mago3d:sk_sdo",
@@ -70,7 +70,7 @@ function LayerControll(viewer) {
     },
     {
         id: "2", name:
-            '행정경계(시군구)',
+            'Boundary(SiGunGu)',
         provider: new Cesium.WebMapServiceImageryProvider({
             url: geo_server_url,
             layers: "mago3d:sk_sgg",
@@ -79,7 +79,7 @@ function LayerControll(viewer) {
     },
     {
         id: "3", name:
-            '행정경계(읍면동)',
+            'Boundary(EubMyeonDong)',
         provider: new Cesium.WebMapServiceImageryProvider({
             url: geo_server_url,
             layers: "mago3d:sk_emd",
@@ -88,7 +88,7 @@ function LayerControll(viewer) {
     },
     {
         id: "4", name:
-            '도로망',
+            'Road network',
         provider: new Cesium.WebMapServiceImageryProvider({
             url: geo_server_url,
             layers: "mago3d:link",

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta content="IE=edge" http-equiv="X-UA-Compatible">
-<title>군 공간정보 포털시스템</title>
+<title>Military Geo-Portal System</title>
 <link rel="stylesheet" href="./css/style.css">
 <link rel="stylesheet" href="./externlib/cesium-1.44/Widgets/widgets.css">
 <link rel="stylesheet" href="./externlib/jquery-ui-1.12.1/jquery-ui.css">
@@ -20,8 +20,8 @@
 	<div id="gnbWrap" style="left:40px;"><!-- 메뉴 on 시 확장됨, left:110px 조정 -->
 		<!-- S: 통합검색 -->
 		<div class="totalSearch">
-			<input type="text" id="fullTextSearch" name="fullTextSearch" placeholder="검색어를 입력하세요.">
-			<button type="button" id="fullTextSearchButton" title="검색" class="btnTotalSearch">검색</button>
+			<input type="text" id="fullTextSearch" name="fullTextSearch" placeholder="Search">
+			<button type="button" id="fullTextSearchButton" title="Search" class="btnTotalSearch">Search</button>
 		</div>
 		<!-- S: 화면행정구역 -->
 		<div class="district">
@@ -31,18 +31,18 @@
 		<div class="districtWrap" style="display:none; ">
 			<div class="districtLayer">
 				<ul id="sdoList">
-					<li class="on">전체</li>
+					<li class="on">All</li>
 				</ul>
 				<ul id="sggList">
-					<li class="on">전체</li>
+					<li class="on">All</li>
 				</ul>
 				<ul id="emdList">
-					<li class="on">전체</li>
+					<li class="on">All</li>
 				</ul>
 			</div>
 			<div class="districtBtn">
-				<button type="button" class="focusB" id="districtFlyButton">이동</button>
-				<button type="button" class="basicB" id="districtCancleButton">취소</button>
+				<button type="button" class="focusB" id="districtFlyButton">MoveTo</button>
+				<button type="button" class="basicB" id="districtCancleButton">Cancle</button>
 			</div>
 		</div>
 		<!-- E: 행정구역 레이어 -->
@@ -52,18 +52,18 @@
 
 	<!-- S: NAV WRAP -->
 	<div id="navWrap" class=""><!-- 메뉴 on시 확장됨, class="on"과 함께 #gnbWrap의 left:110px 변경 -->
-		<h1>국방지형정보단</h1>
+		<h1>Military Geo-Portal System</h1>
 		<ul class="nav">
-			<li id="menu" class="menu" title="메뉴"><span>메뉴</span></li>
-			<li id="searchMenu" class="search" data-nav="searchContent" title="검색"><span>검색</span></li>
-			<li id="layerMenu" class="layer" data-nav="layerContent" title="레이어"><span>레이어</span></li>
-			<li id="timeseriesMenu" class="timeseries" data-nav="timeseriesContent" title="시계열"><span>시계열</span></li>
-			<li id="analysisMenu" class="analysis" data-nav="analysisContent" title="분석"><span>분석</span></li>
-			<li id="coordinateMenu" class="coordinate" data-nav="coordinateContent" title="좌표"><span>좌표</span></li>
-			<li id="mapnoteMenu" class="mapnote" data-nav="mapnoteContent" title="맵노트"><span>맵노트</span></li>
+			<li id="menu" class="menu" title="메뉴"><span>Menu</span></li>
+			<li id="searchMenu" class="search" data-nav="searchContent" title="Search"><span>Search</span></li>
+			<li id="layerMenu" class="layer" data-nav="layerContent" title="Layer"><span>Layer</span></li>
+			<li id="timeseriesMenu" class="timeseries" data-nav="timeseriesContent" title="Timeseries"><span>Timeseries</span></li>
+			<li id="analysisMenu" class="analysis" data-nav="analysisContent" title="Analysis"><span>Analysis</span></li>
+			<li id="coordinateMenu" class="coordinate" data-nav="coordinateContent" title="Coordinate"><span>Coordinate</span></li>
+			<li id="mapnoteMenu" class="mapnote" data-nav="mapnoteContent" title="MapNote"><span>MapNote</span></li>
 		</ul>
 	<div class="contentsBtn">
-		<button type="button" id="closeLeftBtn">레이어 닫기</button>
+		<button type="button" id="closeLeftBtn">Close</button>
 	</div>
 	</div>
 	<!-- E: NAV WRAP -->
@@ -71,7 +71,7 @@
 	<div id="contentsWrap" style=" display:none;">
 		<!-- S: 검색 -->
 		<div id="searchContent" class="contentsList yScroll" style="height: 780px; display:none;">
-			<h2 class="hide">검색</h2>
+			<h2 class="hide">Search</h2>
 			<ul class="listDrop">
 				<!-- <li id="jibun">
 					<p>지번주소<span id="jibunSearchCount">0 건</span></p>
@@ -79,7 +79,7 @@
 					<div id="jibunSearchPaging"></div>
 				</li> -->
 				<li id="newAddress">
-					<p>새주소<span id="newAddressSearchCount">0 건</span></p>
+					<p>Address <span id="newAddressSearchCount">0 건</span></p>
 					<ul id="newAddressSearchList"></ul>
 					<div id="newAddressSearchPaging"></div>
 				</li>
@@ -90,10 +90,10 @@
 
 		<!-- S: 레이어 -->
 		<div id="layerContent" class="contentsList yScroll" style="height: 780px; display:none;">
-			<h2 class="hide">레이어</h2>
+			<h2 class="hide">Layer</h2>
 			<ul class="listLayer">
 				<li class="imageLayer" :class="{on:show3DLayer}" v-on:click.stop.prevent="show3DLayer=!show3DLayer">
-					<p>3차원 레이어</p>
+					<p>3D Layer</p>
 					<ul>
 						<li v-for="(layer, index) in mago3DLayers" :class="{on : layer.show}" v-on:click.stop.prevent="toggle3DLayer(index, layer)">
 							<span>{{layer.name}}</span>
@@ -101,28 +101,28 @@
 					</ul>
 				</li>
 				<li class="imageLayer" :class="{on:showImgLayer}" v-on:click.stop.prevent="showImgLayer=!showImgLayer">
-					<p>군사지도 레이어</p>
+					<p>Raster Layer</p>
 					<ul>
 						<draggable v-model="imgLayers" @change="changeLayer($event, 0, '0')">
 						<li v-for="(layer, index) in imgLayers" :class="{on : layer.show}" v-on:click.stop.prevent="toggleLayer(defaultImgLayers.length - index - 1, layer)">
 							<span>{{layer.name}}</span>
 							<div>
-								<span v-if="layer.color" class="color" title="색상" :style="{backgroundColor: '#'+layer.color}" v-on:click.stop.prevent="settingLayer(defaultImgLayers.length - index - 1, layer, defaultImgLayers[index])">색상</span>
-								<span class="opacity" title="투명도" v-on:click.stop.prevent="settingLayer(defaultImgLayers.length - index - 1, layer, defaultImgLayers[index])">{{layer.alpha | toPercentString}}</span>
+								<span v-if="layer.color" class="color" title="Color" :style="{backgroundColor: '#'+layer.color}" v-on:click.stop.prevent="settingLayer(defaultImgLayers.length - index - 1, layer, defaultImgLayers[index])">Color</span>
+								<span class="opacity" title="Opacity" v-on:click.stop.prevent="settingLayer(defaultImgLayers.length - index - 1, layer, defaultImgLayers[index])">{{layer.alpha | toPercentString}}</span>
 							</div>
 						</li>
 						</draggable>
 					</ul>
 				</li>
 				<li class="mapLayer" :class="{on:showMapLayer}" v-on:click.stop.prevent="showMapLayer=!showMapLayer">
-					<p>지형정보 레이어</p>
+					<p>Vector Layer</p>
 					<ul>
 						<draggable v-model="mapLayers" @change="changeLayer($event, defaultImgLayers.length, '1')">
 						<li v-for="(layer, index) in mapLayers" :class="{on : layer.show}" v-on:click.stop.prevent="toggleLayer(defaultMapLayers.length - index - 1 + defaultImgLayers.length, layer)">
 							<span>{{layer.name}}</span>
 							<div>
-								<span v-if="layer.color" class="color" title="색상" :style="{backgroundColor: '#'+layer.color}" v-on:click.stop.prevent="settingLayer(defaultMapLayers.length - index - 1 + defaultImgLayers.length, layer, defaultMapLayers[index])">색상</span>
-								<span class="opacity" title="투명도" v-on:click.stop.prevent="settingLayer(defaultMapLayers.length - index - 1 + defaultImgLayers.length, layer, defaultMapLayers[index])">{{layer.alpha | toPercentString}}</span>
+								<span v-if="layer.color" class="color" title="Color" :style="{backgroundColor: '#'+layer.color}" v-on:click.stop.prevent="settingLayer(defaultMapLayers.length - index - 1 + defaultImgLayers.length, layer, defaultMapLayers[index])">Color</span>
+								<span class="opacity" title="Opacity" v-on:click.stop.prevent="settingLayer(defaultMapLayers.length - index - 1 + defaultImgLayers.length, layer, defaultMapLayers[index])">{{layer.alpha | toPercentString}}</span>
 							</div>
 						</li>
 						</draggable>
@@ -134,25 +134,25 @@
 			<!-- S: 레이어설정 -->
 			<div id="settingLayer" class="option" data-id="setting" style="top:175px; left: 230px; display:none;">
 				<div class="layerHeader">
-					<h3>설정({{selectedLayer.name}})</h3>
-					<button type="button" class="layerClose" title="닫기">닫기</button>
+					<h3>Setting({{selectedLayer.name}})</h3>
+					<button type="button" class="layerClose" title="Close">Close</button>
 				</div>
 				<div class="layerContents">
 					<ul class="layerSetup">
 						<li>
-							<label for="">투명도</label>
+							<label for="">Opacity</label>
 							<input id="range-value" type="text" size="3" placeholder="100%" class="underline" :value="selectedLayer.alpha | toPercentString"><input id="range-slider" type="range" min="0" max="100" :value="selectedLayer.alpha | toPercent">
 						</li>
 						<li v-if="selectedLayer.line && selectedLayer.color">
-							<label for="">스타일</label>
+							<label for="">Style</label>
 							<input id="styleLine" v-if="selectedLayer.line" type="number" :value="selectedLayer.line" min="0.1" max="5.0" size="3" step="0.1" class="underline">
 							<input id="styleColor" v-if="selectedLayer.color" type="color" class="picker" :value="selectedLayer.color | toHexColor">
 						</li>
 					</ul>
 					<div>
-						<button type="button" title="적용" class="focusA" style="width: 120px;" v-on:click="updateLayer()">적용</button>
-						<button type="button" title="초기화" class="basicA" v-on:click="initLayer()">초기화</button>
-						<button type="button" id="closeBtn" title="닫기" class="basicA">닫기</button>
+						<button type="button" title="적용" class="focusA" style="width: 120px;" v-on:click="updateLayer()">Apply</button>
+						<button type="button" title="Reset" class="basicA" v-on:click="initLayer()">Reset</button>
+						<button type="button" id="closeBtn" title="Close" class="basicA">Close</button>
 					</div>
 				</div>
 			</div>
@@ -164,10 +164,10 @@
 
 		<!-- S: 시계열 -->
 		<div id="timeseriesContent" class="contents" style="height: 780px; display:none;">
-			<h2 class="hide">시계열</h2>
+			<h2 class="hide">Timeseries</h2>
 			<div class="contentsIn">
 				<div class="coordinateBtns">
-					<button id="getSatPoint" type="button" title="위치 선택" class="getPoint">위치 선택</button>
+					<button id="getSatPoint" type="button" title="위치 선택" class="getPoint">Pick Location</button>
 				</div>
 				<ul class="coordinateGroup plus">
 					<li>
@@ -187,131 +187,131 @@
 						<input id="satUTM" type="text" placeholder="52S 338192mE 4208786mN">
 					</li>
 					<li class="btns">
-						<button id="satCoordCopy" type="button" class="btnText" title="전체복사">전체복사</button>
-						<button id="satTextReset" type="button" class="btnText" title="초기화">초기화</button>
+						<button id="satCoordCopy" type="button" class="btnText" title="TextCopy">TextCopy</button>
+						<button id="satTextReset" type="button" class="btnText" title="Clear">Clear</button>
 					</li>
 				</ul>
 
 				<ul class="timeseriesGroup">
 					<li>
-						<label for="startDate">시작일</label>
+						<label for="startDate">Start Date</label>
 						<input id="startDatepicker" name="startDate" class="date" type="text" placeholder="">
 					</li>
 					<li>
-						<label for="endDate">종료일</label>
+						<label for="endDate">End Date</label>
 						<input id="endDatepicker" name="endDate" class="date" type="text" placeholder="">
 					</li>
 					<li>
-						<label for="">위성유형</label>
+						<label for="">Satellite type</label>
 						<select id="satType">
 							<option value="K3" selected="selected">KOMPSAT-3</option>
 						</select>
 					</li>
 				</ul>
 
-				<button id="searchSatImage" type="button" title="검색" class="focusA full">검색</button>
+				<button id="searchSatImage" type="button" title="Search" class="focusA full">Search</button>
 			</div>
 		</div>
 
 
 		<!-- S: 분석 -->
 		<div id="analysisContent" class="contentsList yScroll" style="height: 780px; display:none;">
-			<h2 class="hide">분석</h2>
+			<h2 class="hide">Analysis</h2>
 			<ul class="listDrop">
 				<li>
-					<p>가시권 분석</p>
+					<p>Radial Line Of Sight Analysis</p>
 					<div class="listContents" id="analysisRadialLineOfSight">
 						<ul class="analysisGroup">
 							<li>
-								<label for="">분석데이터</label>
+								<label for="">Analysis Data</label>
 								<select class="dataType">
-									<option value="DEM" selected>지형 (DEM)</option>
-									<option value="DSM" >지형+건물 (DSM)</option>
+									<option value="DEM" selected>DEM (DEM)</option>
+									<option value="DSM" >DSM (DSM)</option>
 								</select>
 							</li>
 							<li>
-								<label for="">관찰자높이 (m)</label>
+								<label for="">Observer Offset (m)</label>
 								<input class="observerOffset" type="text" placeholder="" value="1.7">
 							</li>
 							<li>
-								<label for="">반경 (m)</label>
+								<label for="">Radius (m)</label>
 								<input class="radius" type="text" placeholder="" value="100">
 							</li>
 							<li>
-								<label for="">방위수 (개)</label>
+								<label for="">Sides (number)</label>
 								<input class="sides" type="text" placeholder="" value="90">
 							</li>
 							<li>
-								<label for="">관측지점</label>
+								<label for="">Observer Point</label>
 								<input type="text" placeholder="" class="withBtn observerPointMGRS">
 								<input type="hidden" class="observerPoint">
-								<button type="button" class="btnText drawObserverPoint">위치선택</button>
+								<button type="button" class="btnText drawObserverPoint">Pick Location</button>
 							</li>
 							<li class="btns">
-								<button type="button" class="btnTextF execute" title="분석">분석</button>
-								<button type="button" class="btnText reset" title="초기화">초기화</button>
+								<button type="button" class="btnTextF execute" title="Analysis">Analysis</button>
+								<button type="button" class="btnText reset" title="Clear">Clear</button>
 							</li>
 						</ul>
 					</div>
 				</li>
 				<li>
-					<p>가시선 분석</p>
+					<p>Linear Line Of Sight Analysis</p>
 					<div class="listContents" id="analysisLinearLineOfSight">
 						<ul class="analysisGroup">
 							<li>
-								<label for="">분석데이터</label>
+								<label for="">Analysis Data</label>
 								<select class="dataType">
-									<option value="DEM" selected>지형 (DEM)</option>
-									<option value="DSM">지형+건물 (DSM)</option>
+									<option value="DEM" selected>DEM (DEM)</option>
+									<option value="DSM">DSM (DSM)</option>
 								</select>
 							</li>
 							<li>
-								<label for="">관찰자높이 (m)</label>
+								<label for="">Observer Offset (m)</label>
 								<input class="observerOffset" type="text" placeholder="" value="1.7">
 							</li>
 							<li>
-								<label for="">관측지점</label>
+								<label for="">Observer Point</label>
 								<input type="text" placeholder="" class="withBtn observerPointMGRS">
 								<input type="hidden" class="observerPoint">
-								<button type="button" class="btnText drawObserverPoint">위치선택</button>
+								<button type="button" class="btnText drawObserverPoint">Pick Location</button>
 							</li>
 							<li>
-								<label for="">대상지점</label>
+								<label for="">Target Point</label>
 								<input type="text" placeholder="" class="withBtn targetPointMGRS">
 								<input type="hidden" class="targetPoint">
-								<button type="button" class="btnText drawTargetPoint">위치선택</button>
+								<button type="button" class="btnText drawTargetPoint">Pick Location</button>
 							</li>
 							<li class="btns">
-								<button type="button" class="btnTextF execute" title="분석">분석</button>
-								<button type="button" class="btnText reset" title="초기화">초기화</button>
+								<button type="button" class="btnTextF execute" title="Analysis">Analysis</button>
+								<button type="button" class="btnText reset" title="Clear">Clear</button>
 							</li>
 						</ul>
 					</div>
 				</li>
 				<li>
-					<p>연직 분석</p>
+					<p>RasterProfile Analysis</p>
 					<div class="listContents" id="analysisRasterProfile">
 						<ul class="analysisGroup">
 							<li>
-								<label for="">분석데이터</label>
+								<label for="">Analysis Data</label>
 								<select class="dataType">
-									<option value="DEM" selected>지형 (DEM)</option>
-									<option value="DSM">지형+건물 (DSM)</option>
+									<option value="DEM" selected>DEM (DEM)</option>
+									<option value="DSM">DSM (DSM)</option>
 								</select>
 							</li>
 							<li>
-								<label for="">측정간격 (개)</label>
+								<label for="">Interval (number)</label>
 								<input class="interval" type="text" placeholder="" value="20" />
 							</li>
 							<li>
-								<label for="">측정경로</label>
-								<button type="button" class="btnText drawUserLine">위치선택</button>
+								<label for="">User Line</label>
+								<button type="button" class="btnText drawUserLine">Pick Location</button>
 								<input type="hidden" class="userLine" />
 								<div class="coordsText"></div>
 							</li>
 							<li class="btns">
-								<button type="button" class="btnTextF execute" title="분석">분석</button>
-								<button type="button" class="btnText reset" title="초기화">초기화</button>
+								<button type="button" class="btnTextF execute" title="Analysis">Analysis</button>
+								<button type="button" class="btnText reset" title="Clear">Clear</button>
 							</li>
 
 							<li class="profileInfo">
@@ -321,77 +321,77 @@
 					</div>
 				</li>
 				<li>
-					<p>최고/최저 지점찾기</p>
+					<p>Raster High/Low Points Analysis</p>
 					<div class="listContents" id="analysisRasterHighLowPoints">
 						<ul class="analysisGroup">
 							<li>
-								<label for="">분석데이터</label>
+								<label for="">Analysis Data</label>
 								<select class="dataType">
-									<option value="DEM" selected>지형 (DEM)</option>
-									<option value="DSM">지형+건물 (DSM)</option>
+									<option value="DEM" selected>DEM (DEM)</option>
+									<option value="DSM">DSM (DSM)</option>
 								</select>
 							</li>
 							<li>
-								<label for="">분석영역</label>
+								<label for="">Area Type</label>
 								<select class="areaType">
-									<option value="useArea">사용자 선택 범위</option>
-									<option value="extent">현재 지도 범위</option>
+									<option value="useArea">User Area</option>
+									<option value="extent">Map Extent</option>
 								</select>
 							</li>
 							<li class="wrapCropShape">
 								<label for=""></label>
 								<input type="hidden" class="cropShape" />
-								<button type="button" class="btnText drawCropShape">영역선택</button>
+								<button type="button" class="btnText drawCropShape">Crop Shape</button>
 							</li>
 							<li>
-								<label for="">값유형</label>
+								<label for="">Value Type</label>
 								<select class="valueType">
-									<option value="High">최고값</option>
-									<option value="Low">최저값</option>
+									<option value="High">High</option>
+									<option value="Low">Low</option>
 								</select>
 							</li>
 							<li class="btns">
 								<input type="hidden" class="wcsExtent" />
-								<button type="button" class="btnTextF execute" title="분석">분석</button>
-								<button type="button" class="btnText reset" title="초기화">초기화</button>
+								<button type="button" class="btnTextF execute" title="Analysis">Analysis</button>
+								<button type="button" class="btnText reset" title="Clear">Clear</button>
 							</li>
 						</ul>
 					</div>
 				</li>
 				<li>
-					<p>경로 분석</p>
+					<p>Route Analysis</p>
 					<div class="listContents" id="analysisFromAtoB">
 						<ul class="analysisGroup">
 							<li>
-								<label for="">분석위치</label>
+								<label for="">Location</label>
 								<select class="locationType">
-									<option value="south">남한</option>
+									<option value="south">South Korea</option>
 								</select>
 							</li>
 							<li>
-								<label for="">경로유형</label>
+								<label for="">Route Type</label>
 								<select class="routeType">
-									<option value="false">최단거리</option>
-									<option value="true">최적거리</option>
+									<option value="false">Shortest</option>
+									<option value="true">Optimum</option>
 								</select>
 							</li>
 							<li>
-								<label for="">출발지점</label>
+								<label for="">Start Point</label>
 								<input type="text" placeholder="" class="withBtn startPointMGRS">
 								<input type="hidden" class="startPointX">
 								<input type="hidden" class="startPointY">
-								<button type="button" class="btnText drawStartPoint">위치선택</button>
+								<button type="button" class="btnText drawStartPoint">Pick Location</button>
 							</li>
 							<li>
-								<label for="">도착지점</label>
+								<label for="">End Point</label>
 								<input type="text" placeholder="" class="withBtn endPointMGRS">
 								<input type="hidden" class="endPointX">
 								<input type="hidden" class="endPointY">
-								<button type="button" class="btnText drawEndPoint">위치선택</button>
+								<button type="button" class="btnText drawEndPoint">Pick Location</button>
 							</li>
 							<li class="btns">
-								<button type="button" class="btnTextF execute" title="분석">분석</button>
-								<button type="button" class="btnText reset" title="초기화">초기화</button>
+								<button type="button" class="btnTextF execute" title="Analysis">Analysis</button>
+								<button type="button" class="btnText reset" title="Clear">Clear</button>
 							</li>
 							<li class="routeInfo">
 								<div class="routeResult">
@@ -407,22 +407,22 @@
 					</div>
 				</li>
 				<li>
-					<p>화망 분석</p>
+					<p>Threat Dome Analysis</p>
 					<div class="listContents" id="analysisRangeDome">
 						<ul class="analysisGroup">
 							<li>
-								<label for="">반경 (m)</label>
+								<label for="">Radius (m)</label>
 								<input class="radius" type="text" placeholder="" value="1000">
 							</li>
 							<li>
-								<label for="">관측지점</label>
+								<label for="">Observation Location</label>
 								<input type="text" placeholder="" class="withBtn observerPointMGRS">
 								<input type="hidden" class="observerPoint">
-								<button type="button" class="btnText drawObserverPoint">위치선택</button>
+								<button type="button" class="btnText drawObserverPoint">Select</button>
 							</li>
 							<li class="btns">
-								<button type="button" class="btnTextF execute" title="분석">분석</button>
-								<button type="button" class="btnText reset" title="초기화">초기화</button>
+								<button type="button" class="btnTextF execute" title="Analysis">Analysis</button>
+								<button type="button" class="btnText reset" title="Clear">Clear</button>
 							</li>
 						</ul>
 					</div>
@@ -434,12 +434,12 @@
 
 		<!-- S: 좌표 -->
 		<div id="coordinateContent" class="contents" style="height: 780px; display:none;">
-			<h2 class="hide">좌표</h2>
+			<h2 class="hide">Coordinates</h2>
 			<div class="contentsIn">
 				<div class="coordinateBtns">
-					<button id="getScreen" type="button" title="화면중심 좌표독취" class="getScreen">화면중심 좌표독취</button>
-					<button id="getPoint" type="button" title="포인트 좌표독취" class="getPoint">포인트 좌표독취</button>
-					<button id="getSquare" type="button" title="지정영역 중심좌표독취" class="getSquare">지정영역 중심좌표독취</button>
+					<button id="getScreen" type="button" title="From the center of the screen." class="getScreen">From the center of the screen.</button>
+					<button id="getPoint" type="button" title="From the point." class="getPoint">From the point.</button>
+					<button id="getSquare" type="button" title="From the center of the selected area." class="getSquare">From the center of the selected area.</button>
 				</div>
 				<ul class="coordinateGroup plus">
 					<li>
@@ -463,14 +463,14 @@
 						<input id="UTM" type="text" placeholder="52S 338192mE 4208786mN">
 					</li>
 					<li class="btns">
-						<button id="moveToLocation" type="button" class="btnTextF" title="이동">이동</button>
-						<button id="coordinateCopy" type="button" class="btnText" title="전체복사">전체복사</button>
-						<button id="addMapnote" type="button" class="btnText" title="맵노트">지점등록</button>
-						<button id="textReset" type="button" class="btnText" title="초기화">초기화</button>
+						<button id="moveToLocation" type="button" class="btnTextF" title="MoveTo">MoveTo</button>
+						<button id="coordinateCopy" type="button" class="btnText" title="TextCopy">TextCopy</button>
+						<button id="addMapnote" type="button" class="btnText" title="MapNote">MapNote</button>
+						<button id="textReset" type="button" class="btnText" title="Delete">Delete</button>
 					</li>
 				</ul>
 
-				<button id="insertCoordinate" type="button" title="지점등록" class="focusA full">좌표독취</button>
+				<button id="insertCoordinate" type="button" title="Save Coordinates" class="focusA full">Save Coordinates</button>
 
 				<div class="coordinateWrap" style="height:500px;"></div>
 			</div>
@@ -480,21 +480,21 @@
 
 		<!-- S: 맵노트 -->
 		<div id="mapnoteContent" class="contents" style="height:780px; display:none;">
-			<h2 class="hide">맵노트</h2>
+			<h2 class="hide">MapNote</h2>
 			<div class="contentsIn">
-				<button id=inputMapnote type="button" title="지점등록" class="focusA full">지점등록</button>
+				<button id=inputMapnote type="button" title="Point registration" class="focusA full">Point registration</button>
 
 				<div id ="mapnotePage"class="pagerB">
 					<span class="countPage"></span> /
 					<span class="countTotal"></span>
 					<div>
-						<button type="button" class="first" title="처음">처음</button>
-						<button type="button" class="forward" title="이전">이전</button>
+						<button type="button" class="first" title="First">First</button>
+						<button type="button" class="forward" title="Previous">Previous</button>
 						<input type="text" id="gotoPage" value="1" size="1"> /
 						<span id="lastPage"></span>
-						<button type="button" class="next" title="다음">다음</button>
-						<button type="button" class="last" title="마지막">마지막</button>
-						<button type="button" id="gotoPageBtn" class="btnText">이동</button>
+						<button type="button" class="next" title="Next">Next</button>
+						<button type="button" class="last" title="Last">Last</button>
+						<button type="button" id="gotoPageBtn" class="btnText">GoTo</button>
 					</div>
 				</div>
 
@@ -508,41 +508,41 @@
 
 	<!-- S: 맵영역 -->
 	<div id="mapWrap">
-		<h2 class="hide">맵영역</h2>
+		<h2 class="hide">Map</h2>
 		<!-- S: 맵 컨트롤 버튼 -->
 		<ul class="mapCtrl">
-			<li id="mapCtrlCompass" class="compass" title="나침반">나침반</li>
-			<li id="mapCtrlModeling" class="modeling on" title="3D">3D</li>
-			<li id="mapCtrlReset" class="reset" title="초기화">초기화</li>
-			<li id="mapCtrlDistance" class="distance" title="거리">거리</li>
-			<li id="mapCtrlArea" class="area" title="면적">면적</li>
-			<li id="mapCtrlZoomIn" class="zoomin" title="확대">확대</li>
-			<li id="mapCtrlZoomOut" class="zoomout" title="축소">축소</li>
+			<li id="mapCtrlCompass" class="compass" title="Compass">Compass</li>
+			<li id="mapCtrlModeling" class="modeling on" title="2D/3D">2D/3D</li>
+			<li id="mapCtrlReset" class="reset" title="Reset">Reset</li>
+			<li id="mapCtrlDistance" class="distance" title="Distance">Distance</li>
+			<li id="mapCtrlArea" class="area" title="Area">Area</li>
+			<li id="mapCtrlZoomIn" class="zoomin" title="ZoomIn">ZoomIn</li>
+			<li id="mapCtrlZoomOut" class="zoomout" title="ZoomOut">ZoomOut</li>
 		</ul>
 		<!-- E: 맵 컨트롤 버튼 -->
 
 		<!-- S: 레이어 / 거리 -->
 		<div id="distanceLayer" class="option" data-id="distance" style="top:55px; right: 23px; display:none;">
 			<div class="layerHeader">
-				<h2 class="hide">거리측정</h2>
+				<h2 class="hide">Distance measurement</h2>
 				<!-- 측정 전
-				<button type="button" class="disableA">초기화</button>
+				<button type="button" class="disableA">Clear</button>
 				-->
 				<!-- 측정 후 -->
-				<button type="button" class="focusA">초기화</button>
-				<button type="button" class="layerClose" title="닫기">닫기</button>
+				<button type="button" class="focusA">Clear</button>
+				<button type="button" class="layerClose" title="Close">Close</button>
 			</div>
 			<div class="layerContents">
 				<div class="measure distance">
-					거리단위
+					Units of length
 					<select id="distanceFactor">
-						<option value="1" selected="selected">m (미터)</option>
-						<option value="1000">km (킬로미터)</option>
-						<option value="1852">nmi (해리)</option>
-						<option value="0.0254">in (인치)</option>
-						<option value="0.3048">ft (피트)</option>
-						<option value="0.9144">yd (야드)</option>
-						<option value="1609.344">mi (마일)</option>
+						<option value="1" selected="selected">m (meter)</option>
+						<option value="1000">km (kilometer)</option>
+						<option value="1852">nmi (Nautical mile)</option>
+						<option value="0.0254">in (inch)</option>
+						<option value="0.3048">ft (foot)</option>
+						<option value="0.9144">yd (yard)</option>
+						<option value="1609.344">mi (mile)</option>
 					</select>
 					<br>
 					<span>0 m</span>
@@ -554,24 +554,24 @@
 		<!-- S: 레이어 / 면적 -->
 		<div id="areaLayer" class="option" data-id="area" style="top:55px; right: 23px; display:none;">
 			<div class="layerHeader">
-				<h2 class="hide">면적측정</h2>
+				<h2 class="hide">Area measurement</h2>
 				<!-- 측정 전
-				<button type="button" class="disable">초기화</button>
+				<button type="button" class="disable">Clear</button>
 				-->
 				<!-- 측정 후 -->
-				<button type="button" class="focusA">초기화</button>
-				<button type="button" class="layerClose" title="닫기">닫기</button>
+				<button type="button" class="focusA">Clear</button>
+				<button type="button" class="layerClose" title="Close">Close</button>
 			</div>
 			<div class="layerContents">
 				<div class="measure area">
-					면적측정
+					Units of area
 					<select id="areaFactor">
-						<option value="1" selected="selected">m² (제곱미터)</option>
-						<option value="1e+6">km² (제곱킬로미터)</option>
-						<option value="0.8361">yd² (제곱야드)</option>
-						<option value="2.59e+6">mi² (제곱마일)</option>
-						<option value="4046.856">acre (에이커)</option>
-						<option value="10000">ha (헥타르)</option>
+						<option value="1" selected="selected">m² (square meter)</option>
+						<option value="1e+6">km² (square kilometer)</option>
+						<option value="0.8361">yd² (square yard)</option>
+						<option value="2.59e+6">mi² (square mile)</option>
+						<option value="4046.856">acre (acre)</option>
+						<option value="10000">ha (hectare)</option>
 					</select>
 					<br>
 					<span>0 m²</span>
@@ -583,31 +583,31 @@
 		<!-- S: 레이어 / 지점등록 -->
 		<div id="mapnoteLayer" class="option" data-id="pointRegister" style="top:55px; right: 5px; display:none;">
 			<div class="layerHeader">
-				<h2>지점등록</h2>
-				<button type="button" class="layerClose" title="닫기">닫기</button>
+				<h2>Point registration</h2>
+				<button type="button" class="layerClose" title="Close">Close</button>
 			</div>
 			<div class="layerContents">
 				<!-- <form id="uploadForm" action="#" method="post" enctype="multipart/form-data"> -->
 					<ul class="note">
 						<li>
-							<input id="noteTitle" type="text" size="34" placeholder="지점명을 입력하세요">
+							<input id="noteTitle" type="text" size="34" placeholder="Please enter your title">
 						</li>
 						<li>
 							<input id="noteLocation" type="text" size="26" placeholder="126.6075050765, 37.5820583757">
-							<button id="getMapnotePoint" class="basicA">지점</button>
+							<button id="getMapnotePoint" class="basicA">Pick Location</button>
 						</li>
 						<li>
 							<textarea id="description" cols="36" rows="5"></textarea>
 						</li>
 					</ul>
 					<div class="fileDrop yScroll">
-						<div id="filetext"><p>파일을 첨부하여주십시오</p></div>
+						<div id="filetext"><p>Attach files</p></div>
 					</div>
 					<div class="uploadingList" ></div>
 					<div class="uploadedList" ></div>
 					<div class="uploadBtn">
-						<button type="button" id="mapnoteBtn" class="focusA">등록</button>
-						<button id="allFileClear" type="button" class="focusC">전체 삭제</button>
+						<button type="button" id="mapnoteBtn" class="focusA">Registration</button>
+						<button id="allFileClear" type="button" class="focusC">Clear all files</button>
 					</div>
 				<!-- </form> -->
 			</div>
@@ -617,8 +617,8 @@
 		<!-- S: 레이어 / 지점등록 / 상세보기 -->
 		<div id="mapnoteDetailLayer" class="option" style="display: none;">
 			<div class="layerHeader">
-				<h2>상세보기</h2>
-				<button type="button" class="layerClose" title="닫기">닫기</button>
+				<h2>Details</h2>
+				<button type="button" class="layerClose" title="Close">Close</button>
 			</div>
 			<div class="layerContents">
 				<ul id="mapnoteDetail"></ul>
@@ -626,8 +626,8 @@
 				<div id="thumbnail" itemscope itemtype="http://schema.org/ImageGallery"></div>
 
 				<div style="text-align: center;">
-					<button type="button" id="closeBtn" class="focusA" title="닫기">닫기</button>
-					<button type="button" id="updateBtn" class="basicA" title="수정">수정</button>
+					<button type="button" id="closeBtn" class="focusA" title="Close">Close</button>
+					<button type="button" id="updateBtn" class="basicA" title="Update">Update</button>
 			</div>
 
 		</div>
@@ -696,7 +696,7 @@
 		<!-- S: 시계열 -->
 		<div id="allSatImages" class="timeSeriesWrap" :class="{on:display}" v-show="active" style="display:none;">
 			<div>
-				<button type="button" title="보임/숨김"  v-on:click="display=!display">시계열숨김/보임</button>
+				<button type="button" title="Show/Hide"  v-on:click="display=!display">Show/Hide</button>
 			</div>
 			<div style="overflow-x:auto;">
 			<ul class="timeSeries">
@@ -719,7 +719,7 @@
 			<div class="distance-legend-scale-bar" style="width: 125px; left: 5px;"></div>
 		</div>
 		<div>
-			<span><label>고도</label><span id="positionAlt"><!--10m--></span></span>
+			<span><label>Altitude</label><span id="positionAlt"><!--10m--></span></span>
 			<span><label>DD</label><span id="positionDD"><!--127.156797°,38.012334°--></span></span>
 			<span><label>DM</label><span id="positionDM"><!--126°56.302',37°53.752'--></span></span>
 			<span><label>DMS</label><span id="positionDMS"><!--127°09'24.47'',38°00'44.40''--></span></span>
@@ -878,29 +878,7 @@
 
 	function createManagerFactory(viewer, renderDivId, serverPolicy, projectIdArray, projectDataArray, projectDataFolderArray, imagePath) {
 		managerFactory = new ManagerFactory(viewer, renderDivId, serverPolicy, projectIdArray, projectDataArray, projectDataFolderArray, imagePath);
-	}
-	/*
-	// 클릭 지점으로이동
- 	function gotoFly(projectId, issueId, issueType, longitude, latitude, height, duration) {
-		var projectData = getDataAPI(CODE.PROJECT_ID_PREFIX + projectId);
-		if (projectData === null || projectData === undefined) {
-		$.ajax({
-				url: dataInformationUrl + projectId,
-			type: "GET",
-			dataType: "json",
-				success: function(serverData) {
-					gotoFlyAPI(managerFactory, projectId, serverData, serverData.data_key, issueId, issueType, longitude, latitude, height, duration);
-			},
-			error: function(request, status, error) {
-					console.log("code : " + request.status + "\n" + "message : " + request.responseText + "\n" + "error : " + error);
-			}
-		});
-		} else {
-			gotoFlyAPI(managerFactory, projectId, projectData, projectData.data_key, issueId, issueType, longitude, latitude, height, duration);
-		}
-	}
-	*/
-	
+	}	
 </script>
 </body>
 </html>

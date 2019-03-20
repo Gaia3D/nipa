@@ -24,12 +24,12 @@ $("#fullTextSearchButton").click(function() {
 // 입력 체크
 function fullTextSearchCheck() {
 	if($("#fullTextSearch").val() === null || $("#fullTextSearch").val().trim() === "") {
-		alert("검색어를 입력하여 주십시오.");
+		alert("Please enter a keyword.");
 		$("#fullTextSearch").focus();
 		return false;
 	}
 	if($("#fullTextSearch").val().trim().length === 1) {
-		alert("검색어는 최소 1자 이상을 입력하여 주십시오.");
+		alert("Please enter at least 2 character for keyword.");
 		$("#fullTextSearch").focus();
 		return false;
 	}
@@ -51,7 +51,7 @@ function fullTextSearch() {
 		// jibunSearch(null, searchWord);
 		newAddressSearch(null, searchWord);
 	} else {
-		alert("검색 중 입니다.");
+		alert("Searching...");
 		return;
 	}
 }
@@ -130,15 +130,15 @@ function drawListJibunSearch(pagination, totalCount, addrJibunList, searchWord, 
 			content += "<li><span>";
 			if ((addrJibun.longitude === null || addrJibun.longitude === undefined) ||
 				addrJibun.latitude === null || addrJibun.latitude === undefined) {
-				content += "<button type='button' class='btnText' style='margin-right:10px;'>바로가기</button>"
+				content += "<button type='button' class='btnText' style='margin-right:10px;'>Shortcuts</button>"
 			}
 			else {
-				content += "<button type='button' class='btnTextF' onclick=\"gotoFly(" + addrJibun.longitude + ", " + addrJibun.latitude + ", 300, 2)\" style='margin-right:10px;'>바로가기</button>"
+				content += "<button type='button' class='btnTextF' onclick=\"gotoFly(" + addrJibun.longitude + ", " + addrJibun.latitude + ", 300, 2)\" style='margin-right:10px;'>Shortcuts</button>"
 			}
 			content += addrJibun.jibun_addr + "</span></li>";
 		}
 	} else {
-		content += 	"<li style=\"vertical-align:middle; text-align:center; height: 50px;\">검색 결과가 존재하지 않습니다.</li>";
+		content += 	"<li style=\"vertical-align:middle; text-align:center; height: 50px;\">No search results.</li>";
 		$("#jibunSearchList").height(50);
 	}
 
@@ -208,15 +208,15 @@ function drawListNewAddressSearch(pagination, totalCount, newAddressList, search
 			content += "<li><span>";
 			if ((newAddress.longitude === null || newAddress.longitude === undefined) ||
 				newAddress.latitude === null || newAddress.latitude === undefined) {
-				content += "<button type='button' class='btnText' style='margin-right:10px;'>바로가기</button>"
+				content += "<button type='button' class='btnText' style='margin-right:10px;'>Shortcuts</button>"
 			}
 			else {
-				content += "<button type='button' class='btnTextF' onclick=\"gotoFly(" + newAddress.longitude + ", " + newAddress.latitude + ", 300, 2)\" style='margin-right:10px;'>바로가기</button>"
+				content += "<button type='button' class='btnTextF' onclick=\"gotoFly(" + newAddress.longitude + ", " + newAddress.latitude + ", 300, 2)\" style='margin-right:10px;'>Shortcuts</button>"
 			}
 			content += newAddress.new_addr + "</span></li>";
 		}
 	} else {
-		content += 	"<li style=\"vertical-align:middle; text-align:center; height: 50px;\">검색 결과가 존재하지 않습니다.</li>";
+		content += 	"<li style=\"vertical-align:middle; text-align:center; height: 50px;\">No search results.</li>";
 		$("#newAddressSearchList").height(50);
 	}
 

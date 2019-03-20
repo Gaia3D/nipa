@@ -346,8 +346,8 @@ $(function() {
 	$('#addMapnote').click(function() {
 		console.log("좌표 독취에서 지점등록 클릭");
 		
-		$('#mapnoteLayer h2').text("지점등록");
-		$('#mapnoteBtn').text("등록");
+		$('#mapnoteLayer h2').text("Point Registration");
+		$('#mapnoteBtn').text("Registration");
 		$('#noteTitle').val('');
 		$('#description').val('');
 		
@@ -388,8 +388,8 @@ $(function() {
 	$('#inputMapnote.focusA').click(function() {
 		console.log("지점등록 클릭");
 		
-		$('#mapnoteLayer h2').text("지점등록");
-		$('#mapnoteBtn').text("등록");
+		$('#mapnoteLayer h2').text("Point Registration");
+		$('#mapnoteBtn').text("Registration");
 		$('#noteTitle').val('');
 		$('#noteLocation').val('');
 		$('#description').val('');
@@ -439,8 +439,8 @@ $(function() {
 	// 맵노트 수정
 	$(document).on('click', '#updateBtn', function() {
 		console.log("지점수정 클릭");
-		$('#mapnoteLayer h2').text("지점수정");
-		$('#mapnoteBtn').text("수정");
+		$('#mapnoteLayer h2').text("Edit Point");
+		$('#mapnoteBtn').text("Edit");
 		
 		// 첨부 파일 리셋
 		for(var i = 0, len = 7; i < len ; i++) {

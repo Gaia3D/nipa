@@ -47,22 +47,22 @@ function check() {
 	var noteLatitude = noteLocation.substring(noteLocation.indexOf(",")+1, noteLocation.length);
 	
 	if($('#noteTitle').val() === "") {
-		alert("지점명을 입력하여 주십시오.");
+		alert("Please enter the mapnote title.");
 		$('#noteTitle').focus();
 		return false;
 	}
 	if(noteLocation === "") {
-		alert("지점 위치를 선택하여 주십시오.");
+		alert("Please pick the location.");
 		$('#noteLocation').focus();
 		return false;
 	}
 	if(noteLongitude < (-180) || noteLongitude > 180) {
-		alert("경도의 값을 확인해 주십시오.");
+		alert("Please check the longitude value.");
 		$('#noteLocation').focus();
 		return false;
 	}
 	if(noteLatitude < (-90) || noteLatitude > 90) {
-		alert("위도의 값을 확인해 주십시오.");
+		alert("Please check the latitude value.");
 		return false;
 	}
 }
@@ -94,11 +94,10 @@ function ajaxMapnoteList(pageNo) {
 				$('#mapnotePage').find('.countTotal').text(lastPage);
 				$('#lastPage').text(lastPage);
 				
-				// TODO 위치가 틀렸습니다. 페이징 위에 가야됨
 				if(mapnoteList === null || mapnoteList.length === 0) {
 					content 	= 	content
 						+ 	"<p style=\"text-align: center; font-size: 14px;\">"
-						+		"현재 등록된 지점이 없습니다."
+						+		"There are no registered mapnotes."
 						+	"</p>";
 				} else {
 					removeAllBillboard();
@@ -111,8 +110,8 @@ function ajaxMapnoteList(pageNo) {
 							+		"<span class=\"title\">" + mapnote.note_title + "</span>"
 							+		"<span>" + mapnote.longitude + ", " + mapnote.latitude + "</span>"
 							+ 			"<div class=\"along\">"
-							+				"<button type=\"button\" class=\"icoBtn detail\" title=\"상세보기\" onclick=\"detailMapnote("+ pageNo + ", " + mapnote.map_note_id +");\">" + "상세보기" + "</button>"
-							+				"<button type=\"button\" class=\"icoBtn del\" title=\"삭제\" onclick=\"deleteMapnote("+ mapnote.map_note_id +");\">" + "삭제" + "</button>"
+							+				"<button type=\"button\" class=\"icoBtn detail\" title=\"상세보기\" onclick=\"detailMapnote("+ pageNo + ", " + mapnote.map_note_id +");\">" + "Detail" + "</button>"
+							+				"<button type=\"button\" class=\"icoBtn del\" title=\"삭제\" onclick=\"deleteMapnote("+ mapnote.map_note_id +");\">" + "Delete" + "</button>"
 							+			"</div>"
 							+	"</li>";
 					}
@@ -175,7 +174,7 @@ function fileDropDown() {
 		
 		if(files != null){
             if(files.length < 1){
-                alert("파일을 추가해 주세요.");
+                alert("Please attach the file.");
                 return;
             }
             selectFile(files);
@@ -212,11 +211,11 @@ function selectFile(fileObject){
             
             if($.inArray(ext, ['jpg', 'jpeg', 'png', 'gif', 'JPG', 'JPEG', 'PNG', 'GIF']) < 0){
                 // 확장자 체크
-                alert("이미지 파일만 업로드 가능합니다.");
+                alert("Only image files can be uploaded.");
                 break;
             }else if(fileSize > uploadSize){
                 // 파일 사이즈 체크
-                alert("파일 크기 초과\n업로드 가능 용량 : " + uploadSize + " MB");
+                alert("File size exceeded.\n Uploadable capacity : " + uploadSize + " MB");
                 break;
             }else{
                 // 전체 파일 사이즈
@@ -271,7 +270,7 @@ function deleteFile(fIndex){
     
     if($('.uploadingList').children().length === 0) {
     	$('#filetext p').empty();
-		dropZone.append("<div id=\"filetext\"><p>파일을 첨부하여주십시오</p><div>");
+		dropZone.append("<div id=\"filetext\"><p>Please attach the file.</p><div>");
     }
 }
 
@@ -285,7 +284,7 @@ function uploadMapnote() {
 
 	// 용량을 500MB를 넘을 경우 업로드 불가
 	if(totalFileSize > maxUploadSize){
-		alert("총 용량 초과\n총 업로드 가능 용량 : " + maxUploadSize + " MB");
+		alert("Total file size exceeded.\n Uploadable capacity : " + maxUploadSize + " MB");
 		return;
 	}
 	
@@ -312,10 +311,10 @@ function uploadMapnote() {
 	        cache:false,
 	        success:function(msg) {
 	            if(msg.result == "success") {
-	                alert("맵노트를 등록했습니다.");
+	                alert("Mapnote registration succeeded.");
 	                ajaxMapnoteList(1);
 	            } else {
-	                alert("맵노드 등록에 실패했습니다.");
+	                alert("Mapnote registration failed.");
 	            }
 	            isUploadMapnote = true;	
 	        },
@@ -455,7 +454,7 @@ function updateMapnote(map_note_id) {
 							uploadedFileList(len, msg.fileInfoList[i].file_info_id, msg.fileInfoList[i].file_name, msg.fileInfoList[i].file_size);
 						}
 						
-						alert("수정되었습니다.");
+						alert("It's changed.");
 						ajaxMapnoteList(1);
 						updateForm(map_note_id);
 					} else {
@@ -475,7 +474,7 @@ function updateMapnote(map_note_id) {
 function deleteMapnote(map_note_id) {
 	var url = "./mapnote/" + map_note_id;
 
-	if (confirm("맵노트를 삭제하시겠습니까??") == true){    
+	if (confirm("Are you sure to delete this mapnote?") == true){    
 		$.ajax({
 			url: url,
 			type: 'DELETE',
@@ -495,12 +494,12 @@ function deleteMapnote(map_note_id) {
 function deleteUploadedFile(fIndex, file_info_id) {
 	var url = "./fileInfo/" + file_info_id;
 	
-	if(confirm("파일을 삭제하시겠습니까?") == true) {
+	if(confirm("Are you sure to delete this file?") == true) {
 		$.ajax({
 			url: url,
 			type: 'DELETE',
 			success: function(msg) {
-				alert('파일이 삭제되었습니다.');
+				alert('The file has been deleted.');
 				$('.uploadedList').empty();
 				for(var i = 0, len = msg.fileInfoList.length; i< len; i++) {
 					uploadedFileList(len, msg.fileInfoList[i].file_info_id, msg.fileInfoList[i].file_name, msg.fileInfoList[i].file_size);

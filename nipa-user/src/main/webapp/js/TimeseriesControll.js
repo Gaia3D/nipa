@@ -2,17 +2,17 @@ var dateFormat = "yy-mm-dd";
 
 $.datepicker.setDefaults({
     dateFormat: dateFormat,
-    prevText: '이전 달',
-    nextText: '다음 달',
-    monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-    monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-    dayNames: ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"],
-    dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
-    dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+    prevText: 'Prev',
+    nextText: 'Next',
+    monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    monthNamesShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    dayNamesShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    dayNamesMin: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
     showMonthAfterYear: true,
-    closeText: "완료",
-    currentText: "오늘",
-    yearSuffix: '년'
+    closeText: 'Done',
+    currentText: 'Today',
+    yearSuffix: ''
 });
 
 $.datepicker._gotoToday = function (id) {
@@ -186,7 +186,7 @@ function TimeseriesControll(viewer, option) {
 
         if (that._longitude === undefined || that._longitude === null ||
             that._latitude === undefined || that._latitude === null) {
-            alert("영상을 검색할 위치를 지정하세요!");
+            alert("Please pick the location!!");
             return false;
         }
 
@@ -214,7 +214,7 @@ function TimeseriesControll(viewer, option) {
                         var images = msg.imageList;
                         
                         if (msg.imageList === undefined || images.length == 0) {
-                            alert("검색된 결과가 없습니다.");
+                            alert("No search results.");
                         }
                         else {
                             var len = images.length;

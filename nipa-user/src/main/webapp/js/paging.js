@@ -11,7 +11,7 @@ function drawPage(searchType, pagination, areaId, searchWord, searchKey) {
 	pagecontent	= pagecontent 
 		+	"<div class='pagerB'>"
 		+ "<span class=\"countPage\">" + pageNum + "</span> /"
-		+	"<span class=\"countTotal\"> 총 " + pagination.totalCount + "</span>"
+		+	"<span class=\"countTotal\"> " + pagination.totalCount + "</span>"
 		+	"<div>";
 	
 	if(pagination.totalCount > 0) {
@@ -21,12 +21,12 @@ function drawPage(searchType, pagination, areaId, searchWord, searchKey) {
 		if(prePage > pagination.firstPage)	prePage--;
 		if(nextPage < pagination.lastPage)	nextPage++;
 		
-		pagecontent += "<button type='button' class=\"first\" onclick=\"" + searchKey + "Search(" + pagination.firstPage + ", '" + searchWord + "');\">처음</button>"
-			pagecontent +=		"<button type='button' class=\"forward\" onclick=\"" + searchKey + "Search(" + prePage + ", '" + searchWord + "');\">이전</button>"
+		pagecontent += "<button type='button' class=\"first\" onclick=\"" + searchKey + "Search(" + pagination.firstPage + ", '" + searchWord + "');\">First</button>"
+			pagecontent +=		"<button type='button' class=\"forward\" onclick=\"" + searchKey + "Search(" + prePage + ", '" + searchWord + "');\">Previous</button>"
 			pagecontent += 		"<input type='text' id='pageNum' value='1' size='1'> / <span style='padding-right:5px;'>" + pagination.lastPage + "</span>" 
-			pagecontent +=		"<button type='button' class=\"next\" onclick=\"" + searchKey + "Search(" + nextPage + ", '" + searchWord + "');\">다음</button>"
-			pagecontent +=		"<button type='button' class=\"last\" onclick=\"" + searchKey + "Search(" + pagination.lastPage + ", '" + searchWord + "');\">마지막</button>"
-			pagecontent +=		"<button type='button' id='pageBtn' onclick=\"gotoPage('" + areaId + "', '" + searchWord + "', '" + searchKey + "'); return false;\" class='btnText' style='margin-left:5px;'>이동</button>"
+			pagecontent +=		"<button type='button' class=\"next\" onclick=\"" + searchKey + "Search(" + nextPage + ", '" + searchWord + "');\">Next</button>"
+			pagecontent +=		"<button type='button' class=\"last\" onclick=\"" + searchKey + "Search(" + pagination.lastPage + ", '" + searchWord + "');\">Last</button>"
+			pagecontent +=		"<button type='button' id='pageBtn' onclick=\"gotoPage('" + areaId + "', '" + searchWord + "', '" + searchKey + "'); return false;\" class='btnText' style='margin-left:5px;'>GoTo</button>"
 			pagecontent +=		"</div></div>";
 			
 			$("#" + areaId).empty();
