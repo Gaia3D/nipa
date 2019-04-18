@@ -346,7 +346,7 @@ $(function() {
 	$('#addMapnote').click(function() {
 		console.log("좌표 독취에서 지점등록 클릭");
 		
-		$('#mapnoteLayer h2').text("Point Registration");
+		$('#mapnoteLayer h2').text("Mapnote Registration");
 		$('#mapnoteBtn').text("Registration");
 		$('#noteTitle').val('');
 		$('#description').val('');
@@ -388,7 +388,7 @@ $(function() {
 	$('#inputMapnote.focusA').click(function() {
 		console.log("지점등록 클릭");
 		
-		$('#mapnoteLayer h2').text("Point Registration");
+		$('#mapnoteLayer h2').text("Mapnote Registration");
 		$('#mapnoteBtn').text("Registration");
 		$('#noteTitle').val('');
 		$('#noteLocation').val('');
