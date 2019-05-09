@@ -4,13 +4,13 @@
 # NIPA
 2018년도 개방형OS 환경개발 및 보급·확산 사업
 
+## Development Environment
+- SpringBoot
+- mybatis
+- lombok
+- PostgreSQL
+- PostGIS
+- Gradle
 
-
-
-
-
-
-
-
-
-
+## Getting Started
+- [Getting Started](nipa_doc/SiteBuildGuide.md)
