@@ -13,4 +13,4 @@
 - Gradle
 
 ## Getting Started
-- [Getting Started](nipa_doc/SiteBuildGuide.md)
+- [Getting Started](nipa-doc/SiteBuildGuide.md)
