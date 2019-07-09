@@ -244,7 +244,7 @@ $(function() {
 /***** NAV WRAP: 검색 *****/
 	// 검색 메뉴 클릭 시 추가 동작
 	$('#searchMenu').on('click', function() { 
-		console.log("검색 메뉴 클릭");
+//		console.log("검색 메뉴 클릭");
 	});
 	
 	// 검색 테이블 클릭 시 기본 동작 클릭
@@ -274,7 +274,7 @@ $(function() {
 /***** NAV WRAP: 레이어 *****/
 	// 레이어 메뉴 클릭 시 추가 동작
 	$('#layerMenu').on('click', function() { 
-		console.log("레이어 메뉴 클릭");
+//		console.log("레이어 메뉴 클릭");
 	});
 	
 	// 레이어 그룹 클릭 시
@@ -294,7 +294,7 @@ $(function() {
 /***** NAV WRAP: 분석 *****/	
 	// 분석 메뉴 클릭 시 추가 동작
 	$('#analysisMenu').on('click', function() { 
-		console.log("분석 메뉴 클릭");
+//		console.log("분석 메뉴 클릭");
 	});
 	
 	// 분석 그룹 클릭 시	
@@ -308,7 +308,7 @@ $(function() {
 /***** NAV WRAP: 좌표 *****/
 	// 좌표 메뉴 클릭 시 추가 동작
 	$('#coordinateMenu').on('click', function() { 
-		console.log("좌표 메뉴 클릭");
+//		console.log("좌표 메뉴 클릭");
 		coordContentsResize();
 	});
 	
@@ -373,7 +373,7 @@ $(function() {
 /***** NAV WRAP: 맵노트 *****/	
 	// 맵노트 메뉴 클릭 시 추가 동작
 	$('#mapnoteMenu').on('click', function() {
-		console.log("맵노트 메뉴 클릭");
+//		console.log("맵노트 메뉴 클릭");
 		if($(this).hasClass('on'))
 		{
 			ajaxMapnoteList(1);
